@@ -1,0 +1,8 @@
+{
+  "name": "forum/api",
+  "autoload": {
+    "psr-4": {
+      "app\\": "./"
+    }
+  }
+}
