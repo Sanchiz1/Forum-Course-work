@@ -30,7 +30,6 @@ class ControllerFinder
                 $declaredClasses = get_declared_classes();
 
                 foreach ($declaredClasses as $className) {
-
                     $reflectionClass = new ReflectionClass($className);
 
                     if ($reflectionClass->isSubclassOf(Controller::class)) {
