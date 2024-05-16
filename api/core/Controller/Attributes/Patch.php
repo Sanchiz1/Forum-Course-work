@@ -5,7 +5,7 @@ namespace Core\Controller\Attributes;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class Patch extends Route
+class Patch extends MethodRoute
 {
     public function __construct(string $routePath)
     {

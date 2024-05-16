@@ -7,6 +7,7 @@ use Core\Database\Database;
 use Core\Http\Request;
 use Core\Http\RequestParser;
 use Core\Http\Response;
+use Core\Routing\Router;
 
 class Application
 {

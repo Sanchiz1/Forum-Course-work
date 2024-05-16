@@ -1,7 +1,8 @@
 <?php
 
-namespace core;
+namespace Core\Routing;
 
+use core\Application;
 use core\Http\Request;
 use core\Http\Response;
 

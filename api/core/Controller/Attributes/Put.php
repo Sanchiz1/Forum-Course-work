@@ -5,7 +5,7 @@ namespace Core\Controller\Attributes;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class Put extends Route
+class Put extends MethodRoute
 {
     public function __construct(string $routePath)
     {
