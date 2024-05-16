@@ -2,7 +2,8 @@
   "name": "forum/api",
   "autoload": {
     "psr-4": {
-      "app\\": "./"
+      "App\\": "src/",
+      "Core\\": "core/"
     }
   }
 }
