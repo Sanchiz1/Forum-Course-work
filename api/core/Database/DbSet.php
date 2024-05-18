@@ -2,15 +2,20 @@
 
 namespace Core\Database;
 
-use app\core\Application;
-use Core\Database\QueryBuilder\ISelect;
-use Core\Database\QueryBuilder\SelectQueryBuilder;
-use PDO;
+use Core\Database\QueryBuilder\DeleteQueryBuilder\DeleteQueryBuilder;
+use Core\Database\QueryBuilder\DeleteQueryBuilder\IDelete;
+use Core\Database\QueryBuilder\InsertQueryBuilder\IInsert;
+use Core\Database\QueryBuilder\InsertQueryBuilder\InsertQueryBuilder;
+use Core\Database\QueryBuilder\SelectQueryBuilder\ISelect;
+use Core\Database\QueryBuilder\SelectQueryBuilder\SelectQueryBuilder;
+use Core\Database\QueryBuilder\UpdateQueryBuilder\IUpdate;
+use Core\Database\QueryBuilder\UpdateQueryBuilder\UpdateQueryBuilder;
 
 class DbSet
 {
     public string $TableName;
     public string $Model;
+
     public function __construct($tableName, $model)
     {
         $this->TableName = $tableName;
@@ -22,59 +27,57 @@ class DbSet
         return Application::$app->db->prepare($sql);
     }
 
+    public function insertModel(DbModel $model): string
+    {
+        $attributes = $model->attributes();
+        $params = array_map(fn($attr) => ":$attr", $attributes);
+
+        $builder = $this->insert()->columns(implode(", ", $attributes))
+            ->values(implode(", ", $params));
+
+        foreach ($attributes as $attribute) {
+            $builder->setParameter(":$attribute", $model->{$attribute});
+        }
+
+        return $builder->execute();
+    }
+
+    public function updateModel(DbModel $model): bool
+    {
+        $attributes = $model->attributes();
+        $params = array_map(fn($attr) => ":$attr", $attributes);
+
+        $builder = $this->update();
+
+
+        foreach ($attributes as $attribute) {
+            $builder->set("$attribute", ":$attribute")
+                ->setParameter(":$attribute", $model->{$attribute});
+        }
+
+        $builder->where($model->primaryKey() . " = :" . $model->primaryKey())
+            ->setParameter(":" . $model->primaryKey(), $model->{$model->primaryKey()});
+
+        return $builder->execute();
+    }
+
     public function get(): ISelect
     {
         return new SelectQueryBuilder($this->TableName, $this->Model);
     }
 
-    public function Add(DbModel $model): bool
+    public function update(): IUpdate
     {
-        $tableName = $this->TableName;
-        $attributes = $model->attributes();
-        $params = array_map(fn($attr) => ":$attr", $attributes);
-        $statement = self::prepare("INSERT INTO $tableName (" . implode(",", $attributes) . ") VALUES (" . implode(",", $params) . ")");
-        foreach ($attributes as $attribute) {
-            $statement->bindValue(":$attribute", $model->{$attribute});
-        }
-        $statement->execute();
-        return true;
+        return new UpdateQueryBuilder($this->TableName);
     }
 
-    public function Update(DbModel $model): bool
+    public function insert(): IInsert
     {
-        $tableName = $this->TableName;
-        $attributes = $model->attributes();
-        $params = array_map(fn($attr) => ":$attr", $attributes);
-
-        $set = implode(", ", array_map(fn($column, $value) => "$column  = $value", $attributes, $params));
-
-        $where = $model->primaryKey() . ' = :' . $model->primaryKey();
-
-        $statement = self::prepare("UPDATE $tableName SET $set WHERE $where");
-
-        $statement->bindValue(':' . $model->primaryKey(), $model->{$model->primaryKey()});
-        foreach ($attributes as $attribute) {
-            $statement->bindValue(":$attribute", $model->{$attribute});
-        }
-
-        return $statement->execute();
+        return new InsertQueryBuilder($this->TableName);
     }
 
-    public function Delete($filters = []): bool
+    public function delete(): IDelete
     {
-        $tableName = $this->TableName;
-        $attributes = array_keys($filters);
-
-        $conditions = implode(" AND ", array_map(fn($key, $value) => "$key  $value[0] :$key", $attributes, $filters));
-
-        $where = $conditions != "" ? "WHERE $conditions" : "";
-
-        $statement = self::prepare("DELETE FROM $tableName $where");
-
-        foreach ($attributes as $attribute) {
-            $statement->bindValue(":$attribute", $filters[$attribute][1]);
-        }
-
-        return $statement->execute();
+        return new DeleteQueryBuilder($this->TableName);
     }
 }

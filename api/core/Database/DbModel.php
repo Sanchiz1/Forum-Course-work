@@ -5,15 +5,10 @@ namespace Core\Database;
 use app\core\Application;
 use app\Core\Model;
 
-abstract class DbModel
+abstract class DbModel extends \Core\Database\Model
 {
-    public static function primaryKey(): string
+    public function primaryKey(): string
     {
         return 'Id';
-    }
-
-    public static function prepare($sql): \PDOStatement
-    {
-        return Application::$app->db->prepare($sql);
     }
 }

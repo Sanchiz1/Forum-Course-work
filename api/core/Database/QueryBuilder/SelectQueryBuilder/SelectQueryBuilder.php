@@ -1,43 +1,10 @@
 <?php
 
-namespace Core\Database\QueryBuilder;
+namespace Core\Database\QueryBuilder\SelectQueryBuilder;
 
 
 use Core\Database\Database;
 use PDO;
-
-interface IOffset
-{
-    function setParameter(string $parameter, $value): IOffset;
-
-    function execute(): array;
-}
-
-interface ILimit extends IOffset
-{
-    function offset(int $offset): IOffset;
-}
-
-interface IOrderBy extends ILimit
-{
-    function limit(int $limit): ILimit;
-}
-
-interface IWhere extends IOrderBy
-{
-    function and(string $condition): IWhere;
-
-    function or(string $condition): IWhere;
-
-    function orderBy(string $column, string $order = 'ASC'): IOrderBy;
-}
-
-interface ISelect extends IOrderBy
-{
-    function where(string $condition): IWhere;
-
-    function orderBy(string $column, string $order = 'ASC'): IOrderBy;
-}
 
 class SelectQueryBuilder implements ISelect, IWhere
 {
@@ -81,13 +48,13 @@ class SelectQueryBuilder implements ISelect, IWhere
         return $this;
     }
 
-    public function offset(int $offset): IOffset
+    public function offset(int $offset): IExecute
     {
         $this->query .= "OFFSET $offset";
         return $this;
     }
 
-    public function setParameter(string $parameter, $value): IOffset
+    public function setParameter(string $parameter, $value): IExecute
     {
         $this->params[$parameter] = $value;
         return $this;
