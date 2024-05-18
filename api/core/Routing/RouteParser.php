@@ -38,7 +38,11 @@ class RouteParser
 
                 $methodRoute = $methodAttributes[0]->newInstance();
 
-                $path = $route . '/' . $methodRoute->routePath;
+
+                $path = '/' . $route;
+
+                $path .= $methodRoute == "" ? '' : '/' . $methodRoute->routePath;
+
                 self::register($routes, $methodRoute->method, $path, [$controller, $method->getName()]);
             }
         }

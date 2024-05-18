@@ -4,30 +4,32 @@ namespace Core\Http;
 
 class Request
 {
-    private string $url;
+    private string $uri;
     private string $method;
     private mixed $body;
     private array $routeParams;
+    private array $queryParams;
     private array $headers;
 
     /**
-     * @param string $url
+     * @param string $uri
      * @param string $method
      * @param mixed $body
-     * @param array $routeParams
      * @param array $headers
+     * @param array $queryParams
      */
-    public function __construct(string $url, string $method, mixed $body, array $headers)
+    public function __construct(string $uri, string $method, mixed $body, array $headers, array $queryParams)
     {
-        $this->url = $url;
+        $this->uri = $uri;
         $this->method = $method;
         $this->body = $body;
         $this->headers = $headers;
+        $this->queryParams = $queryParams;
     }
 
-    public function getUrl() : string
+    public function getUri() : string
     {
-        return $this->url;
+        return $this->uri;
     }
 
     public function getMethod() : string
@@ -44,9 +46,15 @@ class Request
         return $this->body;
     }
 
-    public function setRouteParams($params) : void
+    public function getQueryParams() : array
     {
-        $this->routeParams = $params;
+        return $this->queryParams;
+    }
+
+
+    public function getQueryParam($param, $default = null)
+    {
+        return $this->queryParams[$param] ?? $default;
     }
 
     public function getRouteParams() : array
@@ -57,5 +65,10 @@ class Request
     public function getRouteParam($param, $default = null)
     {
         return $this->routeParams[$param] ?? $default;
+    }
+
+    public function setRouteParams($params) : void
+    {
+        $this->routeParams = $params;
     }
 }

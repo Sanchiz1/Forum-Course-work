@@ -2,30 +2,23 @@
 
 namespace Core\Routing;
 
-use core\Application;
-use core\Http\Request;
-use core\Http\Response;
+use Core\Application;
+use Core\Controller\ControllerFinder;
+use Core\Http\Request;
+use Core\Http\Response;
 
 class Router
 {
     private Request $request;
-    private Response $response;
     protected array $routeMap = [];
 
-    public function __construct(Request $request, Response $response)
+    public function __construct(Request $request)
     {
         $this->request = $request;
-        $this->response = $response;
-    }
 
-    public function get(string $path, $callback)
-    {
-        $this->routeMap['get'][$path] = $callback;
-    }
+        $controllers = ControllerFinder::getControllerClasses();
 
-    public function post(string $url, $callback)
-    {
-        $this->routeMap['post'][$url] = $callback;
+        $this->routeMap = RouteParser::GetRoutes($controllers);
     }
 
     public function getRouteMap($method): array
@@ -33,74 +26,57 @@ class Router
         return $this->routeMap[$method] ?? [];
     }
 
-    public function getCallback()
-    {
-        $method = $this->request->getMethod();
-        $url = $this->request->getUrl();
-        // Trim slashes
-        $url = trim($url, '/');
-
-        // Get all routes for current request method
-        $routes = $this->getRouteMap($method);
-
-        $routeParams = false;
-
-        // Start iterating registered routes
-        foreach ($routes as $route => $callback) {
-            // Trim slashes
-            $route = trim($route, '/');
-            $routeNames = [];
-
-            if (!$route) {
-                continue;
-            }
-
-            // Find all route names from route and save in $routeNames
-            if (preg_match_all('/\{(\w+)(:[^}]+)?}/', $route, $matches)) {
-                $routeNames = $matches[1];
-            }
-
-            // Convert route name into regex pattern
-            $routeRegex = "@^" . preg_replace_callback('/\{\w+(:([^}]+))?}/', fn($m) => isset($m[2]) ? "({$m[2]})" : '(\w+)', $route) . "$@";
-
-            // Test and match current route against $routeRegex
-            if (preg_match_all($routeRegex, $url, $valueMatches)) {
-                $values = [];
-                for ($i = 1; $i < count($valueMatches); $i++) {
-                    $values[] = $valueMatches[$i][0];
-                }
-                $routeParams = array_combine($routeNames, $values);
-
-                $this->request->setRouteParams($routeParams);
-                return $callback;
-            }
-        }
-
-        return false;
-    }
-
     public function resolve()
     {
+        //return new Response($this->getRouteMap("GET"));
         $method = $this->request->getMethod();
-        $url = $this->request->getUrl();
-        $callback = $this->routeMap[$method][$url] ?? false;
+        $url = $this->request->getUri();
 
-        if (!$callback) {
+        $callback = $this->getCallback();
 
-            $callback = $this->getCallback();
-
-            if ($callback === false) {
-                $this->response->statusCode(404);
-                return 'Not found';
-            }
+        if ($callback == null) {
+            http_response_code(404);
+            return new Response('Not found');
         }
 
         if (is_array($callback)) {
             $controller = new $callback[0];
             $controller->action = $callback[1];
-            Application::$app->controller = $controller;
             $callback[0] = $controller;
         }
-        return call_user_func($callback, $this->request, $this->response);
+
+        return call_user_func($callback, $this->request);
+    }
+
+    public function getCallback()
+    {
+        $url = parse_url($this->request->getUri(), PHP_URL_PATH);
+
+        $routes = $this->getRouteMap($this->request->getMethod());
+
+        foreach ($routes as $route => $callback) {
+            if ($this->match($route, $url, $matches)) {
+                $this->request->setRouteParams($matches);
+                return $callback;
+            }
+        }
+        return null;
+    }
+
+    private function match($route, $url, &$matches): bool
+    {
+        $route = rtrim($route, '/');
+
+        $matches = array();
+
+        $pattern = "@^" . preg_replace('/(\\\{([^}]+)}|\\\:[a-zA-Z0-9\_\-]+)/', '([a-zA-Z0-9\-\_]+)', preg_quote($route)) . "$@D";
+
+        if(preg_match($pattern, $url, $matches)) {
+
+            array_shift($matches);
+            return true;
+        }
+
+        return  false;
     }
 }

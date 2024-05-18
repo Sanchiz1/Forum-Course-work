@@ -6,14 +6,15 @@ class RequestParser
 {
     public static function getRequest() : Request
     {
-        $url = self::getPath();
+        $uri = self::getUri();
         $method = self::getMethod();
         $headers = getallheaders();
+        $queryParams = self::getQueryParams();
 
         $body = $headers["Content-Type"] == "application/json" ?
             self::getJsonBody() : null;
 
-        return new Request($url, $method, $body, $headers);
+        return new Request($uri, $method, $body, $headers, $queryParams);
     }
 
     private static function getMethod()
@@ -21,7 +22,7 @@ class RequestParser
         return strtolower($_SERVER['REQUEST_METHOD']);
     }
 
-    private static function getPath() : string
+    private static function getUri() : string
     {
         $path = $_SERVER['REQUEST_URI'];
         $position = strpos($path, '?');
@@ -34,5 +35,14 @@ class RequestParser
     private static function getJsonBody() : mixed
     {
         return json_decode(file_get_contents('php://input'), true);
+    }
+
+    private static function getQueryParams() : array
+    {
+        $queries = array();
+
+        parse_str($_SERVER['QUERY_STRING'], $queries);
+
+        return $queries;
     }
 }
