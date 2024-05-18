@@ -2,9 +2,10 @@
 
 namespace Core\Database;
 
-use app\core\Application;
 use Core\Database\QueryBuilder\DeleteQueryBuilder\DeleteQueryBuilder;
 use Core\Database\QueryBuilder\DeleteQueryBuilder\IDelete;
+use Core\Database\QueryBuilder\InsertQueryBuilder\IInsert;
+use Core\Database\QueryBuilder\InsertQueryBuilder\InsertQueryBuilder;
 use Core\Database\QueryBuilder\SelectQueryBuilder\ISelect;
 use Core\Database\QueryBuilder\SelectQueryBuilder\SelectQueryBuilder;
 use PDO;
@@ -13,6 +14,7 @@ class DbSet
 {
     public string $TableName;
     public string $Model;
+
     public function __construct($tableName, $model)
     {
         $this->TableName = $tableName;
@@ -29,17 +31,24 @@ class DbSet
         return new SelectQueryBuilder($this->TableName, $this->Model);
     }
 
-    public function Add(DbModel $model): bool
+    public function add(DbModel $model): bool
     {
-        $tableName = $this->TableName;
         $attributes = $model->attributes();
         $params = array_map(fn($attr) => ":$attr", $attributes);
-        $statement = self::prepare("INSERT INTO $tableName (" . implode(",", $attributes) . ") VALUES (" . implode(",", $params) . ")");
+
+        $builder = $this->Insert()->columns(implode(",", $attributes))
+            ->values(implode(",", $params));
+
         foreach ($attributes as $attribute) {
-            $statement->bindValue(":$attribute", $model->{$attribute});
+            $builder->setParameter(":$attribute", $model->{$attribute});
         }
-        $statement->execute();
-        return true;
+
+        return $builder->execute();
+    }
+
+    public function Insert(): IInsert
+    {
+        return new InsertQueryBuilder($this->TableName);
     }
 
     public function Update(DbModel $model): bool
