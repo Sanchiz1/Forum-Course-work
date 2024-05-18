@@ -3,6 +3,8 @@
 namespace Core\Database;
 
 use app\core\Application;
+use Core\Database\QueryBuilder\DeleteQueryBuilder\DeleteQueryBuilder;
+use Core\Database\QueryBuilder\DeleteQueryBuilder\IDelete;
 use Core\Database\QueryBuilder\SelectQueryBuilder\ISelect;
 use Core\Database\QueryBuilder\SelectQueryBuilder\SelectQueryBuilder;
 use PDO;
@@ -60,21 +62,8 @@ class DbSet
         return $statement->execute();
     }
 
-    public function Delete($filters = []): bool
+    public function delete(): IDelete
     {
-        $tableName = $this->TableName;
-        $attributes = array_keys($filters);
-
-        $conditions = implode(" AND ", array_map(fn($key, $value) => "$key  $value[0] :$key", $attributes, $filters));
-
-        $where = $conditions != "" ? "WHERE $conditions" : "";
-
-        $statement = self::prepare("DELETE FROM $tableName $where");
-
-        foreach ($attributes as $attribute) {
-            $statement->bindValue(":$attribute", $filters[$attribute][1]);
-        }
-
-        return $statement->execute();
+        return new DeleteQueryBuilder($this->TableName, $this->Model);
     }
 }
