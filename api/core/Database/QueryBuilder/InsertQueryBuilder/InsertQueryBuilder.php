@@ -32,14 +32,11 @@ class InsertQueryBuilder implements IInsert, IValues, IExecute
         return $this;
     }
 
-    public function execute(): bool
+    public function execute(): string
     {
         $statement = Database::$db->prepare($this->query);
 
-        foreach ($this->params as $param => $value) {
-            $statement->bindValue(":$param", $value);
-        }
-
-        return $statement->execute();
+        $statement->execute($this->params);
+        return Database::$db->pdo->lastInsertId();
     }
 }

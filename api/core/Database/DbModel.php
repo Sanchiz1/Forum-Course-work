@@ -11,9 +11,4 @@ abstract class DbModel
     {
         return 'Id';
     }
-
-    public static function prepare($sql): \PDOStatement
-    {
-        return Application::$app->db->prepare($sql);
-    }
 }

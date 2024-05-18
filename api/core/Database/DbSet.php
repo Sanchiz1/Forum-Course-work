@@ -31,13 +31,26 @@ class DbSet
         return new SelectQueryBuilder($this->TableName, $this->Model);
     }
 
-    public function add(DbModel $model): bool
+    public function add(DbModel $model): string
     {
+/*
+        $tableName = $this->TableName;
+        $attributes = $model->attributes();
+        $params = array_map(fn($attr) => ":$attr", $attributes);
+        $statement = Database::$db->prepare("INSERT INTO $tableName (" . implode(",", $attributes) . ") VALUES (" . implode(",", $params) . ")");
+        foreach ($attributes as $attribute) {
+            $statement->bindValue(":$attribute", $model->{$attribute});
+        }
+
+        echo json_encode($statement);
+        die();
+        $statement->execute();
+        return true;*/
         $attributes = $model->attributes();
         $params = array_map(fn($attr) => ":$attr", $attributes);
 
-        $builder = $this->Insert()->columns(implode(",", $attributes))
-            ->values(implode(",", $params));
+        $builder = $this->Insert()->columns(implode(", ", $attributes))
+            ->values(implode(", ", $params));
 
         foreach ($attributes as $attribute) {
             $builder->setParameter(":$attribute", $model->{$attribute});
@@ -46,12 +59,12 @@ class DbSet
         return $builder->execute();
     }
 
-    public function Insert(): IInsert
+    public function insert(): IInsert
     {
         return new InsertQueryBuilder($this->TableName);
     }
 
-    public function Update(DbModel $model): bool
+    public function update(DbModel $model): bool
     {
         $tableName = $this->TableName;
         $attributes = $model->attributes();
