@@ -3,8 +3,8 @@
 namespace Core\Database;
 
 use app\core\Application;
-use Core\Database\QueryBuilder\ISelect;
-use Core\Database\QueryBuilder\SelectQueryBuilder;
+use Core\Database\QueryBuilder\SelectQueryBuilder\ISelect;
+use Core\Database\QueryBuilder\SelectQueryBuilder\SelectQueryBuilder;
 use PDO;
 
 class DbSet
