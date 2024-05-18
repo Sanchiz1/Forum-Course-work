@@ -8,7 +8,8 @@ use Core\Database\QueryBuilder\InsertQueryBuilder\IInsert;
 use Core\Database\QueryBuilder\InsertQueryBuilder\InsertQueryBuilder;
 use Core\Database\QueryBuilder\SelectQueryBuilder\ISelect;
 use Core\Database\QueryBuilder\SelectQueryBuilder\SelectQueryBuilder;
-use PDO;
+use Core\Database\QueryBuilder\UpdateQueryBuilder\IUpdate;
+use Core\Database\QueryBuilder\UpdateQueryBuilder\UpdateQueryBuilder;
 
 class DbSet
 {
@@ -26,30 +27,12 @@ class DbSet
         return Application::$app->db->prepare($sql);
     }
 
-    public function get(): ISelect
+    public function insertModel(DbModel $model): string
     {
-        return new SelectQueryBuilder($this->TableName, $this->Model);
-    }
-
-    public function add(DbModel $model): string
-    {
-/*
-        $tableName = $this->TableName;
-        $attributes = $model->attributes();
-        $params = array_map(fn($attr) => ":$attr", $attributes);
-        $statement = Database::$db->prepare("INSERT INTO $tableName (" . implode(",", $attributes) . ") VALUES (" . implode(",", $params) . ")");
-        foreach ($attributes as $attribute) {
-            $statement->bindValue(":$attribute", $model->{$attribute});
-        }
-
-        echo json_encode($statement);
-        die();
-        $statement->execute();
-        return true;*/
         $attributes = $model->attributes();
         $params = array_map(fn($attr) => ":$attr", $attributes);
 
-        $builder = $this->Insert()->columns(implode(", ", $attributes))
+        $builder = $this->insert()->columns(implode(", ", $attributes))
             ->values(implode(", ", $params));
 
         foreach ($attributes as $attribute) {
@@ -59,33 +42,42 @@ class DbSet
         return $builder->execute();
     }
 
+    public function updateModel(DbModel $model): bool
+    {
+        $attributes = $model->attributes();
+        $params = array_map(fn($attr) => ":$attr", $attributes);
+
+        $builder = $this->update();
+
+
+        foreach ($attributes as $attribute) {
+            $builder->set("$attribute", ":$attribute")
+                ->setParameter(":$attribute", $model->{$attribute});
+        }
+
+        $builder->where($model->primaryKey() . " = :" . $model->primaryKey())
+            ->setParameter(":" . $model->primaryKey(), $model->{$model->primaryKey()});
+
+        return $builder->execute();
+    }
+
+    public function get(): ISelect
+    {
+        return new SelectQueryBuilder($this->TableName, $this->Model);
+    }
+
+    public function update(): IUpdate
+    {
+        return new UpdateQueryBuilder($this->TableName);
+    }
+
     public function insert(): IInsert
     {
         return new InsertQueryBuilder($this->TableName);
     }
 
-    public function update(DbModel $model): bool
-    {
-        $tableName = $this->TableName;
-        $attributes = $model->attributes();
-        $params = array_map(fn($attr) => ":$attr", $attributes);
-
-        $set = implode(", ", array_map(fn($column, $value) => "$column  = $value", $attributes, $params));
-
-        $where = $model->primaryKey() . ' = :' . $model->primaryKey();
-
-        $statement = self::prepare("UPDATE $tableName SET $set WHERE $where");
-
-        $statement->bindValue(':' . $model->primaryKey(), $model->{$model->primaryKey()});
-        foreach ($attributes as $attribute) {
-            $statement->bindValue(":$attribute", $model->{$attribute});
-        }
-
-        return $statement->execute();
-    }
-
     public function delete(): IDelete
     {
-        return new DeleteQueryBuilder($this->TableName, $this->Model);
+        return new DeleteQueryBuilder($this->TableName);
     }
 }

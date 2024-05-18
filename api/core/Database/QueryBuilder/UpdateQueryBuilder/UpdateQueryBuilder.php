@@ -1,22 +1,29 @@
 <?php
 
-namespace Core\Database\QueryBuilder\DeleteQueryBuilder;
+namespace Core\Database\QueryBuilder\UpdateQueryBuilder;
 
 use Core\Database\Database;
-use PDO;
 
-class DeleteQueryBuilder implements IDelete, IWhere
+class UpdateQueryBuilder implements IUpdate, ISet, IWhere
 {
     private string $query;
+    private array $setStrings;
     private array $params = array();
 
     public function __construct(string $tableName)
     {
-        $this->query = "Delete FROM $tableName ";
+        $this->query = "UPDATE $tableName SET ";
+    }
+
+    function set(string $key, $value): ISet
+    {
+        $this->setStrings[] = "$key = $value";
+        return $this;
     }
 
     public function where(string $condition): IWhere
     {
+        $this->query .= implode(",", $this->setStrings) . " ";
         $this->query .= "WHERE $condition ";
         return $this;
     }
