@@ -4,45 +4,28 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { getUserAccount } from '../../Redux/Epics/AccountEpics';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { RootState } from '../../Redux/store';
 import {
-    FormControl, Select, Stack, Container, CssBaseline, IconButton, LinearProgress,
-    Toolbar, Collapse, TextField, Alert, Link, MenuItem, Button, Dialog, DialogTitle, DialogActions, Tooltip, Chip
+    Stack, Container, CssBaseline, IconButton, LinearProgress,
+    TextField, Link, MenuItem, Button, Dialog, DialogTitle, DialogActions, Tooltip, Chip
 } from '@mui/material';
 import CategoryIcon from '@mui/icons-material/Category';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
-import CloseIcon from '@mui/icons-material/Close';
 import { Link as RouterLink } from 'react-router-dom';
 import { Post } from '../../Types/Post';
 import { addPostCategoryRequest, deletePostRequest, likePostRequest, removePostCategoryRequest, requestPostById, updatePostRequest } from '../../API/postRequests';
 import { GetLocalDate, timeSince } from '../../Helpers/TimeHelper';
 import EditIcon from '@mui/icons-material/Edit';
-import AddIcon from '@mui/icons-material/Add';
 import Divider from '@mui/material/Divider';
 import DeleteIcon from '@mui/icons-material/Delete';
-import ArchiveIcon from '@mui/icons-material/Archive';
-import FileCopyIcon from '@mui/icons-material/FileCopy';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { StyledMenu } from '../UtilComponents/StyledMenu';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { enqueueSnackbar } from 'notistack';
-import { Reply } from '../../Types/Reply';
-import { requestReplies } from '../../API/replyRequests';
-import ReplyElement from '../Comments/ReplyElement';
-import { createCommentRequest, requestComments } from '../../API/commentRequests';
-import { Comment, CommentInput } from '../../Types/Comment';
-import CommentElement from '../Comments/CommentElement';
-import { BootstrapInput } from '../UtilComponents/BootstrapInput';
-import { isSigned } from '../../API/loginRequests';
-import { setGlobalError, setLogInError } from '../../Redux/Reducers/AccountReducer';
+import { setGlobalError } from '../../Redux/Reducers/AccountReducer';
 import { User } from '../../Types/User';
-import CommentInputElement from '../UtilComponents/CommentInputElement';
 import CommentsSection from './CommentsSection';
 import IconButtonWithCheck from '../UtilComponents/IconButtonWithCheck';
 import CategoriesSelect from '../Categories/CategorySelect';
@@ -138,7 +121,7 @@ export default function PostPage() {
     const [openDelete, setOpenDelete] = useState(false);
     const handleSubmitDelete = () => {
         deletePostRequest(post?.id!).subscribe({
-            next(value) {
+            next(value : any) {
                 enqueueSnackbar(value, {
                     variant: 'success', anchorOrigin: {
                         vertical: 'top',
@@ -154,7 +137,7 @@ export default function PostPage() {
                 }
                 navigator(state);
             },
-            error(err) {
+            error(err: any) {
                 setError(err.message)
             },
         })

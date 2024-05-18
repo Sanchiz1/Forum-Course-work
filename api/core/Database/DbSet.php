@@ -3,6 +3,8 @@
 namespace Core\Database;
 
 use app\core\Application;
+use Core\Database\QueryBuilder\ISelect;
+use Core\Database\QueryBuilder\SelectQueryBuilder;
 use PDO;
 
 class DbSet
@@ -20,29 +22,9 @@ class DbSet
         return Application::$app->db->prepare($sql);
     }
 
-    public function Get($filters = [], $orderBy = '', $order = "asc", $take = "", $skip = ""): array
+    public function get(): ISelect
     {
-        $tableName = $this->TableName;
-        $attributes = array_keys($filters);
-
-        $conditions = implode(" AND ", array_map(fn($key, $value) => "$key  $value[0] :$key", $attributes, $filters));
-
-        $where = $conditions != "" ? "WHERE $conditions" : "";
-
-        $order = $orderBy != "" ? "ORDER BY $orderBy $order" : "";
-
-        $limit = $take != "" ? "LIMIT $take" : "";
-
-        $offset = $skip != "" ? "OFFSET $skip" : "";
-
-        $statement = self::prepare("SELECT * FROM $tableName $where $order $limit $offset");
-
-        foreach ($attributes as $attribute) {
-            $statement->bindValue(":$attribute", $filters[$attribute][1]);
-        }
-
-        $statement->execute();
-        return $statement->fetchAll( PDO::FETCH_CLASS, $this->Model);
+        return new SelectQueryBuilder($this->TableName, $this->Model);
     }
 
     public function Add(DbModel $model): bool
@@ -50,8 +32,7 @@ class DbSet
         $tableName = $this->TableName;
         $attributes = $model->attributes();
         $params = array_map(fn($attr) => ":$attr", $attributes);
-        $statement = self::prepare("INSERT INTO $tableName (" . implode(",", $attributes) . ") 
-                VALUES (" . implode(",", $params) . ")");
+        $statement = self::prepare("INSERT INTO $tableName (" . implode(",", $attributes) . ") VALUES (" . implode(",", $params) . ")");
         foreach ($attributes as $attribute) {
             $statement->bindValue(":$attribute", $model->{$attribute});
         }

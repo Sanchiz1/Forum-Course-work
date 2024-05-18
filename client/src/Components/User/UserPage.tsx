@@ -1,27 +1,21 @@
 import { useState, useEffect } from 'react';
-import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import Button from '@mui/material/Button';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { getUserAccount } from '../../Redux/Epics/AccountEpics';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { RootState } from '../../Redux/store';
-import { Backdrop, Badge, CircularProgress, Container, CssBaseline, IconButton, LinearProgress, Toolbar, Collapse, TextField, Alert, Select, MenuItem, Skeleton, SelectChangeEvent, Dialog, DialogTitle, DialogActions } from '@mui/material';
+import { Container, CssBaseline, IconButton, LinearProgress, Collapse, TextField, Alert, Select, MenuItem, Skeleton, SelectChangeEvent, Dialog, DialogTitle, DialogActions } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import MenuIcon from '@mui/icons-material/Menu';
 import { GetDateString } from '../../Helpers/DateFormatHelper';
 import { User, UserInput } from '../../Types/User';
 import { updateUserRoleRequest, requestUserByUsername, updateUserRequest, DeleteUserRequest } from '../../API/userRequests';
 import UserNotFoundPage from './UserNotFoundPage';
-import { getAccount, setGlobalError } from '../../Redux/Reducers/AccountReducer';
-import { SnackbarProvider, VariantType, enqueueSnackbar, useSnackbar } from 'notistack';
+import { setGlobalError } from '../../Redux/Reducers/AccountReducer';
+import { enqueueSnackbar } from 'notistack';
 import { BootstrapInput } from '../UtilComponents/BootstrapInput';
 import { Post } from '../../Types/Post';
 import { requestUserPosts } from '../../API/postRequests';
@@ -159,7 +153,7 @@ export default function UserPage() {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
       },
-      error(err) {
+      error(err: any) {
         setHasMore(false);
         dispatch(setGlobalError(err.message));
       },

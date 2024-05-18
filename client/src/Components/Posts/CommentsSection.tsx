@@ -1,25 +1,20 @@
 import { useState, useEffect } from 'react';
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { getUserAccount } from '../../Redux/Epics/AccountEpics';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { RootState } from '../../Redux/store';
 import {
-    FormControl, Select, Stack, Container, CssBaseline, IconButton, LinearProgress,
-    Toolbar, Collapse, TextField, Alert, Link, MenuItem, Button, Dialog, DialogTitle, DialogActions
-} from '@mui/material';
+    Select, 
+    MenuItem} from '@mui/material';
 import { Post } from '../../Types/Post';
 import { enqueueSnackbar } from 'notistack';
 import { createCommentRequest, requestComments } from '../../API/commentRequests';
 import { Comment, CommentInput } from '../../Types/Comment';
 import CommentElement from '../Comments/CommentElement';
 import { BootstrapInput } from '../UtilComponents/BootstrapInput';
-import { setGlobalError, setLogInError } from '../../Redux/Reducers/AccountReducer';
+import { setGlobalError } from '../../Redux/Reducers/AccountReducer';
 import { User } from '../../Types/User';
 import CommentInputElement from '../UtilComponents/CommentInputElement';
 
