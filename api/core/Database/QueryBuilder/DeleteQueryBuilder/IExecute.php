@@ -6,5 +6,5 @@ interface IExecute
 {
     function setParameter(string $parameter, $value): IExecute;
 
-    function execute(): array;
+    function execute(): bool;
 }

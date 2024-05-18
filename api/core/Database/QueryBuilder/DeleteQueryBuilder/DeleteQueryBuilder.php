@@ -34,21 +34,17 @@ class DeleteQueryBuilder implements IDelete, IWhere
         $this->query .= "OR $condition ";
         return $this;
     }
+
     public function setParameter(string $parameter, $value): IExecute
     {
         $this->params[$parameter] = $value;
         return $this;
     }
 
-    public function execute(): array
+    public function execute(): bool
     {
         $statement = Database::$db->prepare($this->query);
 
-        foreach ($this->params as $param => $value) {
-            $statement->bindValue(":$param", $value);
-        }
-
-        $statement->execute();
-        return $statement->fetchAll(PDO::FETCH_CLASS, $this->model);
+        return $statement->execute($this->params);
     }
 }
