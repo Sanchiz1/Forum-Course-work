@@ -2,9 +2,7 @@
 
 namespace Core\Database\QueryBuilder\SelectQueryBuilder;
 
-interface ISelect extends IOrderBy
+interface ISelect
 {
-    function where(string $condition): IWhere;
-
-    function orderBy(string $column, string $order = 'ASC'): IOrderBy;
+    function select(string $select) : IFrom;
 }
