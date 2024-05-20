@@ -181,14 +181,11 @@ class EntityMapper implements IWhere, IInclude, IThenInclude
             foreach ($this->aliases as $navigation => $alias) {
 
                 if($navigation == 0){
-
-                    $entity = $this->model;
+                    $entity = unserialize(serialize($this->model));
 
                     foreach ($entity->columns() as $column) {
                         $entity->{$column} = $row[$alias . "_" . $column];
                     }
-
-                    $entities[] = $entity;
                 }
                 else{
                     $tablesPath = explode(".", substr($navigation, 2));
@@ -202,8 +199,8 @@ class EntityMapper implements IWhere, IInclude, IThenInclude
                         $nestedEntity->{$column} = $row[$alias . "_" . $column];
                     }
                 }
-
             }
+            $entities[] = $entity;
         }
 
         return $entities;
