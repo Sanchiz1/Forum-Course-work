@@ -10,7 +10,6 @@ class Task extends DbModel
     public int $Id;
     public string $Title;
     public int $UserId;
-
     #[ForeignKey("UserId")]
     public User $User;
 
