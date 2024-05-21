@@ -8,7 +8,7 @@ interface IInclude extends IOrderBy
 
     function includeAndSelect(string $navigation, string $table): IThenInclude;
 
-    function where(string $condition): IWhere;
+    function where(string $condition, $value): IWhere;
 
     function orderBy(string $column, string $order = 'ASC'): IOrderBy;
 }

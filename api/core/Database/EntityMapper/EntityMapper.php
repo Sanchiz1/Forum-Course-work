@@ -13,7 +13,9 @@ use ReflectionException;
 
 class EntityMapper implements IWhere, IInclude, IThenInclude
 {
+    private const ROOT_PROPERTY_NAME = "";
     private int $modelIndex = 0;
+    private int $paramIndex = 0;
     private DbModel $currentModel;
     private array $aliases = array();
     private DbModel $model;
@@ -24,7 +26,7 @@ class EntityMapper implements IWhere, IInclude, IThenInclude
         $this->queryBuilder = $queryBuilder;
         $this->model = new $model();
 
-        $alias = $this->getAlias(0);
+        $alias = $this->getAlias(EntityMapper::ROOT_PROPERTY_NAME);
 
         $columns = array_map(fn($a) => "$alias.$a as $alias" . "_$a", $this->model->columns());
         $this->queryBuilder->select(...$columns)->from($tableName, $alias);
@@ -81,19 +83,20 @@ class EntityMapper implements IWhere, IInclude, IThenInclude
         return $this;
     }
 
-    public function where(string $condition): IWhere
+    public function where(string $column, $value = null): IWhere
     {
-        $this->query .= "WHERE $condition ";
+        $param = $this->GetParameterName();
+        $this->queryBuilder->where($column);
         return $this;
     }
 
-    public function and(string $condition): IWhere
+    public function and(string $condition, $value): IWhere
     {
         $this->query .= "AND $condition ";
         return $this;
     }
 
-    public function or(string $condition): IWhere
+    public function or(string $condition, $value): IWhere
     {
         $this->query .= "OR $condition ";
         return $this;
@@ -141,7 +144,7 @@ class EntityMapper implements IWhere, IInclude, IThenInclude
         $entity = null;
         foreach ($this->aliases as $navigation => $alias) {
 
-            if ($navigation == 0) 
+            if ($navigation == EntityMapper::ROOT_PROPERTY_NAME) 
             {
                 $entity = unserialize(serialize($this->model));
 
@@ -149,13 +152,13 @@ class EntityMapper implements IWhere, IInclude, IThenInclude
             } 
             else 
             {
-                $tablesPath = explode(".", substr($navigation, 2));
+                $tablesPath = explode(".", $navigation);
                 $nestedEntity = $entity;
 
                 foreach ($tablesPath as $property) {
                     $nestedEntity = $nestedEntity->{$property};
                 }
-
+                
                 $this->setEntityFields($nestedEntity, $row, $alias);
             }
         }
@@ -171,10 +174,11 @@ class EntityMapper implements IWhere, IInclude, IThenInclude
 
     private function join(string $table, string $navigation): void
     {
-        $foreignKey = $this->getForeignKey($this->currentModel, $navigation);
-        $navigationPath = array_keys($this->aliases)[$this->modelIndex] . "." . $navigation;
+        $navigationPath = $this->getNavigationPath($navigation);
 
         $alias = $this->getAlias($navigationPath);
+        
+        $foreignKey = $this->getForeignKey($this->currentModel, $navigation);
 
         $this->queryBuilder->join(
             "INNER",
@@ -186,7 +190,7 @@ class EntityMapper implements IWhere, IInclude, IThenInclude
 
     private function addColumns(string $navigation): void
     {
-        $navigationPath = array_keys($this->aliases)[$this->modelIndex] . "." . $navigation;
+        $navigationPath = $this->getNavigationPath($navigation);
 
         $alias = $this->getAlias($navigationPath);
 
@@ -195,11 +199,27 @@ class EntityMapper implements IWhere, IInclude, IThenInclude
         $this->queryBuilder->addSelect(...$columns);
     }
 
+    private function GetParameterName() : string
+    {
+        $number = $this->paramIndex++;
+
+        return ":p$number";
+    }
+
+    private function getNavigationPath(string $navigation): string
+    {
+        $navigationPath = $this->modelIndex == 0 ? "" : array_keys($this->aliases)[$this->modelIndex] . ".";
+
+        return $navigationPath . $navigation;
+    }
+
+
     private function getAlias(string $navigationProperty): string
     {
         if (array_key_exists($navigationProperty, $this->aliases)) {
             return $this->aliases[$navigationProperty];
         }
+
         $alias = "t";
         $number = count($this->aliases);
 
