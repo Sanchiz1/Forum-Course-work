@@ -8,5 +8,5 @@ interface IWhere extends IOrderBy
 
     function or(string $condition): IWhere;
 
-    function orderBy(string $column, string $order = 'ASC'): IOrderBy;
+    public function groupBy(string ...$columns): IGroupBy;
 }

@@ -10,5 +10,5 @@ interface IJoin extends IOrderBy
 
     function where(string $condition): IWhere;
 
-    function orderBy(string $column, string $order = 'ASC'): IOrderBy;
+    public function groupBy(string ...$columns): IGroupBy;
 }

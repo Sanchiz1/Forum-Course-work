@@ -2,20 +2,27 @@
 
 namespace App\Controllers;
 
+use App\Models\Task;
 use Core\Controller\Attributes\Get;
 use Core\Controller\Attributes\Route;
 use Core\Controller\Controller;
+use Core\Database\DbSet;
 use Core\Http\Request;
 use Core\Http\Response;
 
 #[Route("tasks")]
 class TaskController extends Controller
 {
+    private DbSet $tasks;
 
-    #[Get("")]
-    public function GetTasks() : Response
+    public function __construct()
     {
-        return new Response("tasks");
+        $this->tasks = new DbSet("task", Task::class);
+    }
+    #[Get("")]
+    public function GetTasks()
+    {
+        return $this->json($this->tasks->get()->execute());
     }
 
     #[Get("new?id")]
