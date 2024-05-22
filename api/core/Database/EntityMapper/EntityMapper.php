@@ -135,21 +135,10 @@ class EntityMapper implements IWhere, IInclude, IThenInclude
         return $this;
     }
 
-    public function limit(int $limit): ITake
+    public function limit(int $limit, int $offset = 0): IExecute
     {
-        $this->query .= "LIMIT $limit";
-        return $this;
-    }
+        $this->queryBuilder->limit($limit, $offset);
 
-    public function skip(int $offset): IExecute
-    {
-        $this->query .= "OFFSET $offset";
-        return $this;
-    }
-
-    public function setParameter(string $parameter, $value): IExecute
-    {
-        $this->params[$parameter] = $value;
         return $this;
     }
 
