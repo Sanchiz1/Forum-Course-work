@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\Database\QueryBuilder\SelectQueryBuilder;
+namespace Core\Database\EntityMapper;
 
 interface IOrderBy extends IExecute
 {

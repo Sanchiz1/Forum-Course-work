@@ -6,16 +6,39 @@ namespace Core\Database\QueryBuilder\SelectQueryBuilder;
 use Core\Database\Database;
 use PDO;
 
-class SelectQueryBuilder implements ISelect, IWhere
+class SelectQueryBuilder implements ISelect, IWhere, IJoin, IFrom
 {
-    private string $model;
+    private array $columns = array();
     private string $query;
     private array $params = array();
 
-    public function __construct(string $tableName, string $model)
+    public function __construct()
     {
-        $this->model = $model;
-        $this->query = "SELECT * FROM $tableName ";
+        $this->query = "";
+    }
+
+    public function select(string ...$columns) : IFrom
+    {
+        array_push($this->columns, ...$columns);
+        return $this;
+    }
+
+    public function addSelect(string ...$columns) : IJoin
+    {
+        array_push($this->columns, ...$columns);
+        return $this;
+    }
+
+    public function from(string $table, string $alias = null) : IJoin
+    {
+        $this->query .= "FROM $table $alias ";
+        return $this;
+    }
+
+    public function join(string $type, string $table, string $alias, string $condition) : IJoin
+    {
+        $this->query .= "$type JOIN $table $alias ON $condition ";
+        return $this;
     }
 
     public function where(string $condition): IWhere
@@ -38,19 +61,13 @@ class SelectQueryBuilder implements ISelect, IWhere
 
     public function orderBy(string $column, string $order = 'ASC'): IOrderBy
     {
-        $this->query .= "ORDER BY $column $order";
+        $this->query .= "ORDER BY $column $order ";
         return $this;
     }
 
-    public function limit(int $limit): ILimit
+    public function limit(int $limit, int $offset = 0): IExecute
     {
-        $this->query .= "LIMIT $limit";
-        return $this;
-    }
-
-    public function offset(int $offset): IExecute
-    {
-        $this->query .= "OFFSET $offset";
+        $this->query .= "LIMIT $offset, $limit";
         return $this;
     }
 
@@ -62,13 +79,13 @@ class SelectQueryBuilder implements ISelect, IWhere
 
     public function execute(): array
     {
-        $statement = Database::$db->prepare($this->query);
+        $columns = implode(", ", $this->columns);
+        $statement = Database::$db->prepare("SELECT $columns $this->query");
 
-        foreach ($this->params as $param => $value) {
-            $statement->bindValue(":$param", $value);
-        }
-
-        $statement->execute();
-        return $statement->fetchAll(PDO::FETCH_CLASS, $this->model);
+/*
+        echo json_encode($statement);
+        die();*/
+        $statement->execute($this->params);
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 }
