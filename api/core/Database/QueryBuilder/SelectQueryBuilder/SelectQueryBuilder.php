@@ -9,12 +9,16 @@ use PDO;
 class SelectQueryBuilder implements ISelect, IWhere, IJoin, IFrom
 {
     private array $columns = array();
-    private string $query;
+    private string $from = "";
+    private string $join = "";
+    private string $where = "";
+    private string $orderBy = "";
+    private string $limit = "";
     private array $params = array();
 
     public function __construct()
     {
-        $this->query = "";
+
     }
 
     public function select(string ...$columns) : IFrom
@@ -31,43 +35,43 @@ class SelectQueryBuilder implements ISelect, IWhere, IJoin, IFrom
 
     public function from(string $table, string $alias = null) : IJoin
     {
-        $this->query .= "FROM $table $alias ";
+        $this->from .= "FROM $table $alias ";
         return $this;
     }
 
     public function join(string $type, string $table, string $alias, string $condition) : IJoin
     {
-        $this->query .= "$type JOIN $table $alias ON $condition ";
+        $this->join .= "$type JOIN $table $alias ON $condition ";
         return $this;
     }
 
     public function where(string $condition): IWhere
     {
-        $this->query .= "WHERE $condition ";
+        $this->where .= "WHERE $condition ";
         return $this;
     }
 
     public function and(string $condition): IWhere
     {
-        $this->query .= "AND $condition ";
+        $this->where .= "AND $condition ";
         return $this;
     }
 
     public function or(string $condition): IWhere
     {
-        $this->query .= "OR $condition ";
+        $this->where .= "OR $condition ";
         return $this;
     }
 
     public function orderBy(string $column, string $order = 'ASC'): IOrderBy
     {
-        $this->query .= "ORDER BY $column $order ";
+        $this->orderBy .= "ORDER BY $column $order ";
         return $this;
     }
 
     public function limit(int $limit, int $offset = 0): IExecute
     {
-        $this->query .= "LIMIT $offset, $limit";
+        $this->limit .= "LIMIT $offset, $limit";
         return $this;
     }
 
@@ -80,10 +84,10 @@ class SelectQueryBuilder implements ISelect, IWhere, IJoin, IFrom
     public function execute(): array
     {
         $columns = implode(", ", $this->columns);
-        $statement = Database::$db->prepare("SELECT $columns $this->query");
+        $statement = Database::$db->prepare("SELECT $columns $this->from$this->join$this->where$this->orderBy$this->limit");
 
-/*
-        echo json_encode($statement);
+
+        /*echo json_encode($statement);
         die();*/
         $statement->execute($this->params);
         return $statement->fetchAll(PDO::FETCH_ASSOC);
