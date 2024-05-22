@@ -65,15 +65,9 @@ class SelectQueryBuilder implements ISelect, IWhere, IJoin, IFrom
         return $this;
     }
 
-    public function limit(int $limit): ILimit
+    public function limit(int $limit, int $offset = 0): IExecute
     {
-        $this->query .= "LIMIT $limit";
-        return $this;
-    }
-
-    public function offset(int $offset): IExecute
-    {
-        $this->query .= "OFFSET $offset";
+        $this->query .= "LIMIT $offset, $limit";
         return $this;
     }
 

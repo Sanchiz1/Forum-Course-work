@@ -2,7 +2,7 @@
 
 namespace Core\Database\QueryBuilder\SelectQueryBuilder;
 
-interface IOrderBy extends ILimit
+interface IOrderBy extends IExecute
 {
-    function limit(int $limit): ILimit;
+    function limit(int $limit, int $offset = 0): IExecute;
 }
