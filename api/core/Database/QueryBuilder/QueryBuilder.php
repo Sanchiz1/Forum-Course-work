@@ -6,8 +6,8 @@ use Core\Database\QueryBuilder\DeleteQueryBuilder\DeleteQueryBuilder;
 use Core\Database\QueryBuilder\DeleteQueryBuilder\IDelete;
 use Core\Database\QueryBuilder\InsertQueryBuilder\IInsert;
 use Core\Database\QueryBuilder\InsertQueryBuilder\InsertQueryBuilder;
-use Core\Database\EntityMapper\ISelect;
-use Core\Database\EntityMapper\SelectQueryBuilder;
+use Core\Database\QueryBuilder\SelectQueryBuilder\ISelect;
+use Core\Database\QueryBuilder\SelectQueryBuilder\SelectQueryBuilder;
 use Core\Database\QueryBuilder\UpdateQueryBuilder\IUpdate;
 use Core\Database\QueryBuilder\UpdateQueryBuilder\UpdateQueryBuilder;
 

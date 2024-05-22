@@ -88,13 +88,10 @@ class SelectQueryBuilder implements ISelect, IWhere, IJoin, IFrom
         $columns = implode(", ", $this->columns);
         $statement = Database::$db->prepare("SELECT $columns $this->query");
 
-        foreach ($this->params as $param => $value) {
-            $statement->bindValue(":$param", $value);
-        }
 /*
         echo json_encode($statement);
         die();*/
-        $statement->execute();
+        $statement->execute($this->params);
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 }
