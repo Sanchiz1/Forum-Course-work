@@ -3,19 +3,19 @@
 namespace Core\Controller;
 
 use core\Http\Request;
+use Core\Http\Response;
 
 abstract class Controller
 {
     protected function json($data)
     {
         header('Content-Type: application/json; charset=utf-8');
-        return json_encode($data);
+        return json_encode(new Response($data));
     }
 
     protected function ok($data = null) : void
     {
         http_response_code(200);
-        exit($data);
     }
 
     protected function unathorized($data = null) : void
