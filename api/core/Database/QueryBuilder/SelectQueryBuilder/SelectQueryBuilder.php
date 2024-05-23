@@ -110,13 +110,15 @@ class SelectQueryBuilder implements ISelect, IWhere, IJoin, IFrom, IGroupBy, IHa
 
     public function execute(): array
     {
-        $columns = implode(", ", $this->columns);
-        $statement = Database::$db->prepare("SELECT $columns $this->from$this->join$this->where$this->orderBy$this->limit");
+        $statement = Database::$db->prepare($this->getQuery());
 
-
-        /*echo json_encode($statement);
-        die();*/
         $statement->execute($this->params);
         return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getQuery(): string
+    {
+        $columns = implode(", ", $this->columns);
+        return "SELECT $columns $this->from$this->join$this->where$this->orderBy$this->limit";
     }
 }
