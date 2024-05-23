@@ -7,6 +7,7 @@ use Core\Database\Database;
 use Core\Http\Request;
 use Core\Http\RequestParser;
 use Core\Http\Response;
+use Core\Http\ResponseHandler;
 use Core\Routing\Router;
 
 class Application
@@ -15,6 +16,7 @@ class Application
     public Request $request;
     public Router $router;
     public Database $db;
+    public ResponseHandler $responseHandler;
 
     public function __construct($config)
     {
@@ -22,10 +24,13 @@ class Application
         $this->request = RequestParser::getRequest();
         $this->router = new Router($this->request);
         $this->db = new Database($config['db']);
+        $this->responseHandler = new ResponseHandler();
     }
 
-    public function run()
+    public function run(): void
     {
-        return $this->router->resolve();
+         $response = $this->router->resolve();
+
+        $this->responseHandler->HandleResponse($response);
     }
 }

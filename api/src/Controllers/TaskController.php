@@ -20,9 +20,11 @@ class TaskController extends Controller
         $this->tasks = new DbSet("task", Task::class);
     }
     #[Get("")]
-    public function GetTasks()
+    public function GetTasks() : Response
     {
-        return $this->json($this->tasks->get()->execute());
+        return $this->json(
+            $this->ok($this->tasks->get()->execute())
+        );
     }
 
     #[Get("new?id")]
@@ -35,11 +37,5 @@ class TaskController extends Controller
     public function GetTask(Request $request) : Response
     {
         return new Response($request->getRouteParams());
-    }
-
-    #[Get(":id")]
-    public function GetTask2(Request $request) : Response
-    {
-        return new Response("2");
     }
 }

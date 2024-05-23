@@ -7,29 +7,27 @@ use Core\Http\Response;
 
 abstract class Controller
 {
-    protected function json($data)
+    protected function json(Response $response) : Response
     {
-        header('Content-Type: application/json; charset=utf-8');
-        return json_encode(new Response($data));
+        $response->AddHeader('Content-Type: application/json; charset=utf-8');
+
+        return $response;
     }
 
-    protected function ok($data = null) : void
+    protected function ok($data = null) : Response
     {
-        http_response_code(200);
+        return new Response(200, $data);
     }
 
-    protected function unathorized($data = null) : void
+    protected function unathorized(string $error = "") : Response
     {
-        http_response_code(401);
-        exit($data);
+        return new Response(401, null, $error);
     }
 
-    protected function badRequest($data = null) : void
+    protected function badRequest(string $error = "") : Response
     {
-        http_response_code(400);
-        exit($data);
+        return new Response(400, null, $error);
     }
-
 
     public function getAuthorizationHeader(Request $request): string
     {
