@@ -17,4 +17,9 @@ class Task extends DbModel
     {
         return ['Title', 'UserId'];
     }
+
+    public function selectAttributes(): array
+    {
+        return ['Title', 'UserId'];
+    }
 }

@@ -27,7 +27,7 @@ class EntityMapper implements IWhere, IInclude, IThenInclude
         $this->model = new $model();
 
         $alias = $this->getAlias(EntityMapper::ROOT_PROPERTY_NAME);
-        $columns = array_map(fn($a) => "$alias.$a as $alias" . "_$a", $this->model->columns());
+        $columns = array_map(fn($a) => "$alias.$a as $alias" . "_$a", $this->model->selectColumns());
         $this->queryBuilder->select(...$columns)->from($tableName, $alias);
     }
 
@@ -188,7 +188,7 @@ class EntityMapper implements IWhere, IInclude, IThenInclude
 
     private function setEntityFields(&$entity, $row, string $alias): void
     {
-        foreach ($entity->columns() as $column) {
+        foreach ($entity->selectColumns() as $column) {
             $entity->{$column} = $row[$alias . "_" . $column];
         }
     }
@@ -222,7 +222,7 @@ class EntityMapper implements IWhere, IInclude, IThenInclude
 
         $alias = $this->getAlias($navigationPath);
 
-        $columns = array_map(fn($a) => "$alias.$a as $alias" . "_$a", $this->currentModel->columns());
+        $columns = array_map(fn($a) => "$alias.$a as $alias" . "_$a", $this->currentModel->selectColumns());
 
         $this->queryBuilder->addSelect(...$columns);
     }

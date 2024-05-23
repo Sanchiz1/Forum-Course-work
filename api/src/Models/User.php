@@ -20,6 +20,11 @@ class User extends DbModel
         return ["Email", "DisplayName", "Password"];
     }
 
+    public function selectAttributes(): array
+    {
+        return ["Email", "DisplayName"];
+    }
+
     public static function CreateUser(string $email, string $displayName, string $password): User
     {
         $instance = new self();

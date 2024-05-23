@@ -16,4 +16,9 @@ abstract class DbModel extends \Core\Database\Model
     {
         return array_merge([$this->primaryKey()], $this->attributes());
     }
+
+    public function selectColumns(): array
+    {
+        return array_merge([$this->primaryKey()], $this->selectAttributes());
+    }
 }

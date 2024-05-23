@@ -23,7 +23,7 @@ class TaskController extends Controller
     public function GetTasks() : Response
     {
         return $this->json(
-            $this->ok($this->tasks->get()->execute())
+            $this->ok($this->tasks->get()->includeAndSelect("User", "user")->execute())
         );
     }
 
