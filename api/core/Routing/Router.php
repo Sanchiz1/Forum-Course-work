@@ -4,6 +4,7 @@ namespace Core\Routing;
 
 use Core\Application;
 use Core\Controller\ControllerFinder;
+use Core\Controller\NotFoundController;
 use Core\Http\Request;
 use Core\Http\Response;
 
@@ -26,17 +27,16 @@ class Router
         return $this->routeMap[$method] ?? [];
     }
 
-    public function resolve()
+    public function resolve() : Response
     {
-        //return new Response($this->getRouteMap("GET"));
         $method = $this->request->getMethod();
         $url = $this->request->getUri();
 
         $callback = $this->getCallback();
 
         if ($callback == null) {
-            http_response_code(404);
-            return new Response('Not found');
+            $controller = new NotFoundController();
+            return $controller->NotFound();
         }
 
         if (is_array($callback)) {
@@ -71,12 +71,12 @@ class Router
 
         $pattern = "@^" . preg_replace('/(\\\{([^}]+)}|\\\:[a-zA-Z0-9\_\-]+)/', '([a-zA-Z0-9\-\_]+)', preg_quote($route)) . "$@D";
 
-        if(preg_match($pattern, $url, $matches)) {
+        if (preg_match($pattern, $url, $matches)) {
 
             array_shift($matches);
             return true;
         }
 
-        return  false;
+        return false;
     }
 }
