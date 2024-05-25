@@ -7,5 +7,8 @@ interface IExecute
     function setParameter(string $parameter, $value, $type): IExecute;
 
     function execute(): bool;
-    function fetchAll(): array;
+
+    function fetchAll(string $dbModel): array;
+
+    function fetchFirst(string $dbModel);
 }
