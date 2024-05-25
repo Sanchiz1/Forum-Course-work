@@ -18,11 +18,6 @@ class SelectQueryBuilder implements ISelect, IWhere, IJoin, IFrom, IGroupBy, IHa
     private string $limit = "";
     private array $params = array();
 
-    public function __construct()
-    {
-
-    }
-
     public function select(string ...$columns): IFrom
     {
         array_push($this->columns, ...$columns);
@@ -67,8 +62,8 @@ class SelectQueryBuilder implements ISelect, IWhere, IJoin, IFrom, IGroupBy, IHa
 
     public function groupBy(string ...$columns): IGroupBy
     {
-        $columns = implode(", ", $this->columns);
-        $this->groupBy = "GROUP BY $columns ";
+        $groupByColumns = implode(", ", $columns);
+        $this->groupBy = "GROUP BY $groupByColumns ";
         return $this;
     }
 
@@ -119,6 +114,6 @@ class SelectQueryBuilder implements ISelect, IWhere, IJoin, IFrom, IGroupBy, IHa
     public function getQuery(): string
     {
         $columns = implode(", ", $this->columns);
-        return "SELECT $columns $this->from$this->join$this->where$this->orderBy$this->limit";
+        return "SELECT $columns $this->from$this->join$this->where$this->groupBy$this->having$this->orderBy$this->limit";
     }
 }

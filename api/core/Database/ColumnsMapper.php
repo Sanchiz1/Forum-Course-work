@@ -4,7 +4,7 @@ namespace Core\Database;
 
 class ColumnsMapper
 {
-    public function MapColumns(array $data, string $modelClass) : array
+    public static function MapColumns(array $data, string $modelClass) : array
     {
         $models = [];
         foreach ($data as $row) {

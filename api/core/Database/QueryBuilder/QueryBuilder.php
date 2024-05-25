@@ -2,6 +2,8 @@
 
 namespace Core\Database\QueryBuilder;
 
+use Core\Database\QueryBuilder\CustomQueryBuilder\CustomQueryBuilder;
+use Core\Database\QueryBuilder\CustomQueryBuilder\IExecute;
 use Core\Database\QueryBuilder\DeleteQueryBuilder\DeleteQueryBuilder;
 use Core\Database\QueryBuilder\DeleteQueryBuilder\IDelete;
 use Core\Database\QueryBuilder\InsertQueryBuilder\IInsert;
@@ -31,5 +33,10 @@ class QueryBuilder
     public function delete(string $tableName) : IDelete
     {
         return new DeleteQueryBuilder($tableName);
+    }
+
+    public function custom(string $query) : IExecute
+    {
+        return new CustomQueryBuilder($query);
     }
 }
