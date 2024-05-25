@@ -16,9 +16,9 @@ class CustomQueryBuilder implements IExecute
         $this->query = $query;
     }
 
-    public function setParameter(string $parameter, $value): IExecute
+    public function setParameter(string $parameter, $value, $type): IExecute
     {
-        $this->params[$parameter] = $value;
+        $this->params[$parameter] = [$value, $type];
         return $this;
     }
 
@@ -33,7 +33,13 @@ class CustomQueryBuilder implements IExecute
     {
         $statement = Database::$db->prepare($this->query);
 
-        $statement->execute($this->params);
+        foreach ($this->params as $param => $value) {
+            $statement->bindValue(":$param", $value[0], $value[1]);
+        }/*
+        echo $statement->queryString;
+        die();*/
+        $statement->execute();
+
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 }
