@@ -9,6 +9,6 @@ class Options extends MethodRoute
 {
     public function __construct(string $routePath)
     {
-        parent::__construct($routePath, 'OPTIONS');
+        parent::__construct($routePath, 'options');
     }
 }

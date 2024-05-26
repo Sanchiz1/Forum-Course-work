@@ -9,6 +9,6 @@ class Put extends MethodRoute
 {
     public function __construct(string $routePath)
     {
-        parent::__construct($routePath, 'PUT');
+        parent::__construct($routePath, 'put');
     }
 }

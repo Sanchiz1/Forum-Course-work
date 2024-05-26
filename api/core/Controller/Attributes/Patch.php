@@ -9,6 +9,6 @@ class Patch extends MethodRoute
 {
     public function __construct(string $routePath)
     {
-        parent::__construct($routePath, 'PATCH');
+        parent::__construct($routePath, 'patch');
     }
 }

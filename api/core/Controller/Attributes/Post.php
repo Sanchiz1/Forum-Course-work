@@ -9,6 +9,6 @@ class Post extends MethodRoute
 {
     public function __construct(string $routePath)
     {
-        parent::__construct($routePath, 'POST');
+        parent::__construct($routePath, 'post');
     }
 }
