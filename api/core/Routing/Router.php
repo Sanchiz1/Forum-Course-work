@@ -3,6 +3,7 @@
 namespace Core\Routing;
 
 use Core\Application;
+use Core\Auth\AuthService;
 use Core\Controller\ControllerFinder;
 use Core\Controller\NotFoundController;
 use Core\Http\Request;
@@ -10,6 +11,7 @@ use Core\Http\Response;
 
 class Router
 {
+    private AuthService $authService;
     private Request $request;
     protected array $routeMap = [];
 
@@ -20,6 +22,8 @@ class Router
         $controllers = ControllerFinder::getControllerClasses();
 
         $this->routeMap = RouteParser::GetRoutes($controllers);
+
+        $this->authService = new AuthService();
     }
 
     public function getRouteMap($method): array
@@ -29,9 +33,6 @@ class Router
 
     public function resolve() : Response
     {
-        $method = $this->request->getMethod();
-        $url = $this->request->getUri();
-
         $callback = $this->getCallback();
 
         if ($callback == null) {
@@ -45,12 +46,14 @@ class Router
             $callback[0] = $controller;
         }
 
+        $this->authService->CheckCallback($callback, $this->request);
+
         return call_user_func($callback, $this->request);
     }
 
     public function getCallback()
     {
-        $url = parse_url($this->request->getUri(), PHP_URL_PATH);
+        $url = $this->request->getUri();
 
         $routes = $this->getRouteMap($this->request->getMethod());
 
@@ -72,7 +75,6 @@ class Router
         $pattern = "@^" . preg_replace('/(\\\{([^}]+)}|\\\:[a-zA-Z0-9\_\-]+)/', '([a-zA-Z0-9\-\_]+)', preg_quote($route)) . "$@D";
 
         if (preg_match($pattern, $url, $matches)) {
-
             array_shift($matches);
             return true;
         }
