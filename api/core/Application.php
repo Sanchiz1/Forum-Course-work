@@ -2,6 +2,9 @@
 
 namespace Core;
 
+use Core\Auth\IAuthManager;
+use Core\Auth\Jwt\IJwtManager;
+use Core\Auth\Jwt\JwtAuthManager;
 use Core\Controller\Controller;
 use Core\Database\Database;
 use Core\Http\Request;
@@ -16,6 +19,7 @@ class Application
     public Request $request;
     public Router $router;
     public Database $db;
+    public ?IAuthManager $authManager = null;
     public ResponseHandler $responseHandler;
 
     public function __construct($config)
@@ -27,10 +31,22 @@ class Application
         $this->responseHandler = new ResponseHandler();
     }
 
+    public function addJwtAuth(IJwtManager $jwtManager): void
+    {
+        $this->authManager = new JwtAuthManager($jwtManager);
+    }
+
+    public function exit(Response $response): void
+    {
+        $this->responseHandler->HandleResponse($response);
+    }
+
     public function run(): void
     {
-         $response = $this->router->resolve();
+        $this->authManager?->authorize($this->request);
 
-        $this->responseHandler->HandleResponse($response);
+        $response = $this->router->resolve();
+
+        $this->exit($response);
     }
 }

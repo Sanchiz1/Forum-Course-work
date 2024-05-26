@@ -2,6 +2,7 @@
 
 namespace Core\Controller;
 
+use Core\Application;
 use core\Http\Request;
 use Core\Http\Response;
 
@@ -29,14 +30,13 @@ abstract class Controller
         return new Response(400, null, $error);
     }
 
-    public function getAuthorizationHeader(Request $request): string
+    public function User(): array
     {
-        $auth = $request->getHeaders()["Authorization"];
+        return Application::$app->authManager?->getUserClaims();
+    }
 
-        if ($auth == null) {
-            $this->Unathorized();
-        }
-
-        return substr($auth, 7);
+    public function UserClaim(string $name, $default = null): mixed
+    {
+        return Application::$app->authManager?->getUserClaim($name, $default);
     }
 }
