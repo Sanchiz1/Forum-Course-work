@@ -133,7 +133,7 @@ export default function Search() {
                             <>
                                 {
                                     posts?.map((post, index) =>
-                                        <PostElement post={post} key={index} customClickEvent={(event: React.MouseEvent<HTMLDivElement>) => navigator('/post/' + post.id, { state: state })}></PostElement>
+                                        <PostElement post={post} key={index} customClickEvent={(event: React.MouseEvent<HTMLDivElement>) => navigator('/post/' + post.Id, { state: state })}></PostElement>
                                     )
                                 }
                             </>

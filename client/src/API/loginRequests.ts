@@ -62,7 +62,7 @@ export const Logout = () => {
 
 export type response<T = any> = {
   data: T,
-  errors?: any
+  error?: string
 }
 
 export function GetAjaxObservable<T>(requestUrl: string, method: string, needsAuth: boolean, withCredentials = false, body = null) {
@@ -72,15 +72,14 @@ export function GetAjaxObservable<T>(requestUrl: string, method: string, needsAu
   }
 
   if (needsAuth || isSigned()) {
-    let token: TokenType = {} as TokenType;
 
     let tokenString = getCookie("access_token")!;
 
     if (tokenString === null) return throwError(() => new Error("Invalid token"));
 
-    token = JSON.parse(tokenString);
+    let token = JSON.parse(tokenString);
 
-    headers = { ...headers, ...{ 'Authorization': 'Bearer ' + token.value } };
+    headers = { ...headers, ...{ 'Authorization': 'Bearer ' + token } };
   }
 
   return ajax<response<T>>({

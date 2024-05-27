@@ -13,10 +13,12 @@ class Post extends DbModel
     public string $DateCreated;
     public string $DateEdited;
     public int $Likes;
+    public int $Comments;
     public int $UserId;
+    public string $UserUsername;
 
     public function attributes(): array
     {
-        return ["Title", "Text", "DateCreated", "DateEdited", "Likes", "UserId"];
+        return ["Title", "Text", "DateCreated", "DateEdited", "Likes", "Comments", "UserId", "UserUsername"];
     }
 }

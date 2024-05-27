@@ -2,19 +2,12 @@ import { catchError, map } from "rxjs";
 import { Post, PostInput } from "../Types/Post";
 import { GetAjaxObservable } from "./loginRequests";
 
-const url = "http://localhost:8000";
-
-interface GraphqlPosts {
-    posts: Post[]
-}
-
 export function requestPosts(offset: Number, next: Number, order: String, user_timestamp: Date, categories?: number[]) {
-    return GetAjaxObservable<GraphqlPosts>("/posts", "GET", false, true).pipe(
+    return GetAjaxObservable<Post[]>(`/posts?take=${next}&skip=${offset}&orderBy=${order}`, "GET", false, true).pipe(
         map((value) => {
             return value.response.data;
         }),
         catchError((error) => {
-            console.log(error)
             throw error
         })
     );

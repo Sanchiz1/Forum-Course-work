@@ -440,7 +440,7 @@ export default function UserPage() {
                           <PostElement
                             post={post}
                             key={index}
-                            customClickEvent={(event: React.MouseEvent<HTMLDivElement>) => navigator('/post/' + post.id, { state: state })}
+                            customClickEvent={(event: React.MouseEvent<HTMLDivElement>) => navigator('/post/' + post.Id, { state: state })}
                             sx={{ mb: 1 }}
                           ></PostElement>
                         )

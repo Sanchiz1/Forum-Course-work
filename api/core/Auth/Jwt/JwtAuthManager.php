@@ -24,7 +24,7 @@ class JwtAuthManager implements IAuthManager
 
     function authorize(Request $request): void
     {
-        $auth = $request->getHeaders()["Authorization"];
+        $auth = $request->getHeaders()["authorization"];
 
         if($auth == null){
             return;

@@ -363,7 +363,7 @@ export default function PostPage() {
                                                         <Typography variant="caption" color="text.disabled" component="p" sx={{ fontSize: '16px', display: 'flex', alignItems: 'center' }}>
                                                             <IconButtonWithCheck sx={{ p: 0.5, color: 'inherit' }} ActionWithCheck={() => {
                                                                 setLikes(liked ? likes - 1 : likes + 1); SetLiked(!liked)
-                                                                likePostRequest(post.id).subscribe({
+                                                                likePostRequest(post.Id).subscribe({
                                                                     next(value) {
 
                                                                     },

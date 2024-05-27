@@ -19,7 +19,7 @@ export default function Main() {
   const next = 4;
   const [userTimestamp, setUserTimestamp] = useState(new Date());
   const [offset, setOffset] = useState(0);
-  const [order, setOrder] = useState("Date_Created");
+  const [order, setOrder] = useState("DateCreated");
   const [categories, setCategories] = useState<number[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [hasMore, setHasMore] = useState(true);
@@ -107,7 +107,7 @@ export default function Main() {
                     input={<BootstrapInput sx={{ height: 1, display: 'flex' }} />}
                   >
                     <MenuItem value={"Likes"}>Top</MenuItem>
-                    <MenuItem value={"Date_Created"}>New</MenuItem>
+                    <MenuItem value={"DateCreated"}>New</MenuItem>
                   </Select>
                 </Typography>
                 <CategoriesFilter Categories={categories} SetCategories={setCategories}></CategoriesFilter>

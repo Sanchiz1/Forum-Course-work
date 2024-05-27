@@ -12,7 +12,7 @@ class ResponseHandler
             header($header);
         }
 
-        if($response->data != null){
+        if($response->data !== null){
             echo json_encode(['data' => $response->data]);
         }
         else if($response->error != ""){
