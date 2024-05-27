@@ -1,9 +1,6 @@
-import { ajax } from "rxjs/internal/ajax/ajax";
 import { catchError, map } from "rxjs";
 import { Reply, ReplyInput } from "../Types/Reply";
 import { GetAjaxObservable } from "./loginRequests";
-
-const url = "https://localhost:7295/graphql";
 
 interface GraphqlReplies {
     replies: {

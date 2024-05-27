@@ -1,19 +1,10 @@
-import React, { useState } from 'react'
+import { Link, Paper } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { SxProps, Theme } from "@mui/material/styles";
-import Divider from '@mui/material/Divider';
+import React from 'react';
+import { useDispatch } from 'react-redux';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { Paper, Link, Stack, IconButton, Button } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
-import { Post } from '../../Types/Post';
-import { GetLocalDate, timeSince } from '../../Helpers/TimeHelper';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
-import IconButtonWithCheck from '../UtilComponents/IconButtonWithCheck';
-import { likePostRequest } from '../../API/postRequests';
-import { setGlobalError } from '../../Redux/Reducers/AccountReducer';
 import { User } from '../../Types/User';
 
 interface Props {

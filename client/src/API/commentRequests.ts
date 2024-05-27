@@ -1,9 +1,6 @@
-import { ajax } from "rxjs/internal/ajax/ajax";
-import { catchError, delay, map } from "rxjs";
+import { catchError, map } from "rxjs";
 import { Comment, CommentInput } from "../Types/Comment";
 import { GetAjaxObservable } from "./loginRequests";
-
-const url = "https://localhost:7295/graphql";
 
 interface GraphqlComments {
     comments: {

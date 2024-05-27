@@ -1,13 +1,7 @@
-import { ajax } from "rxjs/internal/ajax/ajax";
-import { catchError, delay, map, mergeMap, Observable, of, timer } from "rxjs";
-import { redirect } from "react-router-dom";
-import { GetAjaxObservable, TokenType } from "./loginRequests";
-import { getCookie } from "../Helpers/CookieHelper";
-import { User, UserInput } from "../Types/User";
-import { Post, PostInput } from "../Types/Post";
+import { catchError, map } from "rxjs";
 import { Category } from "../Types/Category";
-
-const url = "https://localhost:7295/graphql";
+import { Post } from "../Types/Post";
+import { GetAjaxObservable } from "./loginRequests";
 
 interface GraphqlCategories {
     categories: {

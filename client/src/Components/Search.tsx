@@ -1,26 +1,21 @@
+import { Box, Chip, Container, CssBaseline, Paper, Skeleton } from '@mui/material';
+import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import { Box, Button, ButtonGroup, Chip, Container, CssBaseline, MenuItem, Paper, Select, Skeleton } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
-import { getUserAccount } from '../Redux/Epics/AccountEpics';
-import { RootState } from '../Redux/store';
-import ButtonWithCheck from './UtilComponents/ButtonWithCheck';
-import { isSigned } from '../API/loginRequests';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { setGlobalError, setLogInError } from '../Redux/Reducers/AccountReducer';
 import { useEffect, useRef, useState } from 'react';
-import { requestPosts, requestSearchedPosts } from '../API/postRequests';
-import { Post } from '../Types/Post';
-import PostElement from './Posts/PostElement';
-import { User } from '../Types/User';
-import { BootstrapInput } from './UtilComponents/BootstrapInput';
-import CategoriesFilter from './Categories/CategoryFilter';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { requestSearchedPosts } from '../API/postRequests';
 import { requestUsers } from '../API/userRequests';
+import { setGlobalError } from '../Redux/Reducers/AccountReducer';
+import { RootState } from '../Redux/store';
+import { Post } from '../Types/Post';
+import { User } from '../Types/User';
+import PostElement from './Posts/PostElement';
 import UserElement from './User/UserElement';
 
 export default function Search() {
-    const { search } = useParams()
+    const { search } = useParams();
     const next = 4;
     const [searchTitle, setSearchTitle] = useState("Posts");
     const [userTimestamp, setUserTimestamp] = useState(new Date());
@@ -29,13 +24,9 @@ export default function Search() {
     const [users, setUsers] = useState<User[]>([]);
     const [hasMore, setHasMore] = useState(true);
 
-    const elementRef = useRef(null);
-
     const dispatch = useDispatch();
-    const navigator = useNavigate()
-    const { state } = useLocation()
-
-    const Account: User = useSelector((state: RootState) => state.account.Account);
+    const navigator = useNavigate();
+    const { state } = useLocation();
 
     useEffect(() => {
         setHasMore(true);

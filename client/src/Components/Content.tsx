@@ -1,22 +1,22 @@
-import { createBrowserRouter, RouterProvider, Outlet, redirect, useLocation, useNavigate } from 'react-router-dom';
-import SignIn from './Sign/Sign-in';
-import Main from './Main';
-import Header from './Navbar';
-import UserPage from './User/UserPage';
-import SignUp from './Sign/Sign-up';
-import { isSigned } from '../API/loginRequests';
-import CreatePost from './Posts/CreatePost';
-import { useDispatch, useSelector } from 'react-redux';
-import { setGlobalError, setLogInError, setPermissionError } from '../Redux/Reducers/AccountReducer';
-import PostPage from './Posts/PostPage';
-import { Alert, Collapse, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { Alert, Collapse, IconButton } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { RouterProvider, createBrowserRouter, redirect } from 'react-router-dom';
+import { isSigned } from '../API/loginRequests';
+import { requestAccount } from '../API/userRequests';
+import { setGlobalError, setLogInError, setPermissionError } from '../Redux/Reducers/AccountReducer';
 import { RootState } from '../Redux/store';
 import AdminPage from './Admin/AdminPage';
-import { requestAccount } from '../API/userRequests';
 import CategoriesPage from './Categories/CategoriesPage';
+import Main from './Main';
+import Header from './Navbar';
+import CreatePost from './Posts/CreatePost';
+import PostPage from './Posts/PostPage';
 import Search from './Search';
+import SignIn from './Sign/Sign-in';
+import SignUp from './Sign/Sign-up';
 import Settings from './User/Settings';
+import UserPage from './User/UserPage';
 
 const router = (SignInErrorAction: () => void, PermissionErrorAction: () => void) => createBrowserRouter([
     {

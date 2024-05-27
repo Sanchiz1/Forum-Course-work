@@ -1,32 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import Toolbar from '@mui/material/Toolbar';
-import { Outlet, useLocation, useNavigate, Link as RouterLink, ScrollRestoration } from 'react-router-dom';
-import { LogoutRequest, isSigned } from '../API/loginRequests';
+import LogoutIcon from '@mui/icons-material/Logout';
+import SearchIcon from '@mui/icons-material/Search';
+import Settings from '@mui/icons-material/Settings';
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
+import { AppBar, Backdrop, InputAdornment, TextField } from '@mui/material';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Divider from '@mui/material/Divider';
+import Link from '@mui/material/Link';
+import ListItemIcon from '@mui/material/ListItemIcon';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import Box from '@mui/material/Box';
-import Avatar from '@mui/material/Avatar';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
+import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import Settings from '@mui/icons-material/Settings';
-import Logout from '@mui/icons-material/Logout';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { AppBar, FormControl } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../Redux/store';
-import { Backdrop, CircularProgress, TextField, InputAdornment } from '@mui/material';
-import { getAccount, setLogInError, setPermissionError } from '../Redux/Reducers/AccountReducer';
-import Card from '@mui/material/Card';
-import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
-import CardContent from '@mui/material/CardContent';
-import Link from '@mui/material/Link';
-import { getUserAccount } from '../Redux/Epics/AccountEpics';
+import { Outlet, Link as RouterLink, ScrollRestoration, useLocation, useNavigate } from 'react-router-dom';
+import { Logout, isSigned } from '../API/loginRequests';
 import { setCookie } from '../Helpers/CookieHelper';
+import { getUserAccount } from '../Redux/Epics/AccountEpics';
+import { getAccount, setLogInError, setPermissionError } from '../Redux/Reducers/AccountReducer';
+import { RootState } from '../Redux/store';
 import { User } from '../Types/User';
-import SearchIcon from '@mui/icons-material/Search';
 
 export default function Header() {
   const dispatch = useDispatch();
@@ -236,9 +233,10 @@ export default function Header() {
               </ListItemIcon>
               Settings
             </MenuItem>
-            <MenuItem onClick={() => { LogoutRequest().subscribe(() => { dispatch(getAccount({} as User)); navigator(location) }); handleClose() }}>
+            <MenuItem onClick={() => { Logout();
+                dispatch(getAccount({} as User)); navigator(location); handleClose() }}>
               <ListItemIcon>
-                <Logout fontSize="small" />
+                <LogoutIcon fontSize="small" />
               </ListItemIcon>
               Logout
             </MenuItem>

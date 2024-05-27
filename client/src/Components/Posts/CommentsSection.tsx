@@ -1,21 +1,19 @@
-import { useState, useEffect } from 'react';
-import Paper from '@mui/material/Paper';
+import { MenuItem, Select } from '@mui/material';
 import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import { enqueueSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { RootState } from '../../Redux/store';
-import {
-    Select, 
-    MenuItem} from '@mui/material';
-import { Post } from '../../Types/Post';
-import { enqueueSnackbar } from 'notistack';
 import { createCommentRequest, requestComments } from '../../API/commentRequests';
+import { setGlobalError } from '../../Redux/Reducers/AccountReducer';
+import { RootState } from '../../Redux/store';
 import { Comment, CommentInput } from '../../Types/Comment';
+import { Post } from '../../Types/Post';
+import { User } from '../../Types/User';
 import CommentElement from '../Comments/CommentElement';
 import { BootstrapInput } from '../UtilComponents/BootstrapInput';
-import { setGlobalError } from '../../Redux/Reducers/AccountReducer';
-import { User } from '../../Types/User';
 import CommentInputElement from '../UtilComponents/CommentInputElement';
 
 interface CommentsSectionProps {
@@ -38,11 +36,7 @@ export default function CommentsSection(Props: CommentsSectionProps) {
 
 
     let { PostId } = useParams();
-    const { state } = useLocation();
     const dispatch = useDispatch();
-    const navigator = useNavigate();
-
-    const Account: User = useSelector((state: RootState) => state.account.Account);
 
 
     const refetchComments = () => {

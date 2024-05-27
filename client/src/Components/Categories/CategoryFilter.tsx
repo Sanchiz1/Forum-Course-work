@@ -1,39 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import {
-    Box, Button, Container, CssBaseline, Paper, Link, IconButton,
-    Dialog, DialogTitle, DialogActions, MenuItem, Tooltip, TextField,
-    FormControl, InputLabel, Select, OutlinedInput, Chip, SelectChangeEvent, Menu, List, ListItem, ListItemButton, ListItemText, Checkbox
-} from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { StyledMenu } from '../UtilComponents/StyledMenu';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
-import { GetLocalDate, timeSince } from '../../Helpers/TimeHelper';
-import { Reply, ReplyInput } from '../../Types/Reply';
-import { Comment } from '../../Types/Comment';
-import { createReplyRequest, requestReplies } from '../../API/replyRequests';
-import ButtonWithCheck from '../UtilComponents/ButtonWithCheck';
-import { isSigned } from '../../API/loginRequests';
-import CommentInputElement from '../UtilComponents/CommentInputElement';
-import { enqueueSnackbar } from 'notistack';
-import ReplyInputElement from '../UtilComponents/ReplyInputElement';
-import { useDispatch, useSelector } from 'react-redux';
-import { setGlobalError } from '../../Redux/Reducers/AccountReducer';
-import { RootState } from '../../Redux/store';
-import { deleteCommentRequest, likeCommentRequest, requestCommentById, updateCommentRequest } from '../../API/commentRequests';
-import IconButtonWithCheck from '../UtilComponents/IconButtonWithCheck';
-import { Category } from '../../Types/Category';
-import { createCategoryRequest, requestAllCategories, requestCategories } from '../../API/categoryRequests';
-import CategoryElement from './CategoryElement';
-import AddIcon from '@mui/icons-material/Add';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import { Checkbox, Chip, List, ListItemButton, Menu } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { requestAllCategories } from '../../API/categoryRequests';
+import { setGlobalError } from '../../Redux/Reducers/AccountReducer';
+import { Category } from '../../Types/Category';
 
 interface Props {
     Categories: number[]
@@ -41,12 +12,9 @@ interface Props {
 }
 
 export default function CategoriesFilter(props: Props) {
-    const [categories, setCategories] = useState<Category[]>([])
-    const navigate = useNavigate();
+    const [categories, setCategories] = useState<Category[]>([]);
     const dispatch = useDispatch();
-    const Account = useSelector((state: RootState) => state.account.Account);
-
-
+    
     // menu 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -66,7 +34,11 @@ export default function CategoriesFilter(props: Props) {
         }
     }
 
-    const fetchCategories = () => {
+    useEffect(() => {
+        if (!open) {
+            setCategories([]);
+            return;
+        }
         requestAllCategories().subscribe({
             next(value) {
                 setCategories(value);
@@ -74,15 +46,7 @@ export default function CategoriesFilter(props: Props) {
             error(err) {
                 dispatch(setGlobalError(err.message));
             },
-        })
-    };
-
-    useEffect(() => {
-        if (!open) {
-            setCategories([]);
-            return;
-        }
-        fetchCategories()
+        });
     }, [open])
 
     return (

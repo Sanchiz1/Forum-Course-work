@@ -1,38 +1,12 @@
-import { useState, useEffect, useRef } from 'react';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import {
-    Box, Button, Container, CssBaseline, Paper, Link, IconButton,
-    Dialog, DialogTitle, DialogActions, MenuItem, Tooltip, TextField,
-    FormControl, InputLabel, Select, OutlinedInput, Chip, SelectChangeEvent, Menu, List, ListItem, ListItemButton, ListItemText
-} from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { StyledMenu } from '../UtilComponents/StyledMenu';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
-import { GetLocalDate, timeSince } from '../../Helpers/TimeHelper';
-import { Reply, ReplyInput } from '../../Types/Reply';
-import { Comment } from '../../Types/Comment';
-import { createReplyRequest, requestReplies } from '../../API/replyRequests';
-import ButtonWithCheck from '../UtilComponents/ButtonWithCheck';
-import { isSigned } from '../../API/loginRequests';
-import CommentInputElement from '../UtilComponents/CommentInputElement';
-import { enqueueSnackbar } from 'notistack';
-import ReplyInputElement from '../UtilComponents/ReplyInputElement';
+import AddIcon from '@mui/icons-material/Add';
+import { Chip, List, ListItemButton, Menu } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { requestAllCategories } from '../../API/categoryRequests';
 import { setGlobalError } from '../../Redux/Reducers/AccountReducer';
 import { RootState } from '../../Redux/store';
-import { deleteCommentRequest, likeCommentRequest, requestCommentById, updateCommentRequest } from '../../API/commentRequests';
-import IconButtonWithCheck from '../UtilComponents/IconButtonWithCheck';
 import { Category } from '../../Types/Category';
-import { createCategoryRequest, requestAllCategories, requestCategories } from '../../API/categoryRequests';
-import CategoryElement from './CategoryElement';
-import AddIcon from '@mui/icons-material/Add';
 
 interface Props{
     AddCategory: (category_id: number) => void,
@@ -40,12 +14,8 @@ interface Props{
 }
 
 export default function CategoriesSelect(props: Props) {
-    const ref = useRef(null)
-    const [seacrh, setSearch] = useState<string>('');
-    const [categories, setCategories] = useState<Category[]>([])
-    const navigate = useNavigate();
+    const [categories, setCategories] = useState<Category[]>([]);
     const dispatch = useDispatch();
-    const Account = useSelector((state: RootState) => state.account.Account);
 
 
     // menu 

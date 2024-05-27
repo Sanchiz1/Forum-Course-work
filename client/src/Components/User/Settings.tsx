@@ -1,30 +1,20 @@
-import { useState, useEffect } from 'react';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import Button from '@mui/material/Button';
-import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { RootState } from '../../Redux/store';
 import CloseIcon from '@mui/icons-material/Close';
-import { Container, CssBaseline, LinearProgress, Dialog, DialogTitle, DialogActions, TextField, Collapse, Alert, IconButton } from '@mui/material';
-import { DeleteUserRequest, changeUserPasswordRequest } from '../../API/userRequests';
-import { LogoutRequest } from '../../API/loginRequests';
-import { getAccount } from '../../Redux/Reducers/AccountReducer';
-import { User } from '../../Types/User';
+import { Alert, Collapse, Container, CssBaseline, Dialog, DialogActions, DialogTitle, IconButton, LinearProgress, TextField } from '@mui/material';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Divider from '@mui/material/Divider';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 import { enqueueSnackbar } from 'notistack';
-
-const validUsernamePattern = /^[a-zA-Z0-9_.]+$/;
-const validEmailPattern = /^(?=.{0,64}$)[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-
-const roles = {
-    0: "User",
-    1: "Admin",
-    2: "Moderator",
-};
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { Logout } from '../../API/loginRequests';
+import { DeleteUserRequest, changeUserPasswordRequest } from '../../API/userRequests';
+import { getAccount } from '../../Redux/Reducers/AccountReducer';
+import { RootState } from '../../Redux/store';
+import { User } from '../../Types/User';
 
 export default function Settings() {
     const [openChangePassword, setOpenChangePassword] = useState(false);
@@ -32,7 +22,6 @@ export default function Settings() {
     const [error, setError] = useState<String>('');
     const dispatch = useDispatch();
     const navigator = useNavigate();
-    const { state } = useLocation()
 
     const Account = useSelector((state: RootState) => state.account.Account);
 
@@ -82,7 +71,8 @@ export default function Settings() {
         }
         DeleteUserRequest(Account.id, password).subscribe({
             next() {
-                LogoutRequest().subscribe(() => { dispatch(getAccount({} as User)); navigator('/') });
+                Logout();
+                dispatch(getAccount({} as User)); navigator('/');
             },
             error(err) {
                 setError(err.message);

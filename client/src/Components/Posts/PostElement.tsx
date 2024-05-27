@@ -1,19 +1,19 @@
-import React, { useState } from 'react'
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { IconButton, Link, Paper, Stack } from '@mui/material';
+import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { SxProps, Theme } from "@mui/material/styles";
-import Divider from '@mui/material/Divider';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { Paper, Link, Stack, IconButton, Button } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
-import { Post } from '../../Types/Post';
-import { GetLocalDate, timeSince } from '../../Helpers/TimeHelper';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
-import IconButtonWithCheck from '../UtilComponents/IconButtonWithCheck';
 import { likePostRequest } from '../../API/postRequests';
+import { GetLocalDate, timeSince } from '../../Helpers/TimeHelper';
 import { setGlobalError } from '../../Redux/Reducers/AccountReducer';
+import { Post } from '../../Types/Post';
+import IconButtonWithCheck from '../UtilComponents/IconButtonWithCheck';
 
 interface Props {
   post: Post;
@@ -22,9 +22,8 @@ interface Props {
 }
 
 export default function PostElement(props: Props) {
-  const [liked, SetLiked] = useState(props.post.liked);
-  const [likes, setLikes] = useState(props.post.likes.valueOf());
-  const navigate = useNavigate();
+  const [liked, SetLiked] = useState(props.post.Liked);
+  const [likes, setLikes] = useState(props.post.Likes);
   const dispatch = useDispatch();
 
   return (
@@ -41,24 +40,24 @@ export default function PostElement(props: Props) {
           flexDirection: 'row',
           alignItems: 'center'
         }}>
-          <Link variant="caption" onClick={(e) => e.stopPropagation()} component={RouterLink} to={'/user/' + props.post.user_Username} color="primary" sx={{
+          <Link variant="caption" onClick={(e) => e.stopPropagation()} component={RouterLink} to={'/user/' + props.post.UserUsername} color="primary" sx={{
             mr: 0.5, textDecoration: 'none', cursor: 'pointer', color: 'white',
             ":hover": {
               textDecoration: 'underline'
             }
           }
           } >
-            {props.post.user_Username}
+            {props.post.UserUsername}
           </Link>
           <Typography variant="caption" color="text.disabled" component="p" sx={{ mr: 0.5, fontFamily:'cursive' }}>
             ·
           </Typography>
           <Typography variant="caption" color="text.disabled" component="p">
-            {timeSince(GetLocalDate(new Date(props.post.date_Created)))}
+            {timeSince(GetLocalDate(new Date(props.post.DateCreated)))}
           </Typography>
         </Grid>
         <Typography variant="subtitle1" component="p">
-          {props.post.title}
+          {props.post.Title}
         </Typography>
         <Divider sx={{ mb: 1 }} />
         <Typography variant="subtitle1" component="p" sx={{
@@ -77,7 +76,7 @@ export default function PostElement(props: Props) {
             background: 'linear-gradient(transparent 70px, #1E1E1E)'
           }
         }}>
-          {props.post.text}
+          {props.post.Text}
         </Typography>
         <Stack
           direction="row"
@@ -87,7 +86,7 @@ export default function PostElement(props: Props) {
             <Typography variant="caption" color="text.disabled" component="p" sx={{ fontSize: '16px', display: 'flex', alignItems: 'center' }}>
               <IconButtonWithCheck sx={{ p: 0.5, color: 'inherit' }} ActionWithCheck={() => {
                 setLikes(liked ? likes - 1 : likes + 1); SetLiked(!liked)
-                likePostRequest(props.post.id).subscribe({
+                likePostRequest(props.post.Id).subscribe({
                   next(value) {
 
                   },
@@ -107,7 +106,7 @@ export default function PostElement(props: Props) {
               <IconButton sx={{ p: 0.5, color: 'inherit' }}>
                 <ChatBubbleOutlineIcon></ChatBubbleOutlineIcon>
               </IconButton>
-              {props.post.comments.toString()}
+              {props.post.Comments.toString()}
             </Typography>
           </Grid>
         </Stack>

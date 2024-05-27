@@ -1,21 +1,19 @@
+import { Box, Container, CssBaseline, MenuItem, Paper, Select, Skeleton } from '@mui/material';
+import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import { Box, Button, Container, CssBaseline, MenuItem, Paper, Select, Skeleton } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUserAccount } from '../Redux/Epics/AccountEpics';
-import { RootState } from '../Redux/store';
-import ButtonWithCheck from './UtilComponents/ButtonWithCheck';
-import { isSigned } from '../API/loginRequests';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { setGlobalError, setLogInError } from '../Redux/Reducers/AccountReducer';
-import { useEffect, useRef, useState } from 'react';
 import { requestPosts } from '../API/postRequests';
+import { setGlobalError } from '../Redux/Reducers/AccountReducer';
+import { RootState } from '../Redux/store';
 import { Post } from '../Types/Post';
-import PostElement from './Posts/PostElement';
 import { User } from '../Types/User';
-import { BootstrapInput } from './UtilComponents/BootstrapInput';
 import CategoriesFilter from './Categories/CategoryFilter';
+import PostElement from './Posts/PostElement';
+import { BootstrapInput } from './UtilComponents/BootstrapInput';
+import ButtonWithCheck from './UtilComponents/ButtonWithCheck';
 
 export default function Main() {
   const next = 4;
@@ -27,13 +25,9 @@ export default function Main() {
   const [hasMore, setHasMore] = useState(true);
   const [fetching, setFetching] = useState(false);
 
-  const elementRef = useRef(null);
-
   const dispatch = useDispatch();
   const navigator = useNavigate()
   const { state } = useLocation()
-
-  const Account: User = useSelector((state: RootState) => state.account.Account);
 
   useEffect(() => {
     setFetching(false);
@@ -46,7 +40,7 @@ export default function Main() {
   const fetchposts = () => {
     requestPosts(offset, next, order, userTimestamp, categories).subscribe({
       next(value) {
-        if (value.length == 0) {
+        if (value.length === 0) {
           setHasMore(false);
           setFetching(false);
           return;

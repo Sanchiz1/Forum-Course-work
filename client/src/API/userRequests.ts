@@ -5,7 +5,7 @@ import { GetAjaxObservable, TokenType } from "./loginRequests";
 import { getCookie } from "../Helpers/CookieHelper";
 import { User, UserInput } from "../Types/User";
 
-const url = "https://localhost:7295/graphql";
+const url = "https://localhost:8000";
 
 interface GraphqlSearchedUser {
     users: {
@@ -291,18 +291,7 @@ export function changeUserPasswordRequest(user_id: number, password: string, new
 }
 
 export function DeleteUserRequest(user_id: number, password?: string) {
-    return GetAjaxObservable<GraphqlUpdateUser>(`
-        mutation($Input: DeleteUserInput!){
-            user{
-                user:deleteUser(input: $Input)
-            }
-          }`,
-        {
-            "Input": {
-                "user_Id": user_id,
-                "password": password
-            }
-        }
+    return GetAjaxObservable<GraphqlUpdateUser>(
     ).pipe(
         map((value) => {
 

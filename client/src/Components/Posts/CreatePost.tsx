@@ -1,25 +1,17 @@
+import CloseIcon from '@mui/icons-material/Close';
+import { Alert, Box, Button, Collapse, Container, CssBaseline, IconButton, Paper, TextField } from '@mui/material';
+import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import { Box, Button, Container, CssBaseline, Dialog, DialogActions, Alert, IconButton, Collapse, Paper, TextField } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { useDispatch, useSelector } from 'react-redux';
+import { enqueueSnackbar } from 'notistack';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { RootState } from '../../Redux/store';
-import { useState, useEffect } from 'react';
 import { createPostRequest } from '../../API/postRequests';
 import { PostInput } from '../../Types/Post';
-import { enqueueSnackbar } from 'notistack';
 
 
 export default function CreatePost() {
-    const dispatch = useDispatch();
     const navigator = useNavigate()
-
-    const Account = useSelector((state: RootState) => state.account.Account);
-
-
-    const [postConfirmOpen, setPostConfirmOpen] = useState(false);
 
     useEffect(() => {
         window.addEventListener('beforeunload', alertUser)
@@ -42,7 +34,7 @@ export default function CreatePost() {
         const data = new FormData(event.currentTarget);
         const title = data.get('title')!.toString().trim();
         const text = data.get('text')!.toString().trim();
-        if (title.length == 0) {
+        if (title.length === 0) {
             SetTitleError('Fill title field');
             return;
         }
@@ -108,7 +100,7 @@ export default function CreatePost() {
                                         required
                                         fullWidth
                                         inputProps={{ maxLength: 100 }}
-                                        error={titleError != ''}
+                                        error={titleError !== ''}
                                         onFocus={() => SetTitleError('')}
                                         helperText={titleError}
                                     />
@@ -122,11 +114,11 @@ export default function CreatePost() {
                                         inputProps={{ maxLength: 1000 }}
                                         multiline
                                         minRows={4}
-                                        error={textError != ''}
+                                        error={textError !== ''}
                                         onFocus={() => SetTextError('')}
                                         helperText={textError}
                                     />
-                                    <Collapse in={error != ''}>
+                                    <Collapse in={error !== ''}>
                                         <Alert
                                             severity="error"
                                             action={

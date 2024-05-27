@@ -5,40 +5,40 @@ export function timeSince(date: Date) {
   var interval = seconds / 31536000;
 
   if (interval > 1) {
-    var result = " years"
-    if (Math.floor(interval) == 1) {
+    let result = " years"
+    if (Math.floor(interval) === 1) {
       result = " year"
     }
     return Math.floor(interval) + result + " ago";
   }
   interval = seconds / 2592000;
   if (interval > 1) {
-    var result = " months"
-    if (Math.floor(interval) == 1) {
+    let result = " months"
+    if (Math.floor(interval) === 1) {
       result = " month"
     }
     return Math.floor(interval) + result + " ago";
   }
   interval = seconds / 86400;
   if (interval > 1) {
-    var result = " days"
-    if (Math.floor(interval) == 1) {
+    let result = " days"
+    if (Math.floor(interval) === 1) {
       result = " day"
     }
     return Math.floor(interval) + result + " ago";
   }
   interval = seconds / 3600;
   if (interval > 1) {
-    var result = " hours"
-    if (Math.floor(interval) == 1) {
+    let result = " hours"
+    if (Math.floor(interval) === 1) {
       result = " hour"
     }
     return Math.floor(interval) + result + " ago";
   }
   interval = seconds / 60;
   if (interval > 1) {
-    var result = " minutes"
-    if (Math.floor(interval) == 1) {
+    let result = " minutes"
+    if (Math.floor(interval) === 1) {
       result = " minute"
     }
     return Math.floor(interval) + result + " ago";

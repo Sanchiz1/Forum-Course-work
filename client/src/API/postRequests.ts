@@ -1,52 +1,20 @@
-import { ajax } from "rxjs/internal/ajax/ajax";
-import { catchError, delay, map, mergeMap, Observable, of, timer } from "rxjs";
-import { redirect } from "react-router-dom";
-import { GetAjaxObservable, TokenType } from "./loginRequests";
-import { getCookie } from "../Helpers/CookieHelper";
-import { User, UserInput } from "../Types/User";
+import { catchError, map } from "rxjs";
 import { Post, PostInput } from "../Types/Post";
+import { GetAjaxObservable } from "./loginRequests";
 
-const url = "https://localhost:7295/graphql";
+const url = "http://localhost:8000";
 
 interface GraphqlPosts {
-    posts: {
-        posts: Post[]
-    }
+    posts: Post[]
 }
 
 export function requestPosts(offset: Number, next: Number, order: String, user_timestamp: Date, categories?: number[]) {
-    return GetAjaxObservable<GraphqlPosts>(
-        `query($Input:  GetPostsInput!){
-              posts{
-                posts(input: $Input){
-                    id
-                    title
-                    text
-                    date_Created
-                    date_Edited
-                    user_Id
-                    user_Username
-                    likes
-                    comments
-                    liked
-                }
-              }
-            }`,
-        {
-            "Input": {
-                "offset": offset,
-                "next": next,
-                "order": order,
-                "user_Timestamp": user_timestamp.toISOString(),
-                "categories": categories
-            }
-        },
-        false
-    ).pipe(
+    return GetAjaxObservable<GraphqlPosts>("/posts", "GET", false, true).pipe(
         map((value) => {
-            return value.response.data.posts.posts;
+            return value.response.data;
         }),
         catchError((error) => {
+            console.log(error)
             throw error
         })
     );
