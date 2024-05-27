@@ -7,6 +7,7 @@ use Core\Auth\Jwt\IJwtManager;
 use Core\Auth\Jwt\JwtAuthManager;
 use Core\Controller\Controller;
 use Core\Database\Database;
+use Core\Http\Cors;
 use Core\Http\Request;
 use Core\Http\RequestParser;
 use Core\Http\Response;
@@ -34,6 +35,13 @@ class Application
     public function addJwtAuth(IJwtManager $jwtManager): void
     {
         $this->authManager = new JwtAuthManager($jwtManager);
+    }
+
+    public function addCors()
+    {
+        $cors = new Cors();
+
+        $cors->execute();
     }
 
     public function exit(Response $response): void

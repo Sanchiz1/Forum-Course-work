@@ -17,6 +17,7 @@ $config = [
 
 $app = new Core\Application($config);
 
+$app->addCors();
 $app->addJwtAuth(new JwtManager());
 
 $app->run();

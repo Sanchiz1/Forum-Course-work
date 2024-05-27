@@ -16,31 +16,35 @@ class JwtManager implements IJwtManager
         return 'my_strong_token_secret';
     }
 
-    public function encodeToken($data): string
+    public function encodeToken($data): mixed
     {
+        $issuedAt = time();
+        $expiresAt = $issuedAt + 5184000;
+
         $tokenSecret = static::tokenSecret();
-        $token = array(
+        $content = array(
             'iss' => 'http://localhost:8000',
-            'iat' => time(),
-            'exp' => time() + 5184000
+            'iat' => $issuedAt,
+            'exp' => $expiresAt
         );
 
-        $token = array_merge($token, $data);
-        return JWT::encode($token, $tokenSecret, 'HS256');
+        $content = array_merge($content, $data);
+        $token = JWT::encode($content, $tokenSecret, 'HS256');
+
+        return ["token" => $token,
+            "expires" => $expiresAt,
+            "issued" => $issuedAt];
     }
 
     /**
      * @throws Exception
      */
-    public function decodeToken($token) : array
+    public function decodeToken($token): array
     {
         $tokenSecret = static::tokenSecret();
-        try
-        {
-            return (array) JWT::decode($token, new Key($tokenSecret, 'HS256'));
-        }
-        catch (Exception $e)
-        {
+        try {
+            return (array)JWT::decode($token, new Key($tokenSecret, 'HS256'));
+        } catch (Exception $e) {
             $response = new Response(401, null, "Invalid token");
             $response->AddHeader('Content-Type: application/json; charset=utf-8');
             Application::$app->exit($response);

@@ -11,7 +11,7 @@ class RequestParser
         $headers = getallheaders();
         $queryParams = self::getQueryParams();
 
-        $body = $headers["Content-Type"] == "application/json" ?
+        $body = $headers["content-type"] == "application/json" ?
             self::getJsonBody() : null;
 
         return new Request($uri, $method, $body, $headers, $queryParams);
@@ -43,6 +43,7 @@ class RequestParser
 
         parse_str($_SERVER['QUERY_STRING'], $queries);
 
-        return $queries;
+        $queries = array_map('strtolower', $queries);
+        return array_change_key_case($queries);
     }
 }

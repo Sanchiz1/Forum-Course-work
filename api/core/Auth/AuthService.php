@@ -79,7 +79,7 @@ class AuthService
             $reflectionClass->getAttributes(Authorize::class, ReflectionAttribute::IS_INSTANCEOF)
         );
 
-        if ($isClassAuthorize && !$isMethodAnonymous && !Application::$app->authManager?->isAuthorized()) {
+        if ($isClassAuthorize && !Application::$app->authManager?->isAuthorized() && !$isMethodAnonymous ) {
             return false;
         }
 
