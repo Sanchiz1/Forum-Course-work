@@ -53,6 +53,8 @@ class CustomQueryBuilder implements IExecute
         $statement->execute();
 
         $statement->setFetchMode(PDO::FETCH_CLASS, $dbModel);
-        return $statement->fetch();
+
+        $res =  $statement->fetch();
+        return !$res ? null : $res;
     }
 }
