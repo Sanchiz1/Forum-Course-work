@@ -138,7 +138,7 @@ interface GraphqlCreateUser {
 
 export function createUserRequest(UserInput: UserInput) {
     return GetAjaxObservable(`/account/register`, "POST", false, true, UserInput).pipe(
-        map((value) => {
+        map(() => {
             return "User created successfully";
         })
     );

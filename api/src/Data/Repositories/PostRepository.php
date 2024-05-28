@@ -64,4 +64,16 @@ class PostRepository
             ->custom($query)
             ->fetchFirst(Post::class);
     }
+
+    public function AddPost(int $userId, string $title, ?string $text): bool
+    {
+        $query = "INSERT INTO post (title, text, userId) VALUES (:Title, :Text, :UserId)";
+
+        return $this->queryBuilder
+            ->custom($query)
+            ->setParameter("Title", $title, PDO::PARAM_STR)
+            ->setParameter("Text", $text, PDO::PARAM_STR)
+            ->setParameter("UserId", $userId, PDO::PARAM_STR)
+            ->execute();
+    }
 }

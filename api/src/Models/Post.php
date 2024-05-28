@@ -11,7 +11,7 @@ class Post extends DbModel
     public string $Title;
     public string $Text;
     public string $DateCreated;
-    public string $DateEdited;
+    public ?string $DateEdited;
     public int $Likes;
     public int $Comments;
     public int $UserId;

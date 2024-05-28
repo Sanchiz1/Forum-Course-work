@@ -8,6 +8,7 @@ use Core\Auth\Attributes\Authorize;
 use Core\Auth\Attributes\Requires;
 use Core\Auth\Attributes\RequiresNone;
 use Core\Controller\Attributes\Get;
+use Core\Controller\Attributes\Post;
 use Core\Controller\Attributes\Route;
 use Core\Controller\Controller;
 use Core\Http\Request;
@@ -46,5 +47,26 @@ class PostController extends Controller
         $postId = (int)$request->getRouteParam(0);
         $userId = $this->UserClaim("Id", 0);
         return $this->json($this->ok($this->postRepository->GetPost($postId, $userId)));
+    }
+
+    #[Authorize]
+    #[Post("")]
+    public function AddPost(Request $request): Response
+    {
+        $userId = $this->UserClaim("id");
+        $title = $request->getBody()["title"];
+        $text = $request->getBody()["text"];
+
+        $res = $this->postRepository->AddPost($userId, $title, $text);
+
+        if ($res == null) {
+            return $this->json(
+                $this->badRequest("Failed to create user")
+            );
+        }
+
+        return $this->json(
+            $this->ok()
+        );
     }
 }

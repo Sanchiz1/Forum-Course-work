@@ -77,31 +77,9 @@ interface GraphqlCreatePost {
 }
 
 export function createPostRequest(PostInput: PostInput) {
-    return GetAjaxObservable<GraphqlCreatePost>(`
-        mutation($Input: CreatePostInput!){
-            post{
-              createPost(input: $Input)
-            }
-          }`,
-        {
-            "Input": {
-                "title": PostInput.title,
-                "text": PostInput.text
-            }
-        }
-    ).pipe(
-        map((value) => {
-
-            if (value.response.errors) {
-
-                throw new Error(value.response.errors[0].message);
-            }
-
-            return value.response.data.post.createPost;
-
-        }),
-        catchError((error) => {
-            throw error
+    return GetAjaxObservable(`/posts`, "POST", false, true, PostInput).pipe(
+        map(() => {
+            return "Post created successfully";
         })
     );
 }
