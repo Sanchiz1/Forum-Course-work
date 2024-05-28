@@ -16,7 +16,12 @@ export function getCookie(name: string) {
             c = c.substring(1);
         }
         if (c.indexOf(name) === 0) {
-            return decodeURIComponent(c.substring(name.length, c.length));
+            try {
+                return JSON.parse(decodeURIComponent(c.substring(name.length, c.length)));
+            }
+            catch {
+                return null;
+            }
         }
     }
     return null;

@@ -61,8 +61,8 @@ export default function PostPage() {
                     return;
                 }
                 setPost(post);
-                SetLiked(post.liked);
-                setLikes(post.likes.valueOf());
+                SetLiked(post.Liked);
+                setLikes(post.Likes.valueOf());
             },
             error(err) {
                 dispatch(setGlobalError(err.message));
@@ -97,7 +97,7 @@ export default function PostPage() {
 
 
 
-        updatePostRequest(text, post?.id!).subscribe({
+        updatePostRequest(text, post?.Id!).subscribe({
             next(value) {
                 enqueueSnackbar(value, {
                     variant: 'success', anchorOrigin: {

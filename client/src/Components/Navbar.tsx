@@ -173,7 +173,7 @@ export default function Header() {
           <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
             {isSigned() ?
               <Link variant="subtitle1" align="center" color="text.primary" component="span" onClick={handleClick} sx={{ textDecoration: 'none', ":hover": { cursor: 'pointer' } }}>
-                {User.username}
+                {User.Username}
               </Link>
               :
               <Button variant="text" onClick={() => navigator("/Sign-in", { state: location })}>Sign in</Button>
@@ -216,12 +216,12 @@ export default function Header() {
             transformOrigin={{ horizontal: 'right', vertical: 'top' }}
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
           >
-            <MenuItem onClick={() => { navigator('/user/' + User.username); handleClose(); }}>
+            <MenuItem onClick={() => { navigator('/user/' + User.Username); handleClose(); }}>
               <Avatar /> My account
             </MenuItem>
             <Divider />
-            {User?.role === "Admin" &&
-              <MenuItem onClick={() => { navigator('/AdminPanel'); handleClose(); }} hidden={!(User?.role === "Admin")}>
+            {User?.Role === "Admin" &&
+              <MenuItem onClick={() => { navigator('/AdminPanel'); handleClose(); }} hidden={!(User?.Role === "Admin")}>
                 <ListItemIcon>
                   <SupervisorAccountIcon fontSize="small" />
                 </ListItemIcon>

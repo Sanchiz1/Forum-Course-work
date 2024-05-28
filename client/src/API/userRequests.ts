@@ -116,24 +116,9 @@ export function requestUserByUsername(usernaame: string) {
 }
 
 export function requestAccount() {
-    return GetAjaxObservable<GraphqlUser>(`query{
-        users{
-            user:account{
-                id
-                username
-                email
-                bio
-                registered_At
-                role
-                role_Id
-        }
-      }
-    }`, {}).pipe(
-        map(res => {
-            return res.response.data.users.user;
-        }),
-        catchError((error) => {
-            throw error;
+    return GetAjaxObservable<User>(`/account`, "GET", true, true).pipe(
+        map((value) => {
+            return value.response.data;
         })
     );
 }
@@ -152,42 +137,9 @@ interface GraphqlCreateUser {
 }
 
 export function createUserRequest(UserInput: UserInput) {
-    return ajax<GraphqlCreateUser>({
-        url: url,
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-        },
-        body: JSON.stringify({
-            query: `
-        mutation($Input: CreateUserInput!){
-            user{
-              createUser(input: $Input)
-            }
-          }`,
-            variables: {
-                "Input": {
-                    "username": UserInput.username,
-                    "email": UserInput.email,
-                    "password": UserInput.password
-                }
-            }
-        }),
-        withCredentials: true,
-    }).pipe(
+    return GetAjaxObservable(`/account/register`, "POST", false, true, UserInput).pipe(
         map((value) => {
-
-            if (value.response.errors) {
-
-                throw new Error(value.response.errors[0].message);
-            }
-
-            return value.response.data.user.createUser;
-
-        }),
-        catchError((error) => {
-            throw error
+            return "User created successfully";
         })
     );
 }

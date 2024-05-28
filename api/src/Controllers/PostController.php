@@ -30,7 +30,7 @@ class PostController extends Controller
         $skip = (int)$request->getQueryParams()["skip"] ?? 0;
         $take = (int)$request->getQueryParams()["take"] ?? 10;
 
-        $userId = $this->UserClaim("Id", 0);
+        $userId = $this->UserClaim("id", 0);
 
         return $this->json(
             $this->ok(

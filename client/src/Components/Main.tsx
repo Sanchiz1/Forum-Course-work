@@ -3,13 +3,11 @@ import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { requestPosts } from '../API/postRequests';
 import { setGlobalError } from '../Redux/Reducers/AccountReducer';
-import { RootState } from '../Redux/store';
 import { Post } from '../Types/Post';
-import { User } from '../Types/User';
 import CategoriesFilter from './Categories/CategoryFilter';
 import PostElement from './Posts/PostElement';
 import { BootstrapInput } from './UtilComponents/BootstrapInput';
@@ -116,7 +114,7 @@ export default function Main() {
             </Grid>
             {
               posts?.map((post, index) =>
-                <PostElement post={post} key={index} customClickEvent={(event: React.MouseEvent<HTMLDivElement>) => navigator('/post/' + post.id, { state: state })}></PostElement>
+                <PostElement post={post} key={index} customClickEvent={(event: React.MouseEvent<HTMLDivElement>) => navigator('/post/' + post.Id, { state: state })}></PostElement>
               )
             }
             <Grid item xs={12} md={12} lg={12}>

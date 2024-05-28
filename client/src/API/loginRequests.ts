@@ -1,14 +1,9 @@
+import { catchError, map, throwError } from "rxjs";
 import { ajax } from "rxjs/internal/ajax/ajax";
-import { catchError, delay, map, merge, mergeMap, Observable, of, throwError, timer } from "rxjs";
-import { redirect } from "react-router-dom";
 import { deleteCookie, getCookie, setCookie } from "../Helpers/CookieHelper";
-import { wait } from "@testing-library/user-event/dist/utils";
+import { getAccount } from "../Redux/Reducers/AccountReducer";
 import { Credentials } from "../Types/Credentials";
-import { getAccount, setLogInError } from "../Redux/Reducers/AccountReducer";
 import { User } from "../Types/User";
-import { tokenToString } from "typescript";
-
-const loginurl = "http://localhost:8000/graphql-login";
 
 const url = "http://localhost:8000";
 
@@ -65,7 +60,7 @@ export type response<T = any> = {
   error?: string
 }
 
-export function GetAjaxObservable<T>(requestUrl: string, method: string, needsAuth: boolean, withCredentials = false, body = null) {
+export function GetAjaxObservable<T>(requestUrl: string, method: string, needsAuth: boolean, withCredentials: boolean = false, body: any = null) {
 
   let headers = {
     'Content-Type': 'application/json'
@@ -73,11 +68,9 @@ export function GetAjaxObservable<T>(requestUrl: string, method: string, needsAu
 
   if (needsAuth || isSigned()) {
 
-    let tokenString = getCookie("access_token")!;
+    let token = getCookie("access_token")!;
 
-    if (tokenString === null) return throwError(() => new Error("Invalid token"));
-
-    let token = JSON.parse(tokenString);
+    if (token === null) return throwError(() => new Error("Invalid token"));
 
     headers = { ...headers, ...{ 'Authorization': 'Bearer ' + token } };
   }
@@ -88,11 +81,18 @@ export function GetAjaxObservable<T>(requestUrl: string, method: string, needsAu
     headers: headers,
     body: body,
     withCredentials: withCredentials
-  })
+  }).pipe(
+    catchError((error) => {
+
+      if (error.status == 401) {
+        Logout();
+      }
+
+      throw new Error(error.response.error)
+    }))
 }
 
 export function isSigned(): boolean {
-  const accessTokenString = getCookie("access_token");
-  const accessToken: boolean = accessTokenString ? JSON.parse(accessTokenString) : accessTokenString
-  return !!accessTokenString;
+  const accessToken = getCookie("access_token");
+  return !!accessToken;
 }

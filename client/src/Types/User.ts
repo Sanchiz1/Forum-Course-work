@@ -1,13 +1,13 @@
 export interface User {
-    id: number,
-    username: string,
-    email?: string,
-    bio: string,
-    registered_At: Date,
-    posts: number
-    comments: number
-    role_Id: number
-    role: string
+    Id: number,
+    Username: string,
+    Email: string,
+    Bio?: string,
+    DateRegistered: Date,
+    Posts: number
+    Comments: number
+    RoleId: number
+    Role: string
 }
 export interface UserRegistration {
     id: number,

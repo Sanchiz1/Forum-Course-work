@@ -26,7 +26,11 @@ class CustomQueryBuilder implements IExecute
     {
         $statement = Database::$db->prepare($this->query);
 
-        return $statement->execute($this->params);
+        foreach ($this->params as $param => $value) {
+            $statement->bindValue(":$param", $value[0], $value[1]);
+        }
+
+        return $statement->execute();
     }
 
     public function fetchAll(string $dbModel): array

@@ -6,46 +6,14 @@ export function requestPosts(offset: Number, next: Number, order: String, user_t
     return GetAjaxObservable<Post[]>(`/posts?take=${next}&skip=${offset}&orderBy=${order}`, "GET", false, true).pipe(
         map((value) => {
             return value.response.data;
-        }),
-        catchError((error) => {
-            throw error
         })
     );
 }
 
 export function requestSearchedPosts(offset: Number, next: Number, user_timestamp: Date, search: string) {
-    return GetAjaxObservable<GraphqlPosts>(
-        `query($Input: GetSearchedPostsInput!){
-              posts{
-                posts:searchedPosts(input: $Input){
-                    id
-                    title
-                    text
-                    date_Created
-                    date_Edited
-                    user_Id
-                    user_Username
-                    likes
-                    comments
-                    liked
-                }
-              }
-            }`,
-        {
-            "Input": {
-                "offset": offset,
-                "next": next,
-                "user_Timestamp": user_timestamp.toISOString(),
-                "search": search
-            }
-        },
-        false
-    ).pipe(
+    return GetAjaxObservable<Post[]>(`/posts?take=${next}&skip=${offset}&orderBy=${order}`, "GET", false, true).pipe(
         map((value) => {
-            return value.response.data.posts.posts;
-        }),
-        catchError((error) => {
-            throw error
+            return value.response.data;
         })
     );
 }
@@ -95,40 +63,9 @@ interface GraphqlPost {
 }
 
 export function requestPostById(id: Number) {
-    return GetAjaxObservable<GraphqlPost>(
-        `query($Input:  GetPostByIdInput!){
-              posts{
-                post(input: $Input){
-                    id
-                    title
-                    text
-                    date_Created
-                    date_Edited
-                    user_Id
-                    categories{
-                        id,
-                        title
-                    }
-                    user_Username
-                    likes
-                    comments
-                    liked
-                }
-              }
-            }`
-        ,
-        {
-            "Input": {
-                "id": id
-            }
-        },
-        false
-    ).pipe(
+    return GetAjaxObservable<Post>(`/posts/${id}`, "GET", false, true).pipe(
         map((value) => {
-            return value.response.data.posts.post;
-        }),
-        catchError((error) => {
-            throw error
+            return value.response.data;
         })
     );
 }
