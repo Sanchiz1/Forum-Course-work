@@ -17,7 +17,7 @@ import { createUserRequest } from '../../API/userRequests';
 import { setGlobalError } from '../../Redux/Reducers/AccountReducer';
 import { UserInput } from '../../Types/User';
 
-const validUsernamePattern = /^[a-zA-Z0-9_.]+$/;
+const validUsernamePattern = /^[a-zA-Z0-9_]+$/;
 const validEmailPattern = /^(?=.{0,64}$)[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 const validPasswordPattern = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[a-zA-Z]).{8,21}$/;
 

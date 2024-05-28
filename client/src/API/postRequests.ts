@@ -18,40 +18,10 @@ export function requestSearchedPosts(offset: Number, next: Number, user_timestam
     );
 }
 
-export function requestUserPosts(author_username: String, offset: Number, next: Number, order: String, user_timestamp: Date) {
-    return GetAjaxObservable<GraphqlPosts>(
-        `query($Input: GetUserPostsInput!){
-              posts{
-                posts:userPosts(input: $Input){
-                    id
-                    title
-                    text
-                    date_Created
-                    date_Edited
-                    user_Id
-                    user_Username
-                    likes
-                    comments
-                    liked
-                }
-              }
-            }`,
-        {
-            "Input": {
-                "author_Username": author_username,
-                "offset": offset,
-                "next": next,
-                "order": order,
-                "user_Timestamp": user_timestamp.toISOString()
-            }
-        },
-        false
-    ).pipe(
+export function requestUserPosts(username: String, offset: Number, next: Number, order: String, user_timestamp: Date) {
+    return GetAjaxObservable<Post[]>(`/posts/user/${username}?take=${next}&skip=${offset}&orderBy=${order}`, "GET", false, true).pipe(
         map((value) => {
-            return value.response.data.posts.posts;
-        }),
-        catchError((error) => {
-            throw error
+            return value.response.data;
         })
     );
 }

@@ -30,6 +30,11 @@ abstract class Controller
         return new Response(400, null, $error);
     }
 
+    protected function notFound(string $error = "") : Response
+    {
+        return new Response(404, null, $error);
+    }
+
     public function User(): array
     {
         return Application::$app->authManager?->getUserClaims();

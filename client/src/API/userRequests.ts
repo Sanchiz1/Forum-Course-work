@@ -83,34 +83,10 @@ export function requestUserById(id: Number) {
     );
 }
 
-export function requestUserByUsername(usernaame: string) {
-    return GetAjaxObservable<GraphqlUser>(`
-    query($Input:  GetUserByUsernameInput!){
-        users{
-            user:userByUsername(input: $Input){
-            id
-            username
-            email
-            bio
-            registered_At
-            posts
-            comments
-            role
-            role_Id
-            }
-        }
-    }`, {
-        "Input": {
-            "username": usernaame
-        }
-    },
-        false
-    ).pipe(
-        map(res => {
-            return res.response.data.users.user;
-        }),
-        catchError((error) => {
-            throw error;
+export function requestUserByUsername(username: string) {
+    return GetAjaxObservable<User>(`/users/${username}`, "GET", false, true).pipe(
+        map((response) => {
+            return response.response.data;
         })
     );
 }

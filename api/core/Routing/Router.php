@@ -37,7 +37,7 @@ class Router
 
         if ($callback == null) {
             $controller = new NotFoundController();
-            return $controller->NotFound();
+            return $controller->Index();
         }
 
         if (is_array($callback)) {

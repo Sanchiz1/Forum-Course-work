@@ -14,15 +14,17 @@ class User extends DbModel
     public int $RoleId;
     public string $Role;
     public string $DateRegistered;
+    public string $Posts;
+    public string $Comments;
     public string $Password;
 
     public function attributes(): array
     {
-        return ["Email", "Username", "Bio", "DateRegistered", "RoleId", "Role", "Password"];
+        return ["Email", "Username", "Bio", "DateRegistered", "Posts", "Comments", "RoleId", "Role", "Password"];
     }
 
     public function selectAttributes(): array
     {
-        return ["Email", "Username", "Bio", "DateRegistered", "RoleId", "Role"];
+        return ["Email", "Username", "Bio", "DateRegistered", "Posts", "Comments", "RoleId", "Role"];
     }
 }

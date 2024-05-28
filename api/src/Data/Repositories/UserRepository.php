@@ -28,11 +28,36 @@ class UserRepository
                 u.DateRegistered AS DateRegistered
                 FROM user u
                 LEFT JOIN role r ON r.Id = u.RoleId
-                WHERE u.Id = :userId";
+                WHERE u.Id = :UserId";
 
         return $this->queryBuilder
             ->custom($query)
-            ->setParameter("userId", $userId, PDO::PARAM_INT)
+            ->setParameter("UserId", $userId, PDO::PARAM_INT)
+            ->fetchFirst(User::class);
+    }
+
+    public function GetUserByUsername(string $username): ?User
+    {
+        $query = "SELECT
+                r.Name AS Role,
+                u.RoleId AS RoleId,
+                u.Id AS Id,
+                u.Username AS Username,
+                u.Email AS Email,
+                u.Bio AS Bio,
+                u.DateRegistered AS DateRegistered,
+                Count(DISTINCT c.Id) + Count(DISTINCT rp.Id) as Comments,
+                Count(DISTINCT p.Id) as Posts
+                FROM user u
+                LEFT JOIN role r ON r.Id = u.RoleId
+                LEFT JOIN post p ON p.UserId = u.Id
+                LEFT JOIN comment c ON c.UserId = u.Id
+                LEFT JOIN reply rp ON rp.UserId = u.Id
+                WHERE u.Username = :Username";
+
+        return $this->queryBuilder
+            ->custom($query)
+            ->setParameter("Username", $username, PDO::PARAM_STR)
             ->fetchFirst(User::class);
     }
 

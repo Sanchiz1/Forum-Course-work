@@ -25,9 +25,9 @@ const validUsernamePattern = /^[a-zA-Z0-9_.]+$/;
 const validEmailPattern = /^(?=.{0,64}$)[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
 const roles = {
-  0: "User",
-  1: "Admin",
-  2: "Moderator",
+  1: "User",
+  2: "Admin",
+  3: "Moderator",
 };
 
 export default function UserPage() {
@@ -50,7 +50,7 @@ export default function UserPage() {
           return;
         }
         setUser(user);
-        setRole(user.role_Id)
+        setRole(user.RoleId)
         refetchposts()
       },
       error(err) {
@@ -117,7 +117,7 @@ export default function UserPage() {
   const next = 4;
   const [userTimestamp, setUserTimestamp] = useState(new Date());
   const [offset, setOffset] = useState(0);
-  const [order, setOrder] = useState("Date_Created");
+  const [order, setOrder] = useState("DateCreated");
   const [posts, setPosts] = useState<Post[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [refresh, setRefresh] = useState(true);
@@ -184,7 +184,7 @@ export default function UserPage() {
     if (role === 0) {
       role_id = null;
     }
-    updateUserRoleRequest(user?.id!, role_id).subscribe({
+    updateUserRoleRequest(user?.Id!, role_id).subscribe({
       next(value) {
         enqueueSnackbar(value, {
           variant: 'success', anchorOrigin: {
@@ -214,7 +214,7 @@ export default function UserPage() {
       setError('Fill password field');
       return;
     }
-    DeleteUserRequest(user!.id, password).subscribe({
+    DeleteUserRequest(user!.Id, password).subscribe({
       next(value) {
         enqueueSnackbar(value, {
           variant: 'success', anchorOrigin: {
@@ -270,20 +270,20 @@ export default function UserPage() {
                             flexDirection: 'column',
                           }}>
                             <Typography variant="h4" color="text.secondary" component="p">
-                              {user.username}
+                              {user.Username}
                             </Typography>
                             <Typography variant="subtitle1" color="text.secondary" component="p">
-                              Joined: {GetDateString(new Date(user.registered_At))}
+                              Joined: {GetDateString(new Date(user.DateRegistered))}
                             </Typography>
                             {
-                              user.bio &&
+                              user.Bio &&
                               <>
                                 <Typography variant="subtitle1" color="text.secondary" component="p" sx={{ mt: 2, whiteSpace: 'pre-line', overflowWrap: 'break-word' }}>
-                                  {user.bio}
+                                  {user.Bio}
                                 </Typography>
                               </>
                             }
-                            {(Account != null && user.id === Account.id) &&
+                            {(Account != null && user.Id === Account.Id) &&
                               <>
                                 <Divider sx={{ mt: 2 }} />
                                 <Button onClick={() => setOpenEdit(!openEdit)}>Edit</Button>
@@ -298,7 +298,7 @@ export default function UserPage() {
                                       name="username"
                                       autoComplete="off"
                                       autoFocus
-                                      defaultValue={Account.username}
+                                      defaultValue={Account.Username}
                                       error={usernameError != ''}
                                       onFocus={() => SetUsernameError('')}
                                       helperText={usernameError}
@@ -312,7 +312,7 @@ export default function UserPage() {
                                       name="email"
                                       autoComplete="off"
                                       autoFocus
-                                      defaultValue={Account.email}
+                                      defaultValue={Account.Email}
                                       error={emailError != ''}
                                       onFocus={() => SetEmailError('')}
                                       helperText={emailError}
@@ -326,7 +326,7 @@ export default function UserPage() {
                                       multiline
                                       rows={4}
                                       inputProps={{ maxLength: 100 }}
-                                      defaultValue={Account.bio}
+                                      defaultValue={Account.Bio}
                                       error={bioError != ''}
                                       onFocus={() => SetBioError('')}
                                       helperText={bioError}
@@ -360,7 +360,7 @@ export default function UserPage() {
                                   </Box>
                                 </Collapse>
                               </>}
-                            {(Account.role === 'Admin' && user.role !== 'Admin') &&
+                            {(Account.Role === 'Admin' && user.Role !== 'Admin') &&
                               <>
                                 <Divider sx={{ mt: 2 }} />
                                 <Button onClick={() => setOpenEdit(!openEdit)}>Settings</Button>
@@ -406,10 +406,10 @@ export default function UserPage() {
                         >
                           <Grid item xs={12} sx={{ mb: 2 }}>
                             <Typography variant="subtitle1" color="text.primary" component="p">
-                              {user.posts} posts
+                              {user.Posts} posts
                             </Typography>
                             <Typography variant="subtitle1" color="text.primary" component="p">
-                              {user.comments} comments
+                              {user.Comments} comments
                             </Typography>
                           </Grid>
                           <Divider sx={{ mb: 1 }} />
@@ -420,7 +420,7 @@ export default function UserPage() {
                             alignItems: 'stretch',
                           }}>
                             <Typography variant="subtitle1" color="text.primary" component="p" sx={{ display: 'flex', alignItems: 'center' }}>
-                              {user.username}`s posts
+                              {user.Username}`s posts
                             </Typography>
                             <Typography variant="subtitle1" sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
                               <Select
@@ -429,7 +429,7 @@ export default function UserPage() {
                                 input={<BootstrapInput sx={{ height: 1, display: 'flex' }} />}
                               >
                                 <MenuItem value={"Likes"}>Top</MenuItem>
-                                <MenuItem value={"Date_Created"}>New</MenuItem>
+                                <MenuItem value={"DateCreated"}>New</MenuItem>
                               </Select>
                             </Typography>
                           </Grid>
