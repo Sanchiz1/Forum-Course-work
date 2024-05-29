@@ -44,30 +44,6 @@ export function deleteCommentRequest(id: Number) {
 }
 
 export function likeCommentRequest(id: Number) {
-    return GetAjaxObservable<GraphqlLikeComment>(`
-        mutation($Input: LikeCommentInput!){
-            comment{
-              likeComment(input: $Input)
-            }
-          }`,
-        {
-            "Input": {
-                "comment_Id": id
-            }
-        }
-    ).pipe(
-        map((value) => {
-
-            if (value.response.errors) {
-
-                throw new Error(value.response.errors[0].message);
-            }
-
-            return value.response.data.comment.likeComment;
-
-        }),
-        catchError((error) => {
-            throw error
-        })
-    );
+    
+    return GetAjaxObservable(`/comments/like/${id}`, "POST", true, true);
 }

@@ -104,4 +104,15 @@ class CommentRepository
             ->setParameter("CommentId", $commentId, PDO::PARAM_INT)
             ->execute();
     }
+
+    public function LikeComment(int $userId, int $commentId): bool
+    {
+        $query = "CALL toggle_comment_like(:CommentId, :UserId);";
+
+        return $this->queryBuilder
+            ->custom($query)
+            ->setParameter("CommentId", $commentId, PDO::PARAM_INT)
+            ->setParameter("UserId", $userId, PDO::PARAM_INT)
+            ->execute();
+    }
 }

@@ -122,4 +122,16 @@ class PostController extends Controller
 
         return $this->json($this->ok());
     }
+
+    #[Authorize]
+    #[POST("like/{id}")]
+    public function LikePost(Request $request): Response
+    {
+        $userId = $this->UserClaim("id", 0);
+        $postId = (int)$request->getRouteParam(0);
+
+        $this->postRepository->LikePost($userId, $postId);
+
+        return $this->json($this->ok());
+    }
 }

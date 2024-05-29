@@ -137,30 +137,6 @@ interface GraphqlLikePost {
 }
 
 export function likePostRequest(id: Number) {
-    return GetAjaxObservable<GraphqlLikePost>(`
-        mutation($Input: LikePostInput!){
-            post{
-              likePost(input: $Input)
-            }
-          }`,
-        {
-            "Input": {
-                "post_Id": id
-            }
-        }
-    ).pipe(
-        map((value) => {
-
-            if (value.response.errors) {
-
-                throw new Error(value.response.errors[0].message);
-            }
-
-            return value.response.data.post.likePost;
-
-        }),
-        catchError((error) => {
-            throw error
-        })
-    );
+    
+    return GetAjaxObservable(`/posts/like/${id}`, "POST", true, true);
 }

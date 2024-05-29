@@ -101,4 +101,16 @@ class CommentController extends Controller
 
         return $this->json($this->ok());
     }
+
+    #[Authorize]
+    #[POST("like/{id}")]
+    public function LikeComment(Request $request): Response
+    {
+        $userId = $this->UserClaim("id", 0);
+        $commentId = (int)$request->getRouteParam(0);
+
+        $this->commentRepository->LikeComment($userId, $commentId);
+
+        return $this->json($this->ok());
+    }
 }

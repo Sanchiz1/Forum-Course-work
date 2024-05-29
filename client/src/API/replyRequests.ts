@@ -34,37 +34,6 @@ export function deleteReplyRequest(id: Number) {
     );
 }
 
-interface GraphqlLikeReply {
-    reply: {
-        likeReply: string
-    }
-}
-
 export function likeReplyRequest(id: Number) {
-    return GetAjaxObservable<GraphqlLikeReply>(`
-        mutation($Input: LikeReplyInput!){
-            reply{
-              likeReply(input: $Input)
-            }
-          }`,
-        {
-            "Input": {
-                "reply_Id": id
-            }
-        }
-    ).pipe(
-        map((value) => {
-
-            if (value.response.errors) {
-
-                throw new Error(value.response.errors[0].message);
-            }
-
-            return value.response.data.reply.likeReply;
-
-        }),
-        catchError((error) => {
-            throw error
-        })
-    );
+    return GetAjaxObservable(`/replies/like/${id}`, "POST", true, true);
 }

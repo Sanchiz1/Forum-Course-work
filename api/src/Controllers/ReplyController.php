@@ -82,4 +82,16 @@ class ReplyController extends Controller
 
         return $this->json($this->ok());
     }
+
+    #[Authorize]
+    #[POST("like/{id}")]
+    public function LikeReply(Request $request): Response
+    {
+        $userId = $this->UserClaim("id", 0);
+        $replyId = (int)$request->getRouteParam(0);
+
+        $this->replyRepository->LikeReply($userId, $replyId);
+
+        return $this->json($this->ok());
+    }
 }

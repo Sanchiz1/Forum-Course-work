@@ -137,4 +137,15 @@ class PostRepository
             ->setParameter("PostId", $postId, PDO::PARAM_INT)
             ->execute();
     }
+
+    public function LikePost(int $userId, int $postId): bool
+    {
+        $query = "CALL toggle_post_like(:PostId, :UserId);";
+
+        return $this->queryBuilder
+            ->custom($query)
+            ->setParameter("PostId", $postId, PDO::PARAM_INT)
+            ->setParameter("UserId", $userId, PDO::PARAM_INT)
+            ->execute();
+    }
 }

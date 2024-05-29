@@ -82,4 +82,15 @@ class ReplyRepository
             ->setParameter("ReplyId", $replyId, PDO::PARAM_INT)
             ->execute();
     }
+
+    public function LikeReply(int $userId, int $replyId): bool
+    {
+        $query = "CALL toggle_reply_like(:ReplyId, :UserId);";
+
+        return $this->queryBuilder
+            ->custom($query)
+            ->setParameter("ReplyId", $replyId, PDO::PARAM_INT)
+            ->setParameter("UserId", $userId, PDO::PARAM_INT)
+            ->execute();
+    }
 }
