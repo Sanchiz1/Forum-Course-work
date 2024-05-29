@@ -126,7 +126,7 @@ async function CheckRole(SignInErrorAction: () => void, PermissionErrorAction: (
     };
     try {
         const result = await requestAccount().toPromise();
-        if (result!.role !== "Admin") {
+        if (result!.Role !== "Administrator") {
             PermissionErrorAction();
             return redirect("/");
         };

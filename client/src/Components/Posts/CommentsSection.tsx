@@ -29,7 +29,7 @@ export default function CommentsSection(Props: CommentsSectionProps) {
     const next = 4;
     const [userTimestamp, setUserTimestamp] = useState(new Date());
     const [offset, setOffset] = useState(0);
-    const [order, setOrder] = useState("Date_Created");
+    const [order, setOrder] = useState("DateCreated");
 
     const [fetching, setFetching] = useState(false);
 
@@ -99,7 +99,7 @@ export default function CommentsSection(Props: CommentsSectionProps) {
                     py: 0,
                 }}>
                     <Typography variant="caption" sx={{ mr: 1, fontSize: '18px', display: 'flex', alignItems: 'center' }}>
-                        {Props.Post.comments.toString()} Comments
+                        {Props.Post.Comments.toString()} Comments
                     </Typography>
                     <Typography variant="caption" sx={{ fontSize: '15px', display: 'flex', alignItems: 'center' }}>
                         <Select
@@ -108,7 +108,7 @@ export default function CommentsSection(Props: CommentsSectionProps) {
                             input={<BootstrapInput sx={{ height: 1, display: 'flex' }} />}
                         >
                             <MenuItem value={"Likes"}>Top</MenuItem>
-                            <MenuItem value={"Date_Created"}>New</MenuItem>
+                            <MenuItem value={"DateCreated"}>New</MenuItem>
                         </Select>
                     </Typography>
                 </Grid>
@@ -116,7 +116,7 @@ export default function CommentsSection(Props: CommentsSectionProps) {
                     Action={(e: string) => {
                         if (e.trim() === '') return;
                         const commentInput: CommentInput = {
-                            post_Id: Props.Post.id,
+                            post_Id: Props.Post.Id,
                             text: e
                         }
                         createCommentRequest(commentInput).subscribe(

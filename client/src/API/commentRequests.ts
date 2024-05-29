@@ -8,41 +8,12 @@ interface GraphqlComments {
     }
 }
 
-export function requestComments(post_Id: Number, offset: Number, next: Number, order: String, user_timestamp: Date) {
-    return GetAjaxObservable<GraphqlComments>(
-        `query($Input:  GetCommentsInput!){
-                comments{
-                    comments(input: $Input){
-                        id
-                        text
-                        date_Created
-                        date_Edited
-                        post_Id
-                        user_Id
-                        user_Username
-                        likes
-                        replies
-                        liked
-                    }
-                }
-            }`,
-        {
-            "Input": {
-                "post_Id": post_Id,
-                "offset": offset,
-                "next": next,
-                "order": order,
-                "user_Timestamp": user_timestamp.toISOString()
-            }
-        },
-        false).pipe(
-            map((value) => {
-                return value.response.data.comments.comments;
-            }),
-            catchError((error) => {
-                throw error
-            })
-        );
+export function requestComments(postId: Number, offset: Number, next: Number, order: String, userTimestamp: Date) {
+    return GetAjaxObservable<Comment[]>(`/comments?userTimestamp=${userTimestamp.toISOString()}&postId=${postId}&take=${next}&skip=${offset}&orderBy=${order}`, "GET", false, true).pipe(
+        map((value) => {
+            return value.response.data;
+        })
+    );
 }
 
 interface GraphqlCommentById {

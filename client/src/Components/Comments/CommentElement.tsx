@@ -31,19 +31,18 @@ interface Props {
 
 export default function CommentElement(props: Props) {
   const [comment, setComment] = useState(props.comment);
-  const [liked, setLiked] = useState(props.comment.liked);
-  const [likes, setLikes] = useState(props.comment.likes.valueOf());
+  const [liked, setLiked] = useState(props.comment.Liked);
+  const [likes, setLikes] = useState(props.comment.Likes);
   const [replies, SetReplies] = useState<Reply[]>([])
   const [openReplyInput, setOpenReplyInput] = useState(false);
   const [openReplies, setOpenReplies] = useState(false);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const Account = useSelector((state: RootState) => state.account.Account);
 
 
   const refetchComment = () => {
     setUserTimestamp(new Date())
-    requestCommentById(comment.id.valueOf()).subscribe({
+    requestCommentById(comment.Id).subscribe({
       next(result) {
         setComment(result);
         refetchReplies();
@@ -76,7 +75,7 @@ export default function CommentElement(props: Props) {
       return;
     }
 
-    updateCommentRequest(text, props.comment.id).subscribe({
+    updateCommentRequest(text, props.comment.Id).subscribe({
       next(value) {
         enqueueSnackbar(value, {
           variant: 'success', anchorOrigin: {
@@ -100,7 +99,7 @@ export default function CommentElement(props: Props) {
   // delete
   const [openDelete, setOpenDelete] = useState(false);
   const handleSubmitDelete = () => {
-    deleteCommentRequest(comment.id).subscribe({
+    deleteCommentRequest(comment.Id).subscribe({
       next(value) {
         enqueueSnackbar(value, {
           variant: 'success', anchorOrigin: {
@@ -132,7 +131,7 @@ export default function CommentElement(props: Props) {
     setOffset(0);
   }
   const fetchReplies = () => {
-    requestReplies(comment.id, offset, next, order, userTimestamp).subscribe({
+    requestReplies(comment.Id, offset, next, order, userTimestamp).subscribe({
       next(result) {
         SetReplies([...replies, ...result]);
         setFetching(false);
@@ -179,17 +178,17 @@ export default function CommentElement(props: Props) {
                 }
               }
               } >
-                {comment.user_Username}
+                {comment.UserUsername}
               </Link>
               <Typography variant="caption" color="text.disabled" component="p" sx={{ mr: 0.5, fontFamily: 'cursive' }}>
                 ·
               </Typography>
               <Typography variant="caption" color="text.disabled" component="p" sx={{ mr: 0.5 }}>
-                {timeSince(GetLocalDate(new Date(comment.date_Created)))}
+                {timeSince(GetLocalDate(new Date(comment.DateCreated)))}
               </Typography>
-              {comment.date_Edited ?
+              {comment.DateEdited ?
                 <>
-                  <Tooltip title={timeSince(GetLocalDate(new Date(comment.date_Edited)))} placement="right" arrow>
+                  <Tooltip title={timeSince(GetLocalDate(new Date(comment.DateEdited)))} placement="right" arrow>
                     <Typography variant="caption" color="text.disabled" component="p">
                       (edited)
                     </Typography>
@@ -202,10 +201,10 @@ export default function CommentElement(props: Props) {
             {openEdit ?
               <CommentInputElement Action={(e) => {
                 handleSubmitEdit(e)
-              }} Comment={props.comment.text} CancelAction={() => setOpenEdit(false)}></CommentInputElement>
+              }} Comment={props.comment.Text} CancelAction={() => setOpenEdit(false)}></CommentInputElement>
               :
               <Typography variant="subtitle1" component="p" sx={{ pl: 0.5, whiteSpace: 'pre-line', overflowWrap: 'break-word' }}>
-                {comment.text}
+                {comment.Text}
               </Typography>
             }
             <Grid lg={12} md={12} xs={12} item sx={{
@@ -216,7 +215,7 @@ export default function CommentElement(props: Props) {
               <Typography variant="caption" color="text.disabled" component="p" sx={{ fontSize: '14px', display: 'flex', alignItems: 'center', mr: 3 }}>
                 <IconButtonWithCheck sx={{ p: 0.5, color: 'inherit' }} ActionWithCheck={() => {
                   setLikes(liked ? likes - 1 : likes + 1); setLiked(!liked)
-                  likeCommentRequest(comment.id).subscribe({
+                  likeCommentRequest(comment.Id).subscribe({
                     next(value) {
 
                     },
@@ -241,7 +240,7 @@ export default function CommentElement(props: Props) {
                   Action={(e: string) => {
                     if (e.trim() === '') return;
                     const replyInput: ReplyInput = {
-                      comment_Id: props.comment.id,
+                      comment_Id: props.comment.Id,
                       text: e,
                     }
                     createReplyRequest(replyInput).subscribe(
@@ -266,14 +265,14 @@ export default function CommentElement(props: Props) {
               </Box>
               : <></>}
             {
-              comment.replies.valueOf() > 0 ?
-                <Button onClick={() => setOpenReplies(!openReplies)}>{comment.replies.valueOf()} Replies</Button>
+              comment.Replies > 0 ?
+                <Button onClick={() => setOpenReplies(!openReplies)}>{comment.Replies} Replies</Button>
                 :
                 <></>
             }
           </Grid>
           <Grid item xs={1} md={1} lg={1} sx={{ display: 'flex', mb: 'auto' }}>
-            {(comment.user_Id == Account.id || Account.role === 'Admin' || Account.role === 'Moderator') && showButton ? <>
+            {(comment.UserId == Account.Id || Account.Role === 'Administrator' || Account.Role === 'Moderator') && showButton ? <>
               <IconButton
                 aria-label="more"
                 id="long-button"
@@ -294,7 +293,7 @@ export default function CommentElement(props: Props) {
                 open={open}
                 onClose={handleCloseMenu}
               >
-                {comment.user_Id == Account.id &&
+                {comment.UserId == Account.Id &&
                   <MenuItem onClick={() => { setOpenEdit(true); handleCloseMenu(); }} disableRipple>
                     <EditIcon />
                     Edit
@@ -335,7 +334,7 @@ export default function CommentElement(props: Props) {
                   )
                 }
                 {
-                  comment.replies.valueOf() > replies.length && !fetching ?
+                  comment.Replies > replies.length && !fetching ?
                     <Button onClick={() => setOffset(offset + next)}>Load More</Button>
                     : <></>
                 }

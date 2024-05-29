@@ -220,8 +220,8 @@ export default function Header() {
               <Avatar /> My account
             </MenuItem>
             <Divider />
-            {User?.Role === "Admin" &&
-              <MenuItem onClick={() => { navigator('/AdminPanel'); handleClose(); }} hidden={!(User?.Role === "Admin")}>
+            {User?.Role === "Administrator" &&
+              <MenuItem onClick={() => { navigator('/AdminPanel'); handleClose(); }} hidden={!(User?.Role === "Administrator")}>
                 <ListItemIcon>
                   <SupervisorAccountIcon fontSize="small" />
                 </ListItemIcon>

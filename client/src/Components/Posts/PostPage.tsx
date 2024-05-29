@@ -120,7 +120,7 @@ export default function PostPage() {
     // delete
     const [openDelete, setOpenDelete] = useState(false);
     const handleSubmitDelete = () => {
-        deletePostRequest(post?.id!).subscribe({
+        deletePostRequest(post?.Id!).subscribe({
             next(value : any) {
                 enqueueSnackbar(value, {
                     variant: 'success', anchorOrigin: {
@@ -215,24 +215,24 @@ export default function PostPage() {
                                                     flexDirection: 'row',
                                                     alignItems: 'center'
                                                 }}>
-                                                    <Link variant="caption" onClick={(e) => e.stopPropagation()} component={RouterLink} to={'/user/' + post.user_Username} color="primary" sx={{
+                                                    <Link variant="caption" onClick={(e) => e.stopPropagation()} component={RouterLink} to={'/user/' + post.UserUsername} color="primary" sx={{
                                                         mr: 0.5, textDecoration: 'none', cursor: 'pointer', color: 'white',
                                                         ":hover": {
                                                             textDecoration: 'underline'
                                                         }
                                                     }
                                                     } >
-                                                        {post.user_Username}
+                                                        {post.UserUsername}
                                                     </Link>
                                                     <Typography variant="caption" color="text.disabled" component="p" sx={{ mr: 0.5, fontFamily: 'cursive' }}>
                                                         ·
                                                     </Typography>
                                                     <Typography variant="caption" color="text.disabled" component="p" sx={{ mr: 0.5 }}>
-                                                        {timeSince(GetLocalDate(new Date(post.date_Created)))}
+                                                        {timeSince(GetLocalDate(new Date(post.DateCreated)))}
                                                     </Typography>
-                                                    {post.date_Edited ?
+                                                    {post.DateEdited ?
                                                         <>
-                                                            <Tooltip title={timeSince(GetLocalDate(new Date(post.date_Edited)))} sx={{ m: 0 }} placement="right" arrow>
+                                                            <Tooltip title={timeSince(GetLocalDate(new Date(post.DateEdited)))} sx={{ m: 0 }} placement="right" arrow>
                                                                 <Typography variant="caption" color="text.disabled" component="p">
                                                                     (edited)
                                                                 </Typography>
@@ -241,7 +241,7 @@ export default function PostPage() {
                                                         :
                                                         <>
                                                         </>}
-                                                    {(post.user_Id == Account.id || Account.role === 'Admin' || Account.role === 'Moderator') ? <>
+                                                    {(post.UserId == Account.Id || Account.Role === 'Administrator' || Account.Role === 'Moderator') ? <>
                                                         <IconButton
                                                             aria-label="more"
                                                             id="long-button"
@@ -262,7 +262,7 @@ export default function PostPage() {
                                                             open={open}
                                                             onClose={handleCloseMenu}
                                                         >
-                                                            {post.user_Id == Account.id &&
+                                                            {post.UserId == Account.Id &&
                                                                 <MenuItem onClick={() => { setOpenEdit(true); handleCloseMenu(); }} disableRipple>
                                                                     <EditIcon />
                                                                     Edit
@@ -280,7 +280,7 @@ export default function PostPage() {
                                                     </> : <></>}
                                                 </Grid>
                                                 <Typography variant="subtitle1" component="p">
-                                                    {post.title}
+                                                    {post.Title}
                                                 </Typography>
                                                 <Divider sx={{ mb: 1 }} />
                                                 {openEdit ?
@@ -292,7 +292,7 @@ export default function PostPage() {
                                                                 label="Text"
                                                                 name="text"
                                                                 multiline
-                                                                defaultValue={post.text}
+                                                                defaultValue={post.Text}
                                                             />
                                                             <Box sx={{ my: 1, display: 'flex' }}>
                                                                 <Button
@@ -315,11 +315,11 @@ export default function PostPage() {
                                                     :
                                                     <>
                                                         <Typography variant="subtitle1" component="p" sx={{ mt: 2, mb: 2, whiteSpace: 'pre-line', overflowWrap: 'break-word' }}>
-                                                            {post.text}
+                                                            {post.Text}
                                                         </Typography>
                                                     </>
                                                 }
-                                                {
+                                                {/* {
                                                     openCategortyEdit ?
                                                         <>
                                                             <Grid sx={{
@@ -353,7 +353,7 @@ export default function PostPage() {
                                                                 <Chip label={category.title} key={category.id} sx={{ mb: 1, mr: 1 }} variant="outlined"></Chip>
                                                             )}
                                                         </Grid>
-                                                }
+                                                } */}
                                                 <Stack
                                                     direction="row"
                                                     divider={<Divider orientation="vertical" flexItem />}
