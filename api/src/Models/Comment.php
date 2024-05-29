@@ -12,11 +12,12 @@ class Comment extends DbModel
     public string $DateCreated;
     public ?string $DateEdited;
     public int $Likes;
+    public bool $Liked;
     public int $Replies;
     public int $UserId;
 
     public function attributes(): array
     {
-        return ["Text", "DateCreated", "DateEdited", "Likes", "UserId"];
+        return ["Text", "DateCreated", "DateEdited", "Likes", "Liked", "Replies", "UserId"];
     }
 }

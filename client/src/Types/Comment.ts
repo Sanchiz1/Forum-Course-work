@@ -12,6 +12,6 @@ export interface Comment{
 }
 
 export interface CommentInput {
-    post_Id: number,
+    postId: number,
     text: string
 }

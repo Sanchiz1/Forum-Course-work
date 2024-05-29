@@ -35,21 +35,15 @@ export function requestPostById(id: Number) {
 }
 
 export function createPostRequest(PostInput: PostInput) {
-    return GetAjaxObservable(`/posts`, "POST", false, true, PostInput).pipe(
+    return GetAjaxObservable(`/posts`, "POST", true, true, PostInput).pipe(
         map(() => {
             return "Post created successfully";
         })
     );
 }
 
-interface GraphqlUpdatePost {
-    post: {
-        updatePost: string
-    }
-}
-
 export function updatePostRequest(text: String, id: Number) {
-    return GetAjaxObservable(`/posts/${id}`, "PATCH", false, true, {text: text}).pipe(
+    return GetAjaxObservable(`/posts/${id}`, "PATCH", true, true, {text: text}).pipe(
         map(() => {
             return "Post updated successfully";
         })
@@ -57,7 +51,7 @@ export function updatePostRequest(text: String, id: Number) {
 }
 
 export function deletePostRequest(id: Number) {
-    return GetAjaxObservable(`/posts/${id}`, "DELETE", false, true).pipe(
+    return GetAjaxObservable(`/posts/${id}`, "DELETE", true, true).pipe(
         map(() => {
             return "Post updated successfully";
         })

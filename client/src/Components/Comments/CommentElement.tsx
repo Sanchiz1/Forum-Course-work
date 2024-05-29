@@ -171,7 +171,7 @@ export default function CommentElement(props: Props) {
               alignItems: 'center',
               pl: 0.5
             }}>
-              <Link variant="caption" onClick={(e) => e.stopPropagation()} component={RouterLink} to={'/user/' + comment.user_Username} color="primary" sx={{
+              <Link variant="caption" onClick={(e) => e.stopPropagation()} component={RouterLink} to={'/user/' + comment.UserUsername} color="primary" sx={{
                 mr: 0.5, textDecoration: 'none', cursor: 'pointer', color: 'white',
                 ":hover": {
                   textDecoration: 'underline'
@@ -240,7 +240,7 @@ export default function CommentElement(props: Props) {
                   Action={(e: string) => {
                     if (e.trim() === '') return;
                     const replyInput: ReplyInput = {
-                      comment_Id: props.comment.Id,
+                      commentId: props.comment.Id,
                       text: e,
                     }
                     createReplyRequest(replyInput).subscribe(

@@ -16,7 +16,7 @@ class PostRepository
         $this->queryBuilder = new QueryBuilder();
     }
 
-    public function GetPosts(int $userId, string $userTimestamp,int $limit, int $offset, string $orderBy, string $order): array
+    public function GetPosts(int $userId, string $userTimestamp, int $limit, int $offset, string $orderBy, string $order): array
     {
         $query = "SELECT p.Id AS Id,
                     p.Title AS Title, 
@@ -79,7 +79,7 @@ class PostRepository
             ->fetchAll(Post::class);
     }
 
-    public function GetPost(int $userId, int $postId): Post
+    public function GetPost(int $userId, int $postId): ?Post
     {
         $query = "SELECT p.Id as Id,
                     p.Title as Title, 

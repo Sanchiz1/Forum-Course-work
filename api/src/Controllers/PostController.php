@@ -15,6 +15,7 @@ use Core\Controller\Attributes\Route;
 use Core\Controller\Controller;
 use Core\Http\Request;
 use Core\Http\Response;
+use DateTime;
 
 #[Route("posts")]
 class PostController extends Controller
@@ -30,6 +31,8 @@ class PostController extends Controller
     public function GetPosts(Request $request): Response
     {
         $userTimestamp = $request->getQueryParams()["usertimestamp"] ??  date('d-m-y h:i:s');
+        $userTimestamp = (new DateTime($userTimestamp))->format('d-m-y h:i:s');
+
         $orderBy = $request->getQueryParams()["orderby"] ?? "likes";
         $skip = (int)$request->getQueryParams()["skip"] ?? 0;
         $take = (int)$request->getQueryParams()["take"] ?? 10;
@@ -48,7 +51,10 @@ class PostController extends Controller
     public function GetUserPosts(Request $request): Response
     {
         $username = $request->getRouteParam(0);
+
         $userTimestamp = $request->getQueryParams()["usertimestamp"] ??  date('d-m-y h:i:s');
+        $userTimestamp = (new DateTime($userTimestamp))->format('d-m-y h:i:s');
+
         $orderBy = $request->getQueryParams()["orderby"] ?? "likes";
         $skip = (int)$request->getQueryParams()["skip"] ?? 0;
         $take = (int)$request->getQueryParams()["take"] ?? 10;
@@ -68,7 +74,15 @@ class PostController extends Controller
     {
         $postId = (int)$request->getRouteParam(0);
         $userId = $this->UserClaim("id", 0);
-        return $this->json($this->ok($this->postRepository->GetPost($userId, $postId)));
+
+        $res = $this->postRepository->GetPost($userId, $postId);
+
+        if ($res == null) {
+            return $this->json(
+                $this->notFound("Post not found")
+            );
+        }
+        return $this->json($this->ok($res));
     }
 
     #[Authorize]
@@ -81,18 +95,12 @@ class PostController extends Controller
 
         $res = $this->postRepository->AddPost($userId, $title, $text);
 
-        if ($res == null) {
-            return $this->json(
-                $this->badRequest("Failed to create user")
-            );
-        }
-
         return $this->json(
             $this->ok()
         );
     }
 
-    #[Anonymous]
+    #[Authorize]
     #[Patch("{id}")]
     public function UpdatePost(Request $request): Response
     {
@@ -104,7 +112,7 @@ class PostController extends Controller
         return $this->json($this->ok());
     }
 
-    #[Anonymous]
+    #[Authorize]
     #[Delete("{id}")]
     public function DeletePost(Request $request): Response
     {

@@ -116,7 +116,7 @@ export default function CommentsSection(Props: CommentsSectionProps) {
                     Action={(e: string) => {
                         if (e.trim() === '') return;
                         const commentInput: CommentInput = {
-                            post_Id: Props.Post.Id,
+                            postId: Props.Post.Id,
                             text: e
                         }
                         createCommentRequest(commentInput).subscribe(
