@@ -26,8 +26,8 @@ interface Props {
 }
 
 export default function ReplyElement(props: Props) {
-  const [liked, setLiked] = useState(props.reply.liked);
-  const [likes, setLikes] = useState(props.reply.likes.valueOf());
+  const [liked, setLiked] = useState(props.reply.Liked);
+  const [likes, setLikes] = useState(props.reply.Likes);
   const [openReplyInput, setOpenReplyInput] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch()
@@ -57,7 +57,7 @@ export default function ReplyElement(props: Props) {
       return;
     }
 
-    updateReplyRequest(text, props.reply.id).subscribe({
+    updateReplyRequest(text, props.reply.Id).subscribe({
       next(value) {
         enqueueSnackbar(value, {
           variant: 'success', anchorOrigin: {
@@ -81,7 +81,7 @@ export default function ReplyElement(props: Props) {
   const [openDelete, setOpenDelete] = useState(false);
 
   const handleSubmitDelete = () => {
-    deleteReplyRequest(props.reply.id).subscribe({
+    deleteReplyRequest(props.reply.Id).subscribe({
       next(value) {
         enqueueSnackbar(value, {
           variant: 'success', anchorOrigin: {
@@ -119,27 +119,27 @@ export default function ReplyElement(props: Props) {
             alignItems: 'center',
             pl: 0.5
           }}>
-            <Link variant="caption" onClick={(e) => e.stopPropagation()} component={RouterLink} to={'/user/' + props.reply.user_Username} color="primary" sx={{
+            <Link variant="caption" onClick={(e) => e.stopPropagation()} component={RouterLink} to={'/user/' + props.reply.UserUsername} color="primary" sx={{
               mr: 0.5, textDecoration: 'none', cursor: 'pointer', color: 'white',
               ":hover": {
                 textDecoration: 'underline'
               }
             }
             } >
-              {props.reply.user_Username}
+              {props.reply.UserUsername}
             </Link>
             {
-              props.reply.reply_User_Id && props.reply.reply_Username ?
+              props.reply.ToUserId && props.reply.ToUserUsername ?
                 <>
                   <Typography variant="caption" component="p" sx={{ mr: 0.5 }}>to</Typography>
-                  <Link variant="caption" onClick={(e) => e.stopPropagation()} component={RouterLink} to={'/user/' + props.reply.reply_Username} color="primary" sx={{
+                  <Link variant="caption" onClick={(e) => e.stopPropagation()} component={RouterLink} to={'/user/' + props.reply.ToUserUsername} color="primary" sx={{
                     mr: 0.5, textDecoration: 'none', cursor: 'pointer', color: 'white',
                     ":hover": {
                       textDecoration: 'underline'
                     }
                   }
                   } >
-                    {props.reply.reply_Username}
+                    {props.reply.ToUserUsername}
                   </Link>
                 </>
                 : <></>
@@ -148,11 +148,11 @@ export default function ReplyElement(props: Props) {
               ·
             </Typography>
             <Typography variant="caption" color="text.disabled" component="p" sx={{ mr: 0.5 }}>
-              {timeSince(GetLocalDate(new Date(props.reply.date_Created)))}
+              {timeSince(GetLocalDate(new Date(props.reply.DateCreated)))}
             </Typography>
-            {props.reply.date_Edited ?
+            {props.reply.DateEdited ?
               <>
-                <Tooltip title={timeSince(GetLocalDate(new Date(props.reply.date_Edited)))} sx={{ m: 0 }} placement="right" arrow>
+                <Tooltip title={timeSince(GetLocalDate(new Date(props.reply.DateEdited)))} sx={{ m: 0 }} placement="right" arrow>
                   <Typography variant="caption" color="text.disabled" component="p">
                     (edited)
                   </Typography>
@@ -165,10 +165,10 @@ export default function ReplyElement(props: Props) {
           {openEdit ?
             <ReplyInputElement Action={(e) => {
               handleSubmitEdit(e)
-            }} Reply={props.reply.text} setState={setOpenEdit}></ReplyInputElement>
+            }} Reply={props.reply.Text} setState={setOpenEdit}></ReplyInputElement>
             :
             <Typography variant="subtitle1" component="p" sx={{ pl: 0.5, whiteSpace: 'pre-line', overflowWrap: 'break-word' }}>
-              {props.reply.text}
+              {props.reply.Text}
             </Typography>
           }
           <Grid lg={1} md={2} xs={3} item sx={{
@@ -179,7 +179,7 @@ export default function ReplyElement(props: Props) {
             <Typography variant="caption" color="text.disabled" component="p" sx={{ fontSize: '14px', display: 'flex', alignItems: 'center', mr: 3 }}>
               <IconButtonWithCheck sx={{ p: 0.5, color: 'inherit' }} ActionWithCheck={() => {
                 setLikes(liked ? likes - 1 : likes + 1); setLiked(!liked)
-                likeReplyRequest(props.reply.id).subscribe({
+                likeReplyRequest(props.reply.Id).subscribe({
                   next(value) {
 
                   },
@@ -204,8 +204,8 @@ export default function ReplyElement(props: Props) {
                 Action={(e: string) => {
                   if (e.trim() === '') return;
                   const replyInput: ReplyInput = {
-                    comment_Id: props.reply.comment_Id,
-                    reply_User_Id: props.reply.user_Id,
+                    commentId: props.reply.CommentId,
+                    toUserId: props.reply.UserId,
                     text: e,
                   }
                   createReplyRequest(replyInput).subscribe(
@@ -231,7 +231,7 @@ export default function ReplyElement(props: Props) {
             : <></>}
         </Grid>
         <Grid item xs={1} md={1} lg={1} sx={{ display: 'flex', mb: 'auto' }}>
-          {(props.reply.user_Id == Account.id || Account.role === 'Admin' || Account.role === 'Moderator') && showButton && <>
+          {(props.reply.UserId == Account.Id || Account.Role === 'Admin' || Account.Role === 'Moderator') && showButton && <>
             <IconButton
               aria-label="more"
               id="long-button"
@@ -252,7 +252,7 @@ export default function ReplyElement(props: Props) {
               open={open}
               onClose={handleCloseMenu}
             >
-              {props.reply.user_Id == Account.id &&
+              {props.reply.UserId == Account.Id &&
                 <MenuItem onClick={() => { setOpenEdit(true); handleCloseMenu(); }} disableRipple>
                   <EditIcon />
                   Edit

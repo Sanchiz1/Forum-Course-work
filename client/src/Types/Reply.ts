@@ -1,18 +1,18 @@
 export interface Reply{
-    id: Number,
-    text: string,
-    date_Created: Date,
-    date_Edited?: Date,
-    comment_Id: Number,
-    reply_User_Id: Number
-    user_Id: Number,
-    user_Username: string,
-    reply_Username: string
-    likes: Number,
-    liked: boolean
+    Id: number,
+    Text: string,
+    DateCreated: Date,
+    DateEdited?: Date,
+    CommentId: number,
+    ToUserId: number
+    UserId: number,
+    UserUsername: string,
+    ToUserUsername: string
+    Likes: number,
+    Liked: boolean
 }
 export interface ReplyInput {
     text: string,
-    comment_Id: Number,
-    reply_User_Id?: Number,
+    commentId: number,
+    toUserId?: number,
 }
