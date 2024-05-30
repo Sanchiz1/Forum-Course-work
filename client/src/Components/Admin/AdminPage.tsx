@@ -62,7 +62,10 @@ export default function AdminPage() {
             }}>
                 <Grid container spacing={0}>
                     <Grid item xs={12} sx={{ mb: 5 }}>
-                        <Button onClick={() => navigator("/Categories")}>Categories</Button>
+                        <Button onClick={() => navigator("Categories")}>Categories</Button>
+                        <Button onClick={() => navigator("Users")}>Users</Button>
+                        <Button onClick={() => navigator("Posts")}>Posts</Button>
+                        <Button onClick={() => navigator("Statistics")}>Statistics</Button>
                     </Grid>
                     <Grid item xs={12}>
 

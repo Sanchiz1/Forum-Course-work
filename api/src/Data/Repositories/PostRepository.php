@@ -16,8 +16,10 @@ class PostRepository
         $this->queryBuilder = new QueryBuilder();
     }
 
-    public function GetPosts(int $userId, string $userTimestamp, int $limit, int $offset, string $orderBy, string $order): array
+    public function GetPosts(int $userId, string $userTimestamp, int $limit, int $offset, string $orderBy, string $order, string $categories): array
     {
+        $categoryCondition = strlen($categories) > 0 ? "AND pc.CategoryId IN ($categories)" : "";
+
         $query = "SELECT p.Id AS Id,
                     p.Title AS Title, 
                     p.Text AS Text, 
@@ -32,8 +34,9 @@ class PostRepository
                     INNER JOIN user u ON u.Id = p.UserId
                     LEFT JOIN post_like pl ON pl.postId = p.Id
                     LEFT JOIN comment c ON c.PostId = p.Id 
-                    LEFT JOIN Reply r ON r.CommentId = c.Id       
-                    WHERE p.DateCreated < :UserTimestamp
+                    LEFT JOIN reply r ON r.CommentId = c.Id     
+                    LEFT JOIN post_category pc ON pc.PostId = p.Id  
+                    WHERE p.DateCreated < :UserTimestamp $categoryCondition  
                     GROUP BY p.Id
                     ORDER BY $orderBy $order
                     LIMIT :Offset, :Limit";
@@ -46,6 +49,43 @@ class PostRepository
             ->setParameter("Limit", $limit, PDO::PARAM_INT)
             ->fetchAll(Post::class);
     }
+
+    public function GetPostsBySearch(int $userId, string $search, string $userTimestamp, int $limit, int $offset, string $orderBy, string $order, string $categories): array
+    {
+        $categoryCondition = strlen($categories) > 0 ? "AND pc.CategoryId IN ($categories)" : "";
+
+        $query = "SELECT p.Id AS Id,
+                    p.Title AS Title, 
+                    p.Text AS Text, 
+                    p.DateCreated AS DateCreated, 
+                    p.DateEdited AS DateEdited,
+                    u.Id AS UserId, 
+                    u.Username AS UserUsername,
+                    Count(DISTINCT pl.userId) AS Likes,
+                    Count(DISTINCT c.Id) + Count(DISTINCT r.Id) AS Comments,
+                    EXISTS (SELECT * FROM post_like WHERE post_like.PostId = p.Id AND UserId = :UserId) AS Liked
+                    FROM post p
+                    INNER JOIN user u ON u.Id = p.UserId
+                    LEFT JOIN post_like pl ON pl.postId = p.Id
+                    LEFT JOIN comment c ON c.PostId = p.Id 
+                    LEFT JOIN reply r ON r.CommentId = c.Id     
+                    LEFT JOIN post_category pc ON pc.PostId = p.Id  
+                    WHERE p.DateCreated < :UserTimestamp $categoryCondition 
+                        AND (p.Title LIKE :Search OR p.Text LIKE :Search)
+                    GROUP BY p.Id
+                    ORDER BY $orderBy $order
+                    LIMIT :Offset, :Limit";
+
+        return $this->queryBuilder
+            ->custom($query)
+            ->setParameter("UserId", $userId, PDO::PARAM_INT)
+            ->setParameter("Search", $search, PDO::PARAM_STR)
+            ->setParameter("UserTimestamp", $userTimestamp, PDO::PARAM_STR)
+            ->setParameter("Offset", $offset, PDO::PARAM_INT)
+            ->setParameter("Limit", $limit, PDO::PARAM_INT)
+            ->fetchAll(Post::class);
+    }
+
 
     public function GetUserPosts(int $userId, string $userTimestamp, string $username, int $limit, int $offset, string $orderBy, string $order): array
     {
@@ -96,7 +136,8 @@ class PostRepository
                     LEFT JOIN post_like pl ON pl.postId = p.Id
                     LEFT JOIN comment c ON c.PostId = p.Id 
                     LEFT JOIN Reply r ON r.CommentId = c.Id
-                    WHERE p.Id = :PostId";
+                    WHERE p.Id = :PostId
+                    GROUP BY p.Id";
 
         return $this->queryBuilder
             ->custom($query)

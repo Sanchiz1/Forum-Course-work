@@ -19,20 +19,20 @@ import { Post } from '../../Types/Post';
 import { User, UserInput } from '../../Types/User';
 import PostElement from '../Posts/PostElement';
 import { BootstrapInput } from '../UtilComponents/BootstrapInput';
-import UserNotFoundPage from './UserNotFoundPage';
+import NotFoundPage from '../UtilComponents/NotFoundPage';
 
-const validUsernamePattern = /^[a-zA-Z0-9_.]+$/;
+const validUsernamePattern = /^[a-zA-Z0-9_]+$/;
 const validEmailPattern = /^(?=.{0,64}$)[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
 const roles = {
   1: "User",
-  2: "Admin",
+  2: "Administrator",
   3: "Moderator",
 };
 
 export default function UserPage() {
   const [user, setUser] = useState<User>();
-  const [role, setRole] = useState(0);
+  const [role, setRole] = useState(1);
   const [userExists, setUserExists] = useState(true);
   const [openEdit, setOpenEdit] = useState(false);
   let { Username } = useParams();
@@ -180,10 +180,8 @@ export default function UserPage() {
   const handleSubmitEditRole = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    let role_id: number | null = role;
-    if (role === 0) {
-      role_id = null;
-    }
+    let role_id: number = role;
+
     updateUserRoleRequest(user?.Id!, role_id).subscribe({
       next(value) {
         enqueueSnackbar(value, {
@@ -360,7 +358,7 @@ export default function UserPage() {
                                   </Box>
                                 </Collapse>
                               </>}
-                            {(Account.Role === 'Admin' && user.Role !== 'Admin') &&
+                            {(Account.Role === 'Administrator' && user.Role !== 'Administrator') &&
                               <>
                                 <Divider sx={{ mt: 2 }} />
                                 <Button onClick={() => setOpenEdit(!openEdit)}>Settings</Button>
@@ -374,9 +372,9 @@ export default function UserPage() {
                                       onChange={handleChange}
                                       sx={{ mb: 2 }}
                                     >
-                                      <MenuItem value={0}>User</MenuItem>
-                                      <MenuItem value={1}>Moderator</MenuItem>
-                                      <MenuItem value={2}>Admin</MenuItem>
+                                      <MenuItem value={1}>User</MenuItem>
+                                      <MenuItem value={2}>Moderator</MenuItem>
+                                      <MenuItem value={3}>Administrator</MenuItem>
                                     </Select>
                                     <Button
                                       type="submit"
@@ -514,7 +512,7 @@ export default function UserPage() {
           }
         </>
         :
-        <UserNotFoundPage></UserNotFoundPage>
+        <NotFoundPage input='User not found'></NotFoundPage>
       }
     </>
   );

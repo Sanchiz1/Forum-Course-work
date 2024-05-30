@@ -1,17 +1,17 @@
-import { catchError, map } from "rxjs";
+import { NotFoundError, catchError, empty, map, of } from "rxjs";
 import { Post, PostInput } from "../Types/Post";
-import { GetAjaxObservable } from "./loginRequests";
+import { GetAjaxObservable } from "./APIUtils";
 
 export function requestPosts(offset: Number, next: Number, order: String, userTimestamp: Date, categories?: number[]) {
-    return GetAjaxObservable<Post[]>(`/posts?userTimestamp=${userTimestamp.toISOString()}&take=${next}&skip=${offset}&orderBy=${order}`, "GET", false, true).pipe(
+    return GetAjaxObservable<Post[]>(`/posts?userTimestamp=${userTimestamp.toISOString()}&take=${next}&skip=${offset}&orderBy=${order}&categories=${categories}`, "GET", false, true).pipe(
         map((value) => {
             return value.response.data;
         })
     );
 }
 
-export function requestSearchedPosts(offset: Number, next: Number, user_timestamp: Date, search: string) {
-    return GetAjaxObservable<Post[]>(`/posts?take=${next}&skip=${offset}&orderBy=${order}`, "GET", false, true).pipe(
+export function requestSearchedPosts(offset: Number, next: Number, userTimestamp: Date, search: string) {
+    return GetAjaxObservable<Post[]>(`/posts/search?search=${search}&userTimestamp=${userTimestamp.toISOString()}&take=${next}&skip=${offset}`, "GET", false, true).pipe(
         map((value) => {
             return value.response.data;
         })
@@ -30,6 +30,13 @@ export function requestPostById(id: Number) {
     return GetAjaxObservable<Post>(`/posts/${id}`, "GET", false, true).pipe(
         map((value) => {
             return value.response.data;
+        }),
+        catchError((error) => {
+            if(error instanceof NotFoundError){
+                return of(null);
+            }
+
+            throw error
         })
     );
 }
@@ -58,85 +65,16 @@ export function deletePostRequest(id: Number) {
     );
 }
 
-export function addPostCategoryRequest(post_id: number, category_id: number) {
-    return GetAjaxObservable<GraphqlAddPostCategory>(`
-        mutation($Input: AddPostCategoryInput!){
-            post{
-                addPostCategory(input: $Input)
-            }
-          }`,
-        {
-            "Input": {
-                "post_Id": post_id,
-                "category_Id": category_id
-            }
-        }
-    ).pipe(
-        map((value) => {
-
-            if (value.response.errors) {
-
-                throw new Error(value.response.errors[0].message);
-            }
-
-            return value.response.data.post.addPostCategory;
-
-        }),
-        catchError((error) => {
-            throw error
-        })
-    );
-}
-
-interface GraphqlRemovePostCategory {
-    post: {
-        removePostCategory: string
-    }
-}
-
-export function removePostCategoryRequest(post_id: number, category_id: number) {
-    return GetAjaxObservable<GraphqlRemovePostCategory>(`
-        mutation($Input: RemovePostCategoryInput!){
-            post{
-                removePostCategory(input: $Input)
-            }
-          }`,
-        {
-            "Input": {
-                "post_Id": post_id,
-                "category_Id": category_id
-            }
-        }
-    ).pipe(
-        map((value) => {
-
-            if (value.response.errors) {
-
-                throw new Error(value.response.errors[0].message);
-            }
-
-            return value.response.data.post.removePostCategory;
-
-        }),
-        catchError((error) => {
-            throw error
-        })
-    );
-}
-interface GraphqlDeletePost {
-    post: {
-        deletePost: string
-    }
-}
-
-
-interface GraphqlLikePost {
-    post: {
-        likePost: string
-    }
-}
-
 export function likePostRequest(id: Number) {
     
     return GetAjaxObservable(`/posts/like/${id}`, "POST", true, true);
+}
+
+
+export function addPostCategoryRequest(postId: number, categoryId: number) {
+    return GetAjaxObservable(`/categories/post/${postId}?categoryId=${categoryId}`, "POST", true, true);
+}
+
+export function removePostCategoryRequest(postId: number, categoryId: number) {
+    return GetAjaxObservable(`/categories/post/${postId}?categoryId=${categoryId}`, "DELETE", true, true);
 }

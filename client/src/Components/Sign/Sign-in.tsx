@@ -57,7 +57,6 @@ export default function SignIn() {
         navigator(state);
       },
       error(err) {
-        console.log(err)
         dispatch(setGlobalError(err.message));
       },
     });

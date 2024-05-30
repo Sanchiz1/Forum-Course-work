@@ -1,6 +1,10 @@
 import { Box, Container, Typography } from "@mui/material";
 
-export default function UserNotFoundPage() {
+type Props = {
+    input: string
+}
+
+export default function NotFoundPage(props: Props) {
     return (
         <Box
             component="main"
@@ -14,9 +18,9 @@ export default function UserNotFoundPage() {
                 overflow: 'hidden',
             }}
         >
-            <Container sx={{ height: 1, display: "flex", justifyContent: "center", py: '10px' }}>
-                <Typography variant="h3" gutterBottom>
-                    User not found
+            <Container sx={{ height: 1, display: "flex", justifyContent: "center", py: '100px' }}>
+                <Typography variant="h4" gutterBottom>
+                    {props.input}
                 </Typography>
             </Container>
         </Box>

@@ -11,7 +11,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Logout } from '../../API/loginRequests';
-import { DeleteUserRequest, changeUserPasswordRequest } from '../../API/userRequests';
+import { DeleteAccountRequest, changeUserPasswordRequest } from '../../API/userRequests';
 import { getAccount } from '../../Redux/Reducers/AccountReducer';
 import { RootState } from '../../Redux/store';
 import { User } from '../../Types/User';
@@ -43,7 +43,7 @@ export default function Settings() {
             setError('Repeated password is not the same');
             return;
         }
-        changeUserPasswordRequest(Account.id, password, new_password).subscribe({
+        changeUserPasswordRequest(password, new_password).subscribe({
             next(value) {
                 enqueueSnackbar(value, {
                     variant: 'success', anchorOrigin: {
@@ -69,7 +69,7 @@ export default function Settings() {
             setError('Fill password field');
             return;
         }
-        DeleteUserRequest(Account.id, password).subscribe({
+        DeleteAccountRequest(Account.Id, password).subscribe({
             next() {
                 Logout();
                 dispatch(getAccount({} as User)); navigator('/');

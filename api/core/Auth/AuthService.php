@@ -47,7 +47,15 @@ class AuthService
             return false;
         }
 
-        $requirements = $reflectionMethod->getAttributes(Requires::class, ReflectionAttribute::IS_INSTANCEOF);
+        $requiresAttributes = $reflectionClass->getAttributes(Requires::class, ReflectionAttribute::IS_INSTANCEOF);
+        $requirements = array();
+
+        foreach ($requiresAttributes as $attr){
+            $requirement = $attr->newInstance();
+
+            $requirements[$requirement->claim] = $requirement->value;
+        }
+
         $user = Application::$app->authManager?->getUserClaims();
 
         foreach ($requirements as $name => $value) {

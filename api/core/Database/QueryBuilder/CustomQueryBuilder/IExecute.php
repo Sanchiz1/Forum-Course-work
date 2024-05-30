@@ -11,4 +11,6 @@ interface IExecute
     function fetchAll(string $dbModel): array;
 
     function fetchFirst(string $dbModel);
+
+    public function fetchScalar();
 }

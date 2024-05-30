@@ -1,6 +1,6 @@
 import { catchError, map } from "rxjs";
 import { Comment, CommentInput } from "../Types/Comment";
-import { GetAjaxObservable } from "./loginRequests";
+import { GetAjaxObservable } from "./APIUtils";
 
 
 export function requestComments(postId: Number, offset: Number, next: Number, order: String, userTimestamp: Date) {

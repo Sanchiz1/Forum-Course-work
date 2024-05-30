@@ -4,7 +4,6 @@ import Typography from '@mui/material/Typography';
 import { enqueueSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { createCategoryRequest, requestCategories } from '../../API/categoryRequests';
 import { setGlobalError } from '../../Redux/Reducers/AccountReducer';
 import { RootState } from '../../Redux/store';
@@ -121,7 +120,7 @@ export default function CategoriesPage() {
                         </Grid>
                         {
                             categories?.map(category =>
-                                <CategoryElement refetchCategories={refetchCategories} category={category} key={category.id}></CategoryElement>
+                                <CategoryElement refetchCategories={refetchCategories} category={category} key={category.Id}></CategoryElement>
                             )
                         }
                     </Grid>

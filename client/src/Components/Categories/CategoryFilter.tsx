@@ -69,17 +69,17 @@ export default function CategoriesFilter(props: Props) {
                 <List sx={{ maxHeight: 200, py: 0 }}>
                     {categories.map((category) => (
                         <ListItemButton
-                            key={category.id}
-                            onClick={() => handleSelect(category.id)}
+                            key={category.Id}
+                            onClick={() => handleSelect(category.Id)}
                             sx={{py: 0}}
                         >
                             <Checkbox
                                 edge="start"
-                                checked={props.Categories.find(c => c === category.id) !== undefined}
+                                checked={props.Categories.find(c => c === category.Id) !== undefined}
                                 tabIndex={-1}
                                 disableRipple
                             />
-                            {category.title}
+                            {category.Title}
                         </ListItemButton>
                     ))}
                 </List>

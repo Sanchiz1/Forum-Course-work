@@ -73,12 +73,12 @@ export default function CategoriesSelect(props: Props) {
                 <List sx={{maxHeight: 200, py: 0}}>
                     {categories.map((category) => (
                         <ListItemButton
-                            key={category.id}
-                            onClick={() => handleSelect(category.id)}
-                            disabled={props.Categries.find(c => c.id === category.id) !== undefined}
+                            key={category.Id}
+                            onClick={() => handleSelect(category.Id)}
+                            disabled={props.Categries.find(c => c.Id === category.Id) !== undefined}
                             sx={{py: 0}}
                         >
-                            {category.title}
+                            {category.Title}
                         </ListItemButton>
                     ))}
                 </List>

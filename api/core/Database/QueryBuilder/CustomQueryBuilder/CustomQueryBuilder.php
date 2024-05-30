@@ -61,4 +61,18 @@ class CustomQueryBuilder implements IExecute
         $res =  $statement->fetch();
         return !$res ? null : $res;
     }
+
+    public function fetchScalar()
+    {
+        $statement = Database::$db->prepare($this->query);
+
+        foreach ($this->params as $param => $value) {
+            $statement->bindValue(":$param", $value[0], $value[1]);
+        }
+
+        $statement->execute();
+
+        $res =  $statement->fetchColumn();
+        return !$res ? null : $res;
+    }
 }

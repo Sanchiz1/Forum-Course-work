@@ -1,29 +1,18 @@
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { Box, Button, Dialog, DialogActions, DialogTitle, IconButton, MenuItem, Paper, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { Button, Container, CssBaseline, Paper, Link, IconButton, Tooltip, MenuItem, Dialog, DialogTitle, DialogActions, TextField, Box } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
-import { GetLocalDate, timeSince } from '../../Helpers/TimeHelper';
-import { Reply, ReplyInput } from '../../Types/Reply';
-import { Comment } from '../../Types/Comment';
-import { useState } from 'react';
-import ButtonWithCheck from '../UtilComponents/ButtonWithCheck';
-import ReplyInputElement from '../UtilComponents/ReplyInputElement';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../Redux/store';
-import { createReplyRequest, deleteReplyRequest, likeReplyRequest, updateReplyRequest } from '../../API/replyRequests';
 import { enqueueSnackbar } from 'notistack';
-import { setGlobalError } from '../../Redux/Reducers/AccountReducer';
-import IconButtonWithCheck from '../UtilComponents/IconButtonWithCheck';
-import { StyledMenu } from '../UtilComponents/StyledMenu';
-import { Category } from '../../Types/Category';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { deleteCategoryRequest, updateCategoryRequest } from '../../API/categoryRequests';
+import { setGlobalError } from '../../Redux/Reducers/AccountReducer';
+import { RootState } from '../../Redux/store';
+import { Category } from '../../Types/Category';
+import { StyledMenu } from '../UtilComponents/StyledMenu';
 
 interface Props {
     category: Category;
@@ -61,7 +50,7 @@ export default function CategoryElement(props: Props) {
             return;
         }
 
-        updateCategoryRequest(title, props.category.id).subscribe({
+        updateCategoryRequest(title, props.category.Id).subscribe({
             next(value) {
                 enqueueSnackbar(value, {
                     variant: 'success', anchorOrigin: {
@@ -84,7 +73,7 @@ export default function CategoryElement(props: Props) {
     const [openDelete, setOpenDelete] = useState(false);
 
     const handleSubmitDelete = () => {
-        deleteCategoryRequest(props.category.id).subscribe({
+        deleteCategoryRequest(props.category.Id).subscribe({
             next(value) {
               enqueueSnackbar(value, {
                 variant: 'success', anchorOrigin: {
@@ -122,7 +111,7 @@ export default function CategoryElement(props: Props) {
                     }}>
                         <Grid item xs={11} md={11} lg={11}>
                             <Typography variant="subtitle1" component="p" sx={{ p: 0.5, whiteSpace: 'pre-line', overflowWrap: 'break-word' }}>
-                                {props.category.title}
+                                {props.category.Title}
                             </Typography>
                         </Grid>
                         <Grid item xs={1} md={1} lg={1} sx={{ display: 'flex', mb: 'auto' }}>
@@ -181,7 +170,7 @@ export default function CategoryElement(props: Props) {
                                 multiline
                                 minRows={1}
                                 sx={{ mb: 2 }}
-                                defaultValue={props.category.title}
+                                defaultValue={props.category.Title}
                                 error={error != ''}
                                 onFocus={() => setError('')}
                                 helperText={error}

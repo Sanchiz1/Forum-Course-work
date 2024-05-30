@@ -1,6 +1,6 @@
 import { catchError, map } from "rxjs";
 import { Comment, CommentInput } from "../Types/Comment";
-import { GetAjaxObservable } from "./loginRequests";
+import { GetAjaxObservable } from "./APIUtils";
 
 const url = "https://localhost:7295/graphql";
 

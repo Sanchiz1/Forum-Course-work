@@ -32,20 +32,20 @@ export default function UserElement(props: Props) {
                     alignItems: 'center',
                     pl: 0.5
                 }}>
-                    <Link variant="caption" onClick={(e) => e.stopPropagation()} component={RouterLink} to={'/user/' + props.user.username} color="primary" sx={{
+                    <Link variant="caption" onClick={(e) => e.stopPropagation()} component={RouterLink} to={'/user/' + props.user.Username} color="primary" sx={{
                         mr: 0.5, textDecoration: 'none', cursor: 'pointer', color: 'white',
                         ":hover": {
                             textDecoration: 'underline'
                         }
                     }
                     } >
-                        {props.user.username}
+                        {props.user.Username}
                     </Link>
                     <Typography variant="caption" color="text.disabled" component="p" sx={{ mr: 0.5, fontFamily: 'cursive' }}>
                         ·
                     </Typography>
                     <Typography variant="caption" color="text.disabled" component="p" sx={{ mr: 0.5 }}>
-                        {props.user.posts} posts
+                        {props.user.Posts} posts
                     </Typography>
                 </Grid>
                 <Typography variant="subtitle1" component="p" sx={{
@@ -64,7 +64,7 @@ export default function UserElement(props: Props) {
                         background: 'linear-gradient(transparent 70px, #1E1E1E)'
                     }
                 }}>
-                    {props.user.bio}
+                    {props.user.Bio}
                 </Typography>
             </Paper>
         </Grid>

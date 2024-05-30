@@ -29,6 +29,9 @@ import { User } from '../../Types/User';
 import CommentsSection from './CommentsSection';
 import IconButtonWithCheck from '../UtilComponents/IconButtonWithCheck';
 import CategoriesSelect from '../Categories/CategorySelect';
+import { Category } from '../../Types/Category';
+import { requestPostCategories } from '../../API/categoryRequests';
+import NotFoundPage from '../UtilComponents/NotFoundPage';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -41,6 +44,7 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function PostPage() {
 
     const [post, setPost] = useState<Post>();
+    const [categories, setCategories] = useState<Category[]>([]);
     const [liked, SetLiked] = useState(false);
     const [likes, setLikes] = useState(0);
     const [postExists, setPostExists] = useState(true);
@@ -68,7 +72,17 @@ export default function PostPage() {
                 dispatch(setGlobalError(err.message));
             },
         })
+
+        requestPostCategories(parseInt(PostId!)).subscribe({
+            next(value) {
+                setCategories(value)
+            },
+            error(err) {
+                dispatch(setGlobalError(err.message));
+            },
+        })
     }
+
     useEffect(() => {
         fetchPost()
     }, [PostId])
@@ -94,8 +108,6 @@ export default function PostPage() {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         const text = data.get('text')!.toString().trim();
-
-
 
         updatePostRequest(text, post?.Id!).subscribe({
             next(value) {
@@ -148,13 +160,6 @@ export default function PostPage() {
     const handleAddPostCategory = (post_id: number, category_id: number) => {
         addPostCategoryRequest(post_id, category_id).subscribe({
             next(value) {
-                // enqueueSnackbar(value, {
-                //     variant: 'success', anchorOrigin: {
-                //         vertical: 'top',
-                //         horizontal: 'center'
-                //     },
-                //     autoHideDuration: 1500
-                // });
                 fetchPost();
             },
             error(err) {
@@ -166,13 +171,6 @@ export default function PostPage() {
     const handleRemovePostCategory = (post_id: number, category_id: number) => {
         removePostCategoryRequest(post_id, category_id).subscribe({
             next(value) {
-                // enqueueSnackbar(value, {
-                //     variant: 'success', anchorOrigin: {
-                //         vertical: 'top',
-                //         horizontal: 'center'
-                //     },
-                //     autoHideDuration: 1500
-                // });
                 fetchPost();
             },
             error(err) {
@@ -319,17 +317,17 @@ export default function PostPage() {
                                                         </Typography>
                                                     </>
                                                 }
-                                                {/* {
+                                                {
                                                     openCategortyEdit ?
                                                         <>
                                                             <Grid sx={{
                                                                 display: 'flex',
                                                                 flexWrap: 'wrap'
                                                             }}>
-                                                                {post.categories.map(category =>
-                                                                    <Chip label={category.title} key={category.id} sx={{ mb: 1, mr: 1 }} onDelete={() => handleRemovePostCategory(post.id.valueOf(), category.id)} variant="outlined"></Chip>
+                                                                {categories.map(category =>
+                                                                    <Chip label={category.Title} key={category.Id} sx={{ mb: 1, mr: 1 }} onDelete={() => handleRemovePostCategory(post.Id.valueOf(), category.Id)} variant="outlined"></Chip>
                                                                 )}
-                                                                <CategoriesSelect AddCategory={(category_id: number) => handleAddPostCategory(post.id.valueOf(), category_id)} Categries={post.categories}></CategoriesSelect>
+                                                                <CategoriesSelect AddCategory={(category_id: number) => handleAddPostCategory(post.Id, category_id)} Categries={categories}></CategoriesSelect>
                                                             </Grid>
 
                                                             <Box sx={{ my: 1, display: 'flex' }}>
@@ -349,11 +347,11 @@ export default function PostPage() {
                                                             flexWrap: 'wrap'
 
                                                         }}>
-                                                            {post.categories.map(category =>
-                                                                <Chip label={category.title} key={category.id} sx={{ mb: 1, mr: 1 }} variant="outlined"></Chip>
+                                                            {categories.map(category =>
+                                                                <Chip label={category.Title} key={category.Id} sx={{ mb: 1, mr: 1 }} variant="outlined"></Chip>
                                                             )}
                                                         </Grid>
-                                                } */}
+                                                }
                                                 <Stack
                                                     direction="row"
                                                     divider={<Divider orientation="vertical" flexItem />}
@@ -408,7 +406,7 @@ export default function PostPage() {
                     }
                 </>
                 :
-                <>Post not found</>
+                <NotFoundPage input='Post not found'></NotFoundPage>
             }
         </>
     );

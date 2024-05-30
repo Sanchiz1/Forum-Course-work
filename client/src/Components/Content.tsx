@@ -1,5 +1,5 @@
-import CloseIcon from '@mui/icons-material/Close';
-import { Alert, Collapse, IconButton } from '@mui/material';
+import { enqueueSnackbar } from 'notistack';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RouterProvider, createBrowserRouter, redirect } from 'react-router-dom';
 import { isSigned } from '../API/loginRequests';
@@ -54,7 +54,7 @@ const router = (SignInErrorAction: () => void, PermissionErrorAction: () => void
                 loader: async () => CheckRole(SignInErrorAction, PermissionErrorAction),
             },
             {
-                path: "/Categories",
+                path: "/AdminPanel/Categories",
                 element: <CategoriesPage />,
                 loader: async () => CheckRole(SignInErrorAction, PermissionErrorAction),
             }
@@ -79,31 +79,26 @@ export default function AppContent() {
         dispatch(setLogInError('Not signed in'));
     }
 
+    useEffect(() => {
+        if(globalError !== '') {
+            enqueueSnackbar(globalError, {
+                variant: 'error', anchorOrigin: {
+                  vertical: 'top',
+                  horizontal: 'center'
+                },
+                autoHideDuration: 2000
+              });
+            dispatch(setGlobalError(''));
+        }
+    }, [globalError])
+
+
     const setErrorPermission = () => {
         dispatch(setPermissionError('Don`t have permissions for this page'));
     }
 
     return (
         <>
-            <Collapse in={globalError != ''}>
-                <Alert
-                    severity="error"
-                    action={
-                        <IconButton
-                            aria-label="close"
-                            color="inherit"
-                            onClick={() => {
-                                dispatch(setGlobalError(''));
-                            }}
-                        >
-                            <CloseIcon />
-                        </IconButton>
-                    }
-                    sx={{ fontSize: 15 }}
-                >
-                    {globalError}
-                </Alert>
-            </Collapse>
             <RouterProvider router={router(setErrorSignIn, setErrorPermission)} />
         </>
     );

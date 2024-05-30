@@ -2,13 +2,12 @@ import { Box, Chip, Container, CssBaseline, Paper, Skeleton } from '@mui/materia
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { requestSearchedPosts } from '../API/postRequests';
-import { requestUsers } from '../API/userRequests';
+import { requestSearchedUsers } from '../API/userRequests';
 import { setGlobalError } from '../Redux/Reducers/AccountReducer';
-import { RootState } from '../Redux/store';
 import { Post } from '../Types/Post';
 import { User } from '../Types/User';
 import PostElement from './Posts/PostElement';
@@ -43,7 +42,7 @@ export default function Search() {
     }, [searchTitle, search]);
 
     const fetchposts = () => {
-        requestSearchedPosts(offset, next, userTimestamp, search!).subscribe({
+        requestSearchedPosts(offset, next, userTimestamp, `%${search}%`).subscribe({
             next(value) {
                 if (value.length == 0) {
                     setHasMore(false);
@@ -62,7 +61,7 @@ export default function Search() {
     }
 
     const fetchusers = () => {
-        requestUsers(offset, next, userTimestamp, search!).subscribe({
+        requestSearchedUsers(offset, next, userTimestamp, `%${search}%`).subscribe({
             next(value) {
                 if (value.length == 0) {
                     setHasMore(false);
@@ -141,7 +140,7 @@ export default function Search() {
                             <>
                                 {
                                     users?.map((user, index) =>
-                                        <UserElement user={user} key={index} customClickEvent={(event: React.MouseEvent<HTMLDivElement>) => navigator('/user/' + user.username, { state: state })}></UserElement>
+                                        <UserElement user={user} key={index} customClickEvent={(event: React.MouseEvent<HTMLDivElement>) => navigator('/user/' + user.Username, { state: state })}></UserElement>
                                     )
                                 }
                             </>

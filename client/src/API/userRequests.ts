@@ -1,9 +1,6 @@
-import { ajax } from "rxjs/internal/ajax/ajax";
-import { catchError, delay, map, mergeMap, Observable, of, timer } from "rxjs";
-import { redirect } from "react-router-dom";
-import { GetAjaxObservable, TokenType } from "./loginRequests";
-import { getCookie } from "../Helpers/CookieHelper";
+import { NotFoundError, catchError, map, of } from "rxjs";
 import { User, UserInput } from "../Types/User";
+import { GetAjaxObservable } from "./APIUtils";
 
 const url = "https://localhost:8000";
 
@@ -13,72 +10,33 @@ interface GraphqlSearchedUser {
     }
 }
 
-export function requestUsers(offset: Number, next: Number, user_timestamp: Date, search: string) {
-    return GetAjaxObservable<GraphqlSearchedUser>(`
-    query($Input:  GetSearchedUsersInput!){
-        users{
-            searchedUsers(input: $Input){
-                id
-                username
-                email
-                bio
-                registered_At
-                posts
-                comments
-                role
-                role_Id
-        }
-      }
-    }`,
-        {
-            "Input": {
-                "offset": offset,
-                "next": next,
-                "user_Timestamp": user_timestamp.toISOString(),
-                "search": search
-            }
-        },
-        false).pipe(
-            map((value) => {
-                return value.response.data.users.searchedUsers;
-            }),
-            catchError((error) => {
-                throw error
-            })
-        );
+export function requestUsers(offset: Number, next: Number, userTimestamp: Date, search: string) {
+    return GetAjaxObservable<User[]>(`/users?userTimestamp=${userTimestamp.toISOString()}&take=${next}&skip=${offset}`, "GET", false, true).pipe(
+        map((value) => {
+            return value.response.data;
+        })
+    );
 }
 
-interface GraphqlUser {
-    users: {
-        user: User
-    }
+export function requestSearchedUsers(offset: Number, next: Number, userTimestamp: Date, search: string) {
+    return GetAjaxObservable<User[]>(`/users/search?search=${search}&userTimestamp=${userTimestamp.toISOString()}&take=${next}&skip=${offset}`, "GET", false, true).pipe(
+        map((value) => {
+            return value.response.data;
+        })
+    );
 }
 
 export function requestUserById(id: Number) {
-    return GetAjaxObservable<GraphqlUser>(`
-    query($Input:  GetRepliesInput!){
-        user:userById(input: $Input){
-          id
-          username
-          email
-          bio
-          registered_At
-          posts
-          comments
-          role
-          role_Id
-      }
-    }`, {
-        "Input": {
-            "id": id
-        }
-    }
-    ).pipe(
-        map(res => {
-            return res.response.data.users.user;
+    return GetAjaxObservable<User>(`/users/${id}`, "GET", false, true).pipe(
+        map((value) => {
+            return value.response.data; 
         }),
         catchError((error) => {
-            throw error;
+            if(error instanceof NotFoundError){
+                return of(null);
+            }
+
+            throw error
         })
     );
 }
@@ -87,6 +45,13 @@ export function requestUserByUsername(username: string) {
     return GetAjaxObservable<User>(`/users/${username}`, "GET", false, true).pipe(
         map((response) => {
             return response.response.data;
+        }),
+        catchError((error) => {
+            if(error instanceof NotFoundError){
+                return of(null);
+            }
+
+            throw error
         })
     );
 }
@@ -99,19 +64,6 @@ export function requestAccount() {
     );
 }
 
-interface GraphqlCreateUser {
-    data: {
-        user: {
-            createUser: string
-        }
-    }
-    errors: [
-        {
-            message: string
-        }
-    ]
-}
-
 export function createUserRequest(UserInput: UserInput) {
     return GetAjaxObservable(`/account/register`, "POST", false, true, UserInput).pipe(
         map(() => {
@@ -120,119 +72,42 @@ export function createUserRequest(UserInput: UserInput) {
     );
 }
 
-interface GraphqlUpdateUser {
-    user: {
-        user: string
-    }
-}
-
 export function updateUserRequest(UserInput: UserInput) {
-    return GetAjaxObservable<GraphqlUpdateUser>(`
-        mutation($Input: UpdateUserInput!){
-            user{
-              user:updateUser(input: $Input)
-            }
-          }`,
-        {
-            "Input": {
-                "username": UserInput.username,
-                "email": UserInput.email,
-                "bio": UserInput.bio
-            }
-        }
-    ).pipe(
-        map((value) => {
-
-            if (value.response.errors) {
-
-                throw new Error(value.response.errors[0].message);
-            }
-
-            return value.response.data.user.user;
-
-        }),
-        catchError((error) => {
-            throw error
+    return GetAjaxObservable(`/account`, "PATCH", true, true, UserInput).pipe(
+        map(() => {
+            return "User updated successfully";
         })
     );
 }
 
-export function updateUserRoleRequest(user_id: number, role_id: number | null) {
-    return GetAjaxObservable<GraphqlUpdateUser>(`
-        mutation($Input: UpdateUserRoleInput!){
-            user{
-                user:updateUserRole(input: $Input)
-            }
-          }`,
-        {
-            "Input": {
-                "user_Id": user_id,
-                "role_Id": role_id
-            }
-        }
-    ).pipe(
-        map((value) => {
-
-            if (value.response.errors) {
-
-                throw new Error(value.response.errors[0].message);
-            }
-
-            return value.response.data.user.user;
-
-        }),
-        catchError((error) => {
-            throw error
+export function updateUserRoleRequest(userId: number, roleId: number) {
+    return GetAjaxObservable(`/users/role`, "PATCH", true, true, {userId: userId, roleId: roleId}).pipe(
+        map(() => {
+            return "User updated successfully";
         })
     );
 }
 
-export function changeUserPasswordRequest(user_id: number, password: string, new_password: string) {
-    return GetAjaxObservable<GraphqlUpdateUser>(`
-        mutation($Input: ChangeUserPasswordInput!){
-            user{
-                user:changeUserPassword(input: $Input)
-            }
-          }`,
-        {
-            "Input": {
-                "account_Id": user_id,
-                "password": password,
-                "new_Password": new_password,
-            }
-        }
-    ).pipe(
-        map((value) => {
-
-            if (value.response.errors) {
-
-                throw new Error(value.response.errors[0].message);
-            }
-
-            return value.response.data.user.user;
-
-        }),
-        catchError((error) => {
-            throw error
+export function changeUserPasswordRequest(password: string, newPassword: string) {
+    return GetAjaxObservable(`/account/password`, "PATCH", true, true, {password: password, newPassword: newPassword}).pipe(
+        map(() => {
+            return "Password updated successfully";
         })
     );
 }
 
-export function DeleteUserRequest(user_id: number, password?: string) {
-    return GetAjaxObservable<GraphqlUpdateUser>(
-    ).pipe(
-        map((value) => {
+export function DeleteAccountRequest(userId: number, password: string) {
+    return GetAjaxObservable(`/account?userId=${userId}&password=${password}`, "DELETE", true, true).pipe(
+        map(() => {
+            return "Account deleted successfully";
+        })
+    );
+}
 
-            if (value.response.errors) {
-
-                throw new Error(value.response.errors[0].message);
-            }
-
-            return value.response.data.user.user;
-
-        }),
-        catchError((error) => {
-            throw error
+export function DeleteUserRequest(userId: number, password: string) {
+    return GetAjaxObservable(`/users?userId=${userId}&password=${password}`, "DELETE", true, true).pipe(
+        map(() => {
+            return "User deleted successfully";
         })
     );
 }
