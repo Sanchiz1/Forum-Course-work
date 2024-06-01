@@ -29,7 +29,7 @@ class ReplyController extends Controller
     public function GetCommentReplies(Request $request): Response
     {
         $userTimestamp = $request->getQueryParams()["usertimestamp"] ??  date('d-m-y h:i:s');
-        $userTimestamp = date("y-m-d h:i:s", strtotime($userTimestamp));
+        $userTimestamp = date("yy-m-d h:i:s", strtotime($userTimestamp));
 
         $commentId = (int)$request->getQueryParams()["commentid"];
         $skip = (int)$request->getQueryParams()["skip"] ?? 0;

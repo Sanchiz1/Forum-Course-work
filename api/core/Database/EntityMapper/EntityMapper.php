@@ -66,7 +66,7 @@ class EntityMapper implements IWhere, IInclude, IThenInclude
         return $this;
     }
 
-    public function where(string $firstColumn, string $condition, string $secondColumn = "", $value = null): IWhere
+    public function where(string $firstColumn, string $condition, string $secondColumn = "", $value = null, $type = ""): IWhere
     {
         $column1 = $this->getPropertyAlias($firstColumn);
 
@@ -81,12 +81,12 @@ class EntityMapper implements IWhere, IInclude, IThenInclude
         $param = $this->GetParameterName();
 
         $this->queryBuilder->where("$column1 $condition $param")
-            ->setParameter($param, $value);
+            ->setParameter(substr($param, 1), $value, $type);
 
         return $this;
     }
 
-    public function and(string $firstColumn, string $condition, string $secondColumn = "", $value = null): IWhere
+    public function and(string $firstColumn, string $condition, string $secondColumn = "", $value = null, $type = ""): IWhere
     {
         $column1 = $this->getPropertyAlias($firstColumn);
 
@@ -101,12 +101,12 @@ class EntityMapper implements IWhere, IInclude, IThenInclude
         $param = $this->GetParameterName();
 
         $this->queryBuilder->and("$column1 $condition $param")
-            ->setParameter($param, $value);
+            ->setParameter(substr($param, 1), $value, $type);
 
         return $this;
     }
 
-    public function or(string $firstColumn, string $condition, string $secondColumn = "", $value = null): IWhere
+    public function or(string $firstColumn, string $condition, string $secondColumn = "", $value = null, $type = ""): IWhere
     {
         $column1 = $this->getPropertyAlias($firstColumn);
 
@@ -121,7 +121,7 @@ class EntityMapper implements IWhere, IInclude, IThenInclude
         $param = $this->GetParameterName();
 
         $this->queryBuilder->or("$column1 $condition $param")
-            ->setParameter($param, $value);
+            ->setParameter(substr($param, 1), $value, $type);
 
         return $this;
     }

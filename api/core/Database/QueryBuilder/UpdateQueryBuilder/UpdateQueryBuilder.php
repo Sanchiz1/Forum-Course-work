@@ -40,9 +40,9 @@ class UpdateQueryBuilder implements IUpdate, ISet, IWhere
         return $this;
     }
 
-    public function setParameter(string $parameter, $value): IExecute
+    public function setParameter(string $parameter, $value, $type): IExecute
     {
-        $this->params[$parameter] = $value;
+        $this->params[$parameter] = [$value, $type];
         return $this;
     }
 
@@ -50,6 +50,10 @@ class UpdateQueryBuilder implements IUpdate, ISet, IWhere
     {
         $statement = Database::$db->prepare($this->query);
 
-        return $statement->execute($this->params);
+        foreach ($this->params as $param => $value) {
+            $statement->bindValue(":$param", $value[0], $value[1]);
+        }
+
+        return $statement->execute();
     }
 }

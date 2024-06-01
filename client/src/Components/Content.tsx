@@ -20,6 +20,7 @@ import UserPage from './User/UserPage';
 import UsersAdminPage from './Admin/Users/UsersAdminPage';
 import PostsAdminPage from './Admin/Posts/PostsAdminPage';
 import NotFoundPage from './UtilComponents/NotFoundPage';
+import ReportsPage from './Reports/ReportsPage';
 
 const router = (SignInErrorAction: () => void, PermissionErrorAction: () => void) => createBrowserRouter([
     {
@@ -54,22 +55,27 @@ const router = (SignInErrorAction: () => void, PermissionErrorAction: () => void
             {
                 path: "/AdminPanel",
                 element: <AdminPage />,
-                loader: async () => CheckRole(SignInErrorAction, PermissionErrorAction),
+                loader: async () => CheckRole(SignInErrorAction, PermissionErrorAction, ["Administrator"]),
             },
             {
                 path: "/AdminPanel/Categories",
                 element: <CategoriesPage />,
-                loader: async () => CheckRole(SignInErrorAction, PermissionErrorAction),
+                loader: async () => CheckRole(SignInErrorAction, PermissionErrorAction, ["Administrator"]),
             },
             {
                 path: "/AdminPanel/Users",
                 element: <UsersAdminPage />,
-                loader: async () => CheckRole(SignInErrorAction, PermissionErrorAction),
+                loader: async () => CheckRole(SignInErrorAction, PermissionErrorAction, ["Administrator"]),
             },
             {
                 path: "/AdminPanel/Posts",
                 element: <PostsAdminPage />,
-                loader: async () => CheckRole(SignInErrorAction, PermissionErrorAction),
+                loader: async () => CheckRole(SignInErrorAction, PermissionErrorAction, ["Administrator"]),
+            },
+            {
+                path: "/Reports",
+                element: <ReportsPage />,
+                loader: async () => CheckRole(SignInErrorAction, PermissionErrorAction, ["Administrator", "Moderator"]),
             },
             {
                 path: "/Sign-in",
@@ -131,14 +137,14 @@ function CheckSigned(Action: () => void) {
     return null;
 }
 
-async function CheckRole(SignInErrorAction: () => void, PermissionErrorAction: () => void) {
+async function CheckRole(SignInErrorAction: () => void, PermissionErrorAction: () => void, roles: string[]) {
     if (!isSigned()) {
         SignInErrorAction();
         return redirect("/")
     };
     try {
         const result = await requestAccount().toPromise();
-        if (result!.Role !== "Administrator") {
+        if (!roles.includes(result!.Role)) {
             PermissionErrorAction();
             return redirect("/");
         };

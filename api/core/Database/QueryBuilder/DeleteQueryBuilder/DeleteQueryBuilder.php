@@ -33,9 +33,9 @@ class DeleteQueryBuilder implements IDelete, IWhere
         return $this;
     }
 
-    public function setParameter(string $parameter, $value): IExecute
+    public function setParameter(string $parameter, $value, $type): IExecute
     {
-        $this->params[$parameter] = $value;
+        $this->params[$parameter] = [$value, $type];
         return $this;
     }
 
@@ -43,6 +43,12 @@ class DeleteQueryBuilder implements IDelete, IWhere
     {
         $statement = Database::$db->prepare($this->query);
 
-        return $statement->execute($this->params);
+        foreach ($this->params as $param => $value) {
+            $statement->bindValue(":$param", $value[0], $value[1]);
+        }
+
+        error_log($this->query);
+        error_log(json_encode($this->params));
+        return $statement->execute();
     }
 }

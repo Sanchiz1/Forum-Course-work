@@ -10,6 +10,7 @@ use Core\Database\QueryBuilder\InsertQueryBuilder\IInsert;
 use Core\Database\QueryBuilder\InsertQueryBuilder\InsertQueryBuilder;
 use Core\Database\QueryBuilder\QueryBuilder;
 use Core\Database\QueryBuilder\SelectQueryBuilder\SelectQueryBuilder;
+use PDO;
 
 class DbSet
 {
@@ -26,7 +27,7 @@ class DbSet
 
     public function insert(DbModel $model): string
     {
-        $attributes = $model->attributes();
+        $attributes = $model->insertColumns();
         $params = array_map(fn($attr) => ":$attr", $attributes);
 
         $builder = $this->queryBuilder->create($this->tableName)->columns(implode(", ", $attributes))
@@ -49,11 +50,11 @@ class DbSet
 
         foreach ($attributes as $attribute) {
             $builder->set("$attribute", ":$attribute")
-                ->setParameter(":$attribute", $model->{$attribute});
+                ->setParameter("$attribute", $model->{$attribute}, PDO::PARAM_STR);
         }
 
         $builder->where($model->primaryKey() . " = :" . $model->primaryKey())
-            ->setParameter(":" . $model->primaryKey(), $model->{$model->primaryKey()});
+            ->setParameter($model->primaryKey(), $model->{$model->primaryKey()}, PDO::PARAM_INT);
 
         return $builder->execute();
     }
@@ -63,7 +64,7 @@ class DbSet
         $builder = $this->queryBuilder->delete($this->tableName);
 
         $builder->where($model->primaryKey() . " = :" . $model->primaryKey())
-            ->setParameter(":" . $model->primaryKey(), $model->{$model->primaryKey()});
+            ->setParameter($model->primaryKey(), $model->{$model->primaryKey()}, PDO::PARAM_INT);
 
         return $builder->execute();
     }

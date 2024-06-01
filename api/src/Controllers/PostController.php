@@ -31,7 +31,7 @@ class PostController extends Controller
     public function GetPosts(Request $request): Response
     {
         $userTimestamp = $request->getQueryParams()["usertimestamp"] ??  date('d-m-y h:i:s');
-        $userTimestamp = date("y-m-d h:i:s", strtotime($userTimestamp));
+        $userTimestamp = date("yy-m-d h:i:s", strtotime($userTimestamp));
 
         $orderBy = $request->getQueryParams()["orderby"] ?? "likes";
         $skip = (int)$request->getQueryParams()["skip"] ?? 0;
@@ -54,7 +54,7 @@ class PostController extends Controller
     public function GetPostsBySearch(Request $request): Response
     {
         $userTimestamp = $request->getQueryParams()["usertimestamp"] ??  date('d-m-y h:i:s');
-        $userTimestamp = date("y-m-d h:i:s", strtotime($userTimestamp));
+        $userTimestamp = date("yy-m-d h:i:s", strtotime($userTimestamp));
 
         $orderBy = $request->getQueryParams()["orderby"] ?? "likes";
         $order = $request->getQueryParams()["order"] ?? "ASC";
@@ -80,7 +80,7 @@ class PostController extends Controller
         $username = $request->getRouteParam(0);
 
         $userTimestamp = $request->getQueryParams()["usertimestamp"] ??  date('d-m-y h:i:s');
-        $userTimestamp = date("y-m-d h:i:s", strtotime($userTimestamp));
+        $userTimestamp = date("yy-m-d h:i:s", strtotime($userTimestamp));
 
         $orderBy = $request->getQueryParams()["orderby"] ?? "likes";
         $skip = (int)$request->getQueryParams()["skip"] ?? 0;

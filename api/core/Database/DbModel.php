@@ -21,4 +21,10 @@ abstract class DbModel extends \Core\Database\Model
     {
         return array_merge([$this->primaryKey()], $this->selectAttributes());
     }
+
+
+    public function insertColumns(): array
+    {
+        return $this->attributes();
+    }
 }

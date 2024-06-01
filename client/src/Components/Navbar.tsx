@@ -11,6 +11,7 @@ import CardContent from '@mui/material/CardContent';
 import Divider from '@mui/material/Divider';
 import Link from '@mui/material/Link';
 import ListItemIcon from '@mui/material/ListItemIcon';
+import EmojiFlagsIcon from '@mui/icons-material/EmojiFlags';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
@@ -220,6 +221,13 @@ export default function Header() {
               <Avatar /> My account
             </MenuItem>
             <Divider />
+            {(User?.Role === "Administrator" || User?.Role === "Moderator") &&
+              <MenuItem onClick={() => { navigator('/Reports'); handleClose(); }} hidden={!(User?.Role === "Administrator" || User?.Role === "Moderator")}>
+                <ListItemIcon>
+                  <EmojiFlagsIcon fontSize="small" />
+                </ListItemIcon>
+                Reports
+              </MenuItem>}
             {User?.Role === "Administrator" &&
               <MenuItem onClick={() => { navigator('/AdminPanel'); handleClose(); }} hidden={!(User?.Role === "Administrator")}>
                 <ListItemIcon>

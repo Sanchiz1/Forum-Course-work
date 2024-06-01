@@ -31,7 +31,7 @@ class UserController extends Controller
     public function GetUsers(Request $request): Response
     {
         $userTimestamp = $request->getQueryParams()["usertimestamp"] ??  date('d-m-y h:i:s');
-        $userTimestamp = date("y-m-d h:i:s", strtotime($userTimestamp));
+        $userTimestamp = date("yy-m-d h:i:s", strtotime($userTimestamp));
 
         $orderBy = $request->getQueryParams()["orderby"] ?? "Id";
         $order = $request->getQueryParams()["order"] ?? "DESC";
@@ -50,7 +50,7 @@ class UserController extends Controller
     public function GetUsersBySearch(Request $request): Response
     {
         $userTimestamp = $request->getQueryParams()["usertimestamp"] ??  date('d-m-y h:i:s');
-        $userTimestamp = date("y-m-d h:i:s", strtotime($userTimestamp));
+        $userTimestamp = date("yy-m-d h:i:s", strtotime($userTimestamp));
 
         $orderBy = $request->getQueryParams()["orderby"] ?? "Id";
         $order = $request->getQueryParams()["order"] ?? "ASC";
@@ -104,7 +104,7 @@ class UserController extends Controller
     }
 
     #[Authorize]
-    #[Requires("role", "Administrator")]
+    #[Requires("role", ["Administrator"])]
     #[Patch("role")]
     public function UpdateUserRole(Request $request): Response
     {
@@ -119,7 +119,7 @@ class UserController extends Controller
     }
 
     #[Authorize]
-    #[Requires("role", "Administrator")]
+    #[Requires("role", ["Administrator"])]
     #[Delete("")]
     public function DeleteUser(Request $request): Response
     {

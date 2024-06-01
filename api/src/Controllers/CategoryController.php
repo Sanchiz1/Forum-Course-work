@@ -63,7 +63,7 @@ class CategoryController extends Controller
     }
 
     #[Authorize]
-    #[Requires("role", "Administrator")]
+    #[Requires("role", ["Administrator"])]
     #[Post("")]
     public function AddCategory(Request $request): Response
     {
@@ -77,7 +77,7 @@ class CategoryController extends Controller
     }
 
     #[Authorize]
-    #[Requires("role", "Administrator")]
+    #[Requires("role", ["Administrator"])]
     #[Patch("{id}")]
     public function UpdateCategory(Request $request): Response
     {
@@ -92,7 +92,7 @@ class CategoryController extends Controller
     }
 
     #[Authorize]
-    #[Requires("role", "Administrator")]
+    #[Requires("role", ["Administrator"])]
     #[Delete("{id}")]
     public function DeleteCategory(Request $request): Response
     {

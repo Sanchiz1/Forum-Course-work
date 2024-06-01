@@ -9,7 +9,8 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { RootState } from '../../Redux/store';
 import {
     Stack, Container, CssBaseline, IconButton, LinearProgress,
-    TextField, Link, MenuItem, Button, Dialog, DialogTitle, DialogActions, Tooltip, Chip
+    TextField, Link, MenuItem, Button, Dialog, DialogTitle, DialogActions, Tooltip, Chip,
+    DialogContent
 } from '@mui/material';
 import CategoryIcon from '@mui/icons-material/Category';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -32,6 +33,9 @@ import CategoriesSelect from '../Categories/CategorySelect';
 import { Category } from '../../Types/Category';
 import { requestPostCategories } from '../../API/categoryRequests';
 import NotFoundPage from '../UtilComponents/NotFoundPage';
+import EmojiFlagsIcon from '@mui/icons-material/EmojiFlags';
+import { isSigned } from '../../API/loginRequests';
+import { createReportRequest } from '../../API/reportRequests';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -133,7 +137,7 @@ export default function PostPage() {
     const [openDelete, setOpenDelete] = useState(false);
     const handleSubmitDelete = () => {
         deletePostRequest(post?.Id!).subscribe({
-            next(value : any) {
+            next(value: any) {
                 enqueueSnackbar(value, {
                     variant: 'success', anchorOrigin: {
                         vertical: 'top',
@@ -154,6 +158,29 @@ export default function PostPage() {
             },
         })
     }
+
+    // report
+    const [openReport, setOpenReport] = useState(false);
+    const [reportText, setReportText] = useState('');
+    const handleSubmitReport = (text: string) => {
+        createReportRequest(post?.Id!, text).subscribe({
+            next(value: any) {
+                enqueueSnackbar(value, {
+                    variant: 'success', anchorOrigin: {
+                        vertical: 'top',
+                        horizontal: 'center'
+                    },
+                    autoHideDuration: 1500
+                });
+                setReportText('');
+                setOpenReport(false);
+            },
+            error(err) {
+                setGlobalError(err.message)
+            },
+        })
+    }
+
 
 
     // categories
@@ -239,43 +266,54 @@ export default function PostPage() {
                                                         :
                                                         <>
                                                         </>}
-                                                    {(post.UserId == Account.Id || Account.Role === 'Administrator' || Account.Role === 'Moderator') ? <>
-                                                        <IconButton
-                                                            aria-label="more"
-                                                            id="long-button"
-                                                            aria-controls={open ? 'long-menu' : undefined}
-                                                            aria-expanded={open ? 'true' : undefined}
-                                                            aria-haspopup="true"
-                                                            onClick={handleClickMenu}
-                                                            sx={{ ml: 'auto', p: 0.5 }}
-                                                        >
-                                                            <MoreVertIcon />
-                                                        </IconButton>
-                                                        <StyledMenu
-                                                            id="demo-customized-menu"
-                                                            MenuListProps={{
-                                                                'aria-labelledby': 'demo-customized-button',
-                                                            }}
-                                                            anchorEl={anchorEl}
-                                                            open={open}
-                                                            onClose={handleCloseMenu}
-                                                        >
-                                                            {post.UserId == Account.Id &&
-                                                                <MenuItem onClick={() => { setOpenEdit(true); handleCloseMenu(); }} disableRipple>
-                                                                    <EditIcon />
-                                                                    Edit
+
+                                                    {isSigned() &&
+                                                        <>
+                                                            <IconButton
+                                                                aria-label="more"
+                                                                id="long-button"
+                                                                aria-controls={open ? 'long-menu' : undefined}
+                                                                aria-expanded={open ? 'true' : undefined}
+                                                                aria-haspopup="true"
+                                                                onClick={handleClickMenu}
+                                                                sx={{ ml: 'auto', p: 0.5 }}
+                                                            >
+                                                                <MoreVertIcon />
+                                                            </IconButton>
+                                                            <StyledMenu
+                                                                id="demo-customized-menu"
+                                                                MenuListProps={{
+                                                                    'aria-labelledby': 'demo-customized-button',
+                                                                }}
+                                                                anchorEl={anchorEl}
+                                                                open={open}
+                                                                onClose={handleCloseMenu}
+                                                            >
+                                                                {post.UserId == Account.Id &&
+                                                                    <MenuItem onClick={() => { setOpenEdit(true); handleCloseMenu(); }} disableRipple>
+                                                                        <EditIcon />
+                                                                        Edit
+                                                                    </MenuItem>
+                                                                }
+                                                                {(post.UserId == Account.Id || Account.Role === 'Administrator' || Account.Role === 'Moderator') &&
+                                                                    <MenuItem onClick={() => { setOpenCategortyEdit(true); handleCloseMenu(); }} disableRipple>
+                                                                        <CategoryIcon />
+                                                                        Categories
+                                                                    </MenuItem>
+                                                                }
+                                                                {(post.UserId == Account.Id || Account.Role === 'Administrator' || Account.Role === 'Moderator') &&
+                                                                    <MenuItem onClick={() => { setOpenDelete(true); handleCloseMenu(); }} disableRipple>
+                                                                        <DeleteIcon />
+                                                                        Delete
+                                                                    </MenuItem>
+                                                                }
+                                                                <MenuItem onClick={() => { setOpenReport(true); handleCloseMenu(); }} disableRipple>
+                                                                    <EmojiFlagsIcon />
+                                                                    Report
                                                                 </MenuItem>
-                                                            }
-                                                            <MenuItem onClick={() => { setOpenCategortyEdit(true); handleCloseMenu(); }} disableRipple>
-                                                                <CategoryIcon />
-                                                                Categories
-                                                            </MenuItem>
-                                                            <MenuItem onClick={() => { setOpenDelete(true); handleCloseMenu(); }} disableRipple>
-                                                                <DeleteIcon />
-                                                                Delete
-                                                            </MenuItem>
-                                                        </StyledMenu>
-                                                    </> : <></>}
+                                                            </StyledMenu>
+                                                        </>
+                                                    }
                                                 </Grid>
                                                 <Typography variant="subtitle1" component="p">
                                                     {post.Title}
@@ -386,13 +424,46 @@ export default function PostPage() {
                                         aria-labelledby="alert-dialog-title"
                                         aria-describedby="alert-dialog-description"
                                     >
-                                        <DialogTitle id="alert-dialog-title" sx={{pb: 0}}>
+                                        <DialogTitle id="alert-dialog-title" sx={{ pb: 0 }}>
                                             {"Are You sure you want to delete this post?"}
                                         </DialogTitle>
                                         <DialogActions>
                                             <Button onClick={() => setOpenDelete(false)}>Cancel</Button>
                                             <Button onClick={() => handleSubmitDelete()} autoFocus>
                                                 Delete
+                                            </Button>
+                                        </DialogActions>
+                                    </Dialog>
+
+
+                                    <Dialog
+                                        open={openReport}
+                                        onClose={() => setOpenReport(false)}
+                                        aria-labelledby="alert-dialog-title"
+                                        aria-describedby="alert-dialog-description"
+                                        fullWidth
+                                    >
+                                        <DialogTitle id="alert-dialog-title" sx={{ pb: 0 }}>
+                                            {"Make a report"}
+                                        </DialogTitle>
+                                        <DialogContent>
+                                            <TextField
+                                                autoFocus
+                                                required
+                                                margin="normal"
+                                                id="text"
+                                                name="text"
+                                                fullWidth
+                                                multiline
+                                                minRows={2}
+                                                inputProps={{ maxLength: 100 }}
+                                                onChange={(e) => setReportText(e.target.value)}
+                                            />
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={() => setOpenReport(false)}>Cancel</Button>
+                                            <Button onClick={() => handleSubmitReport(reportText)} autoFocus>
+                                                Report
                                             </Button>
                                         </DialogActions>
                                     </Dialog>

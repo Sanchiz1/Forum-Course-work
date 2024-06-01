@@ -59,7 +59,7 @@ class AuthService
         $user = Application::$app->authManager?->getUserClaims();
 
         foreach ($requirements as $name => $value) {
-            if($user[$name] != $value){
+            if(!in_array($user[$name], $value)){
                 return false;
             }
         }
@@ -107,7 +107,7 @@ class AuthService
         $user = Application::$app->authManager?->getUserClaims();
 
         foreach ($requirements as $name => $value) {
-            if($user[$name] != $value){
+            if(!in_array($user[$name], $value)){
                 return false;
             }
         }

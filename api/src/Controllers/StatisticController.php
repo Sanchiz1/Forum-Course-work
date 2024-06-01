@@ -11,7 +11,7 @@ use Core\Controller\Controller;
 use Core\Http\Request;
 use Core\Http\Response;
 
-#[Requires("role", "Administrator")]
+#[Requires("role", ["Administrator"])]
 #[Route("statistics")]
 class StatisticController extends Controller
 {
