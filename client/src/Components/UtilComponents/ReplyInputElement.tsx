@@ -1,10 +1,6 @@
-import { useState } from 'react';
-import { Button, Box, TextField } from "@mui/material";
+import { Box, Button, TextField } from "@mui/material";
 import { SxProps, Theme } from "@mui/material/styles";
-import { OverridableStringUnion } from '@mui/types';
-import { useDispatch } from "react-redux";
-import { isSigned } from "../../API/loginRequests";
-import { setLogInError } from "../../Redux/Reducers/AccountReducer";
+import { useState } from 'react';
 
 interface ReplyInputProps {
     Action: (e: string) => void,
@@ -14,11 +10,11 @@ interface ReplyInputProps {
 }
 
 export default function ReplyInputElement(Props: ReplyInputProps) {
-    const dispatch = useDispatch();
     const [comment, setComment] = useState(Props.Reply);
 
     const handlesubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        if(comment == null || comment?.trim() == '') return;
         Props.Action(comment!.toString())
         setComment('');
         Props.setState(false);

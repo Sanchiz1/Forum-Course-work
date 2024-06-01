@@ -26,10 +26,10 @@ interface Props {
 }
 
 export default function ReplyElement(props: Props) {
-  const [liked, setLiked] = useState(props.reply.Liked);
-  const [likes, setLikes] = useState(props.reply.Likes);
+  const { reply, refreshComment } = props;
+  const [liked, setLiked] = useState(reply.Liked);
+  const [likes, setLikes] = useState(reply.Likes);
   const [openReplyInput, setOpenReplyInput] = useState(false);
-  const navigate = useNavigate();
   const dispatch = useDispatch()
   const Account = useSelector((state: RootState) => state.account.Account);
 
@@ -68,7 +68,7 @@ export default function ReplyElement(props: Props) {
         });
         setError('');
         setOpenEdit(false);
-        props.refreshComment();
+        refreshComment();
       },
       error(err) {
         setGlobalError(err.message);
@@ -178,10 +178,9 @@ export default function ReplyElement(props: Props) {
           }}>
             <Typography variant="caption" color="text.disabled" component="p" sx={{ fontSize: '14px', display: 'flex', alignItems: 'center', mr: 3 }}>
               <IconButtonWithCheck sx={{ p: 0.5, color: 'inherit' }} ActionWithCheck={() => {
-                setLikes(liked ? likes - 1 : likes + 1); setLiked(!liked)
                 likeReplyRequest(props.reply.Id).subscribe({
                   next(value) {
-
+                    setLikes(liked ? likes - 1 : likes + 1); setLiked(!liked);
                   },
                   error(err) {
                     dispatch(setGlobalError(err.message));

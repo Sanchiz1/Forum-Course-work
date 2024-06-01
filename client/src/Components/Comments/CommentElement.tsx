@@ -123,15 +123,17 @@ export default function CommentElement(props: Props) {
   const [fetching, setFetching] = useState(false);
   const [userTimestamp, setUserTimestamp] = useState(new Date());
   const [offset, setOffset] = useState(0);
+  const [update, setUpdate] = useState<boolean>(false);
 
   const refetchReplies = () => {
-    setFetching(true);
     SetReplies([]);
-    setUserTimestamp(new Date())
-    setOffset(0);
+    setFetching(true);
+    setUserTimestamp(new Date());
+    offset === 0 ? setUpdate(!update) : setOffset(0);
   }
+
   const fetchReplies = () => {
-    requestReplies(comment.Id, offset, next, order, userTimestamp).subscribe({
+    requestReplies(comment.Id,   offset, next, order, userTimestamp).subscribe({
       next(result) {
         SetReplies([...replies, ...result]);
         setFetching(false);
@@ -146,7 +148,7 @@ export default function CommentElement(props: Props) {
     if (!openReplies) return;
     setFetching(true);
     fetchReplies();
-  }, [offset, userTimestamp])
+  }, [offset, update])
 
   useEffect(() => {
     refetchReplies()
@@ -329,8 +331,8 @@ export default function CommentElement(props: Props) {
             openReplies ?
               <Box sx={{ pl: 5 }}>
                 {
-                  replies.map((reply, index) =>
-                    <ReplyElement reply={reply} key={index} refreshComment={refetchComment}></ReplyElement>
+                  replies.map((reply) =>
+                    <ReplyElement reply={reply} key={reply.Id} refreshComment={refetchComment}></ReplyElement>
                   )
                 }
                 {

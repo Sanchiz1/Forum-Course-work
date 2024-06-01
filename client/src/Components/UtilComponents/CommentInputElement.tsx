@@ -21,6 +21,7 @@ export default function CommentInputElement(Props: CommentInputProps) {
 
     const handlesubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        if(comment == null || comment?.trim() == '') return;
         Props.Action(comment!.toString())
         setComment('');
         setFocuse(false);

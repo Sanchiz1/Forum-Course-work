@@ -65,7 +65,6 @@ export default function AdminPage() {
                         <Button onClick={() => navigator("Categories")}>Categories</Button>
                         <Button onClick={() => navigator("Users")}>Users</Button>
                         <Button onClick={() => navigator("Posts")}>Posts</Button>
-                        <Button onClick={() => navigator("Statistics")}>Statistics</Button>
                     </Grid>
                     <Grid item xs={12}>
 
