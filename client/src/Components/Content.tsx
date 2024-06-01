@@ -19,6 +19,7 @@ import Settings from './User/Settings';
 import UserPage from './User/UserPage';
 import UsersAdminPage from './Admin/Users/UsersAdminPage';
 import PostsAdminPage from './Admin/Posts/PostsAdminPage';
+import NotFoundPage from './UtilComponents/NotFoundPage';
 
 const router = (SignInErrorAction: () => void, PermissionErrorAction: () => void) => createBrowserRouter([
     {
@@ -69,16 +70,20 @@ const router = (SignInErrorAction: () => void, PermissionErrorAction: () => void
                 path: "/AdminPanel/Posts",
                 element: <PostsAdminPage />,
                 loader: async () => CheckRole(SignInErrorAction, PermissionErrorAction),
+            },
+            {
+                path: "/Sign-in",
+                element: <SignIn />,
+            },
+            {
+                path: "/Sign-up",
+                element: <SignUp />,
+            },
+            {
+                path:"*",
+                element: <NotFoundPage input='Page not found'></NotFoundPage>
             }
         ]
-    },
-    {
-        path: "/Sign-in",
-        element: <SignIn />,
-    },
-    {
-        path: "/Sign-up",
-        element: <SignUp />,
     }
 ])
 
