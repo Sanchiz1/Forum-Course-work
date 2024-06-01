@@ -33,7 +33,7 @@ class ReplyRepository
                     INNER JOIN user u ON u.Id = r.UserId
                     LEFT JOIN user tu ON tu.Id = r.ToUserId
                     LEFT JOIN reply_like rl ON rl.ReplyId = r.Id
-                    WHERE r.DateCreated < :UserTimestamp AND r.CommentId = :CommentId   
+                    WHERE r.DateCreated <= :UserTimestamp AND r.CommentId = :CommentId   
                     GROUP BY r.Id
                     ORDER BY $orderBy $order
                     LIMIT :Offset, :Limit";

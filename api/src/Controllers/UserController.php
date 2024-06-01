@@ -27,20 +27,42 @@ class UserController extends Controller
     }
 
     #[Anonymous]
+    #[Get("")]
+    public function GetUsers(Request $request): Response
+    {
+        $userTimestamp = $request->getQueryParams()["usertimestamp"] ??  date('d-m-y h:i:s');
+        $userTimestamp = date("y-m-d h:i:s", strtotime($userTimestamp));
+
+        $orderBy = $request->getQueryParams()["orderby"] ?? "Id";
+        $order = $request->getQueryParams()["order"] ?? "DESC";
+        $skip = (int)$request->getQueryParams()["skip"] ?? 0;
+        $take = (int)$request->getQueryParams()["take"] ?? 10;
+
+        return $this->json(
+            $this->ok(
+                $this->userRepository->GetUsers($userTimestamp, $take, $skip, $orderBy, $order)
+            )
+        );
+    }
+
+    #[Anonymous]
     #[Get("search")]
     public function GetUsersBySearch(Request $request): Response
     {
         $userTimestamp = $request->getQueryParams()["usertimestamp"] ??  date('d-m-y h:i:s');
-        $userTimestamp = (new DateTime($userTimestamp))->format('d-m-y h:i:s');
+        $userTimestamp = date("y-m-d h:i:s", strtotime($userTimestamp));
 
-        $orderBy = $request->getQueryParams()["orderby"] ?? "Posts";
+        $orderBy = $request->getQueryParams()["orderby"] ?? "Id";
+        $order = $request->getQueryParams()["order"] ?? "ASC";
         $skip = (int)$request->getQueryParams()["skip"] ?? 0;
         $take = (int)$request->getQueryParams()["take"] ?? 10;
-        $search = $request->getQueryParams()["search"] ?? '';
+        $search = $request->getQueryParams()["search"] ?? '%';
+
+        $search = "%" . $search . "%";
 
         return $this->json(
             $this->ok(
-                $this->userRepository->GetUsersBySearch($search, $userTimestamp, $take, $skip, $orderBy, 'DESC')
+                $this->userRepository->GetUsersBySearch($search, $userTimestamp, $take, $skip, $orderBy, $order)
             )
         );
     }
@@ -65,10 +87,10 @@ class UserController extends Controller
     }
 
     #[Authorize]
-    #[Get("")]
+    #[Get("{id}")]
     public function GetUser(Request $request): Response
     {
-        $userId = $request->getQueryParams()["userId"];
+        $userId = $request->getRouteParam(0);
 
         $res = $this->userRepository->GetUserById($userId);
 

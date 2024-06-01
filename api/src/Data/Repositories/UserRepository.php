@@ -16,6 +16,36 @@ class UserRepository
         $this->queryBuilder = new QueryBuilder();
     }
 
+    public function GetUsers(string $userTimestamp, int $limit, int $offset, string $orderBy, string $order): array
+    {
+        $query = "SELECT
+                u.Id AS Id,
+                u.Username AS Username,
+                u.Email AS Email,
+                u.Bio AS Bio,
+                u.DateRegistered AS DateRegistered,
+                Count(DISTINCT c.Id) + Count(DISTINCT rp.Id) as Comments,
+                Count(DISTINCT p.Id) as Posts,
+                r.Name AS Role,
+                u.RoleId AS RoleId
+                FROM user u
+                LEFT JOIN role r ON r.Id = u.RoleId
+                LEFT JOIN post p ON p.UserId = u.Id
+                LEFT JOIN comment c ON c.UserId = u.Id
+                LEFT JOIN reply rp ON rp.UserId = u.Id
+                WHERE u.DateRegistered < :UserTimestamp
+                GROUP BY u.Id
+                ORDER BY $orderBy $order
+                LIMIT :Offset, :Limit";
+
+        return $this->queryBuilder
+            ->custom($query)
+            ->setParameter("UserTimestamp", $userTimestamp, PDO::PARAM_STR)
+            ->setParameter("Offset", $offset, PDO::PARAM_INT)
+            ->setParameter("Limit", $limit, PDO::PARAM_INT)
+            ->fetchAll(User::class);
+    }
+
     public function GetUsersBySearch(string $search, string $userTimestamp, int $limit, int $offset, string $orderBy, string $order): array
     {
         $query = "SELECT

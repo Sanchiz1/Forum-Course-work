@@ -10,6 +10,8 @@ interface IExecute
 
     function fetchAll(string $dbModel): array;
 
+    function fetchColumn($column = 0): array;
+
     function fetchFirst(string $dbModel);
 
     public function fetchScalar();

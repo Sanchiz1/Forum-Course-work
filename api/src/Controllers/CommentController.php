@@ -30,7 +30,7 @@ class CommentController extends Controller
     public function GetPostComments(Request $request): Response
     {
         $userTimestamp = $request->getQueryParams()["usertimestamp"] ??  date('d-m-y h:i:s');
-        $userTimestamp = (new DateTime($userTimestamp))->format('d-m-y h:i:s');
+        $userTimestamp = date("y-m-d h:i:s", strtotime($userTimestamp));
 
         $postId = (int)$request->getQueryParams()["postid"];
         $orderBy = $request->getQueryParams()["orderby"] ?? "likes";

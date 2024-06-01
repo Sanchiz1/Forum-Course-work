@@ -17,6 +17,8 @@ import SignIn from './Sign/Sign-in';
 import SignUp from './Sign/Sign-up';
 import Settings from './User/Settings';
 import UserPage from './User/UserPage';
+import UsersAdminPage from './Admin/Users/UsersAdminPage';
+import PostsAdminPage from './Admin/Posts/PostsAdminPage';
 
 const router = (SignInErrorAction: () => void, PermissionErrorAction: () => void) => createBrowserRouter([
     {
@@ -56,6 +58,16 @@ const router = (SignInErrorAction: () => void, PermissionErrorAction: () => void
             {
                 path: "/AdminPanel/Categories",
                 element: <CategoriesPage />,
+                loader: async () => CheckRole(SignInErrorAction, PermissionErrorAction),
+            },
+            {
+                path: "/AdminPanel/Users",
+                element: <UsersAdminPage />,
+                loader: async () => CheckRole(SignInErrorAction, PermissionErrorAction),
+            },
+            {
+                path: "/AdminPanel/Posts",
+                element: <PostsAdminPage />,
                 loader: async () => CheckRole(SignInErrorAction, PermissionErrorAction),
             }
         ]

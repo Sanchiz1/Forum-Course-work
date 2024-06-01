@@ -1,9 +1,9 @@
 import { Container } from '@mui/material';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import UsersDataTable from './UsersDataTable';
+import PostDataTable from './PostDataTable';
 
-export default function UsersAdminPage() {
+export default function PostsAdminPage() {
     return (
         <Box
             component="main"
@@ -23,7 +23,7 @@ export default function UsersAdminPage() {
             }}>
                 <Grid container spacing={0}>
                     <Grid item xs={12}>
-                        <UsersDataTable></UsersDataTable>
+                        <PostDataTable></PostDataTable>
                     </Grid>
                 </Grid>
             </Container>

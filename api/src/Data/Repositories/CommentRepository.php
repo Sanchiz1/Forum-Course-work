@@ -32,7 +32,7 @@ class CommentRepository
                     INNER JOIN user u ON u.Id = c.UserId
                     LEFT JOIN comment_like cl ON cl.CommentId = c.Id
                     LEFT JOIN reply r ON r.CommentId = c.Id
-                    WHERE c.DateCreated < :UserTimestamp AND c.postId = :PostId   
+                    WHERE c.DateCreated <= :UserTimestamp AND c.postId = :PostId   
                     GROUP BY c.Id
                     ORDER BY $orderBy $order
                     LIMIT :Offset, :Limit";

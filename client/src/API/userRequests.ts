@@ -10,16 +10,16 @@ interface GraphqlSearchedUser {
     }
 }
 
-export function requestUsers(offset: Number, next: Number, userTimestamp: Date, search: string) {
-    return GetAjaxObservable<User[]>(`/users?userTimestamp=${userTimestamp.toISOString()}&take=${next}&skip=${offset}`, "GET", false, true).pipe(
+export function requestUsers(offset: Number, next: Number, userTimestamp: Date, orderBy: string, order: string) {
+    return GetAjaxObservable<User[]>(`/users?userTimestamp=${userTimestamp.toISOString()}&take=${next}&skip=${offset}&orderBy=${orderBy}&order=${order}`, "GET", false, true).pipe(
         map((value) => {
             return value.response.data;
         })
     );
 }
 
-export function requestSearchedUsers(offset: Number, next: Number, userTimestamp: Date, search: string) {
-    return GetAjaxObservable<User[]>(`/users/search?search=${search}&userTimestamp=${userTimestamp.toISOString()}&take=${next}&skip=${offset}`, "GET", false, true).pipe(
+export function requestSearchedUsers(offset: Number, next: Number, userTimestamp: Date, search: string, orderBy: string = "Id", order: string = "ASC") {
+    return GetAjaxObservable<User[]>(`/users/search?search=${search}&userTimestamp=${userTimestamp.toISOString()}&take=${next}&skip=${offset}&orderBy=${orderBy}&order=${order}`, "GET", false, true).pipe(
         map((value) => {
             return value.response.data;
         })

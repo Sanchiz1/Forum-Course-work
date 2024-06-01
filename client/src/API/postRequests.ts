@@ -10,8 +10,8 @@ export function requestPosts(offset: Number, next: Number, order: String, userTi
     );
 }
 
-export function requestSearchedPosts(offset: Number, next: Number, userTimestamp: Date, search: string) {
-    return GetAjaxObservable<Post[]>(`/posts/search?search=${search}&userTimestamp=${userTimestamp.toISOString()}&take=${next}&skip=${offset}`, "GET", false, true).pipe(
+export function requestSearchedPosts(offset: Number, next: Number, userTimestamp: Date, search: string, orderBy: string = "Id", order: string = "ASC") {
+    return GetAjaxObservable<Post[]>(`/posts/search?search=${search}&userTimestamp=${userTimestamp.toISOString()}&take=${next}&skip=${offset}&orderBy=${orderBy}&order=${order}`, "GET", false, true).pipe(
         map((value) => {
             return value.response.data;
         })

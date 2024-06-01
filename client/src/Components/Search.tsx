@@ -42,7 +42,7 @@ export default function Search() {
     }, [searchTitle, search]);
 
     const fetchposts = () => {
-        requestSearchedPosts(offset, next, userTimestamp, `%${search}%`).subscribe({
+        requestSearchedPosts(offset, next, userTimestamp, search!).subscribe({
             next(value) {
                 if (value.length == 0) {
                     setHasMore(false);
@@ -61,7 +61,7 @@ export default function Search() {
     }
 
     const fetchusers = () => {
-        requestSearchedUsers(offset, next, userTimestamp, `%${search}%`).subscribe({
+        requestSearchedUsers(offset, next, userTimestamp, search!).subscribe({
             next(value) {
                 if (value.length == 0) {
                     setHasMore(false);

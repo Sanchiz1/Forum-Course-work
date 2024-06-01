@@ -62,6 +62,20 @@ class CustomQueryBuilder implements IExecute
         return !$res ? null : $res;
     }
 
+
+    function fetchColumn($column = 0): array
+    {
+        $statement = Database::$db->prepare($this->query);
+
+        foreach ($this->params as $param => $value) {
+            $statement->bindValue(":$param", $value[0], $value[1]);
+        }
+
+        $statement->execute();
+
+        return $statement->fetchAll(PDO::FETCH_COLUMN, $column);
+    }
+
     public function fetchScalar()
     {
         $statement = Database::$db->prepare($this->query);
