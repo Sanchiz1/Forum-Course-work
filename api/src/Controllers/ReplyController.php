@@ -67,6 +67,22 @@ class ReplyController extends Controller
         $replyId = (int)$request->getRouteParam(0);
         $text = $request->getBody()["text"];
 
+        $userId = $this->UserClaim("id");
+
+        $res = $this->replyRepository->GetReplyById($userId, $replyId);
+
+        if ($res == null) {
+            return $this->json(
+                $this->notFound("Reply not found")
+            );
+        }
+
+        if($res->UserId != $userId){
+            return $this->json(
+                $this->badRequest("Permission denied")
+            );
+        }
+
         $this->replyRepository->UpdateReply($replyId, $text);
 
         return $this->json($this->ok());
@@ -77,6 +93,23 @@ class ReplyController extends Controller
     public function DeleteReply(Request $request): Response
     {
         $replyId = (int)$request->getRouteParam(0);
+
+        $userId = $this->UserClaim("id");
+        $userRole = $this->UserClaim("role");
+
+        $res = $this->replyRepository->GetReplyById($userId, $replyId);
+
+        if ($res == null) {
+            return $this->json(
+                $this->notFound("Reply not found")
+            );
+        }
+
+        if($res->UserId != $userId && $userRole != "Administrator" && $userRole != "Moderator"){
+            return $this->json(
+                $this->badRequest("Permission denied")
+            );
+        }
 
         $this->replyRepository->DeleteReply($replyId);
 

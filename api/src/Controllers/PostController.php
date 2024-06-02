@@ -109,6 +109,7 @@ class PostController extends Controller
                 $this->notFound("Post not found")
             );
         }
+
         return $this->json($this->ok($res));
     }
 
@@ -131,8 +132,23 @@ class PostController extends Controller
     #[Patch("{id}")]
     public function UpdatePost(Request $request): Response
     {
+        $userId = $this->UserClaim("id");
         $postId = (int)$request->getRouteParam(0);
         $text = $request->getBody()["text"];
+
+        $res = $this->postRepository->GetPost($userId, $postId);
+
+        if ($res == null) {
+            return $this->json(
+                $this->notFound("Post not found")
+            );
+        }
+
+        if($res->UserId != $userId){
+            return $this->json(
+                $this->badRequest("Permission denied")
+            );
+        }
 
         $this->postRepository->UpdatePost($postId, $text);
 
@@ -143,7 +159,24 @@ class PostController extends Controller
     #[Delete("{id}")]
     public function DeletePost(Request $request): Response
     {
+        $userId = $this->UserClaim("id");
+        $userRole = $this->UserClaim("role");
         $postId = (int)$request->getRouteParam(0);
+
+
+        $res = $this->postRepository->GetPost($userId, $postId);
+
+        if ($res == null) {
+            return $this->json(
+                $this->notFound("Post not found")
+            );
+        }
+
+        if($res->UserId != $userId && $userRole != "Administrator" && $userRole != "Moderator"){
+            return $this->json(
+                $this->badRequest("Permission denied")
+            );
+        }
 
         $this->postRepository->DeletePost($postId);
 

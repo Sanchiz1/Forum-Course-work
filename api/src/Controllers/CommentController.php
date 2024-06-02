@@ -81,10 +81,26 @@ class CommentController extends Controller
 
     #[Authorize]
     #[Patch("{id}")]
-    public function UpdatePost(Request $request): Response
+    public function UpdateComment(Request $request): Response
     {
         $commentId = (int)$request->getRouteParam(0);
         $text = $request->getBody()["text"];
+
+        $userId = $this->UserClaim("id");
+
+        $res = $this->commentRepository->GetCommentById($userId, $commentId);
+
+        if ($res == null) {
+            return $this->json(
+                $this->notFound("Comment not found")
+            );
+        }
+
+        if($res->UserId != $userId){
+            return $this->json(
+                $this->badRequest("Permission denied")
+            );
+        }
 
         $this->commentRepository->UpdateComment($commentId, $text);
 
@@ -93,9 +109,26 @@ class CommentController extends Controller
 
     #[Authorize]
     #[Delete("{id}")]
-    public function DeletePost(Request $request): Response
+    public function DeleteComment(Request $request): Response
     {
         $commentId = (int)$request->getRouteParam(0);
+
+        $userId = $this->UserClaim("id");
+        $userRole = $this->UserClaim("role");
+
+        $res = $this->commentRepository->GetCommentById($userId, $commentId);
+
+        if ($res == null) {
+            return $this->json(
+                $this->notFound("Comment not found")
+            );
+        }
+
+        if($res->UserId != $userId && $userRole != "Administrator" && $userRole != "Moderator"){
+            return $this->json(
+                $this->badRequest("Permission denied")
+            );
+        }
 
         $this->commentRepository->DeleteComment($commentId);
 
