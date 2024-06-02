@@ -60,7 +60,7 @@ export function updatePostRequest(text: String, id: Number) {
 export function deletePostRequest(id: Number) {
     return GetAjaxObservable(`/posts/${id}`, "DELETE", true, true).pipe(
         map(() => {
-            return "Post updated successfully";
+            return "Post deleted successfully";
         })
     );
 }

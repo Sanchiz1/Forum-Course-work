@@ -289,6 +289,10 @@ export default function PostPage() {
                                                                 open={open}
                                                                 onClose={handleCloseMenu}
                                                             >
+                                                                <MenuItem onClick={() => { setOpenReport(true); handleCloseMenu(); }} disableRipple>
+                                                                    <EmojiFlagsIcon />
+                                                                    Report
+                                                                </MenuItem>
                                                                 {post.UserId == Account.Id &&
                                                                     <MenuItem onClick={() => { setOpenEdit(true); handleCloseMenu(); }} disableRipple>
                                                                         <EditIcon />
@@ -307,10 +311,6 @@ export default function PostPage() {
                                                                         Delete
                                                                     </MenuItem>
                                                                 }
-                                                                <MenuItem onClick={() => { setOpenReport(true); handleCloseMenu(); }} disableRipple>
-                                                                    <EmojiFlagsIcon />
-                                                                    Report
-                                                                </MenuItem>
                                                             </StyledMenu>
                                                         </>
                                                     }
