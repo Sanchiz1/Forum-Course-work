@@ -14,7 +14,9 @@ class RequestParser
         $body = $headers["content-type"] == "application/json" ?
             self::getJsonBody() : null;
 
-        return new Request($uri, $method, $body, $headers, $queryParams);
+        $files = self::getFiles();
+
+        return new Request($uri, $method, $body, $headers, $queryParams, $files);
     }
 
     private static function getMethod()
@@ -35,6 +37,12 @@ class RequestParser
     private static function getJsonBody() : mixed
     {
         return json_decode(file_get_contents('php://input'), true);
+    }
+
+
+    private static function getFiles() : array
+    {
+        return $_FILES;
     }
 
     private static function getQueryParams() : array

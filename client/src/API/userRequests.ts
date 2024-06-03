@@ -11,7 +11,7 @@ interface GraphqlSearchedUser {
 }
 
 export function requestUsers(offset: Number, next: Number, userTimestamp: Date, orderBy: string, order: string) {
-    return GetAjaxObservable<User[]>(`/users?userTimestamp=${userTimestamp.toISOString()}&take=${next}&skip=${offset}&orderBy=${orderBy}&order=${order}`, "GET", false, true).pipe(
+    return GetAjaxObservable<User[]>(`/users?userTimestamp=${userTimestamp.toISOString()}&take=${next}&skip=${offset}&orderBy=${orderBy}&order=${order}`, "GET", false, {'Content-Type': 'application/json'}, true).pipe(
         map((value) => {
             return value.response.data;
         })
@@ -19,7 +19,7 @@ export function requestUsers(offset: Number, next: Number, userTimestamp: Date, 
 }
 
 export function requestSearchedUsers(offset: Number, next: Number, userTimestamp: Date, search: string, orderBy: string = "Id", order: string = "ASC") {
-    return GetAjaxObservable<User[]>(`/users/search?search=${search}&userTimestamp=${userTimestamp.toISOString()}&take=${next}&skip=${offset}&orderBy=${orderBy}&order=${order}`, "GET", false, true).pipe(
+    return GetAjaxObservable<User[]>(`/users/search?search=${search}&userTimestamp=${userTimestamp.toISOString()}&take=${next}&skip=${offset}&orderBy=${orderBy}&order=${order}`, "GET", false, {'Content-Type': 'application/json'}, true).pipe(
         map((value) => {
             return value.response.data;
         })
@@ -27,7 +27,7 @@ export function requestSearchedUsers(offset: Number, next: Number, userTimestamp
 }
 
 export function requestUserById(id: Number) {
-    return GetAjaxObservable<User>(`/users/${id}`, "GET", false, true).pipe(
+    return GetAjaxObservable<User>(`/users/${id}`, "GET", false, {'Content-Type': 'application/json'}, true).pipe(
         map((value) => {
             return value.response.data; 
         }),
@@ -42,7 +42,7 @@ export function requestUserById(id: Number) {
 }
 
 export function requestUserByUsername(username: string) {
-    return GetAjaxObservable<User>(`/users/${username}`, "GET", false, true).pipe(
+    return GetAjaxObservable<User>(`/users/${username}`, "GET", false, {'Content-Type': 'application/json'}, true).pipe(
         map((response) => {
             return response.response.data;
         }),
@@ -57,7 +57,7 @@ export function requestUserByUsername(username: string) {
 }
 
 export function requestAccount() {
-    return GetAjaxObservable<User>(`/account`, "GET", true, true).pipe(
+    return GetAjaxObservable<User>(`/account`, "GET", true, {'Content-Type': 'application/json'}, true).pipe(
         map((value) => {
             return value.response.data;
         })
@@ -65,7 +65,7 @@ export function requestAccount() {
 }
 
 export function createUserRequest(UserInput: UserInput) {
-    return GetAjaxObservable(`/account/register`, "POST", false, true, UserInput).pipe(
+    return GetAjaxObservable(`/account/register`, "POST", false, {'Content-Type': 'application/json'}, true, UserInput).pipe(
         map(() => {
             return "User created successfully";
         })
@@ -73,7 +73,7 @@ export function createUserRequest(UserInput: UserInput) {
 }
 
 export function updateUserRequest(UserInput: UserInput) {
-    return GetAjaxObservable(`/account`, "PATCH", true, true, UserInput).pipe(
+    return GetAjaxObservable(`/account`, "PATCH", true, {'Content-Type': 'application/json'}, true, UserInput).pipe(
         map(() => {
             return "User updated successfully";
         })
@@ -81,7 +81,7 @@ export function updateUserRequest(UserInput: UserInput) {
 }
 
 export function updateUserRoleRequest(userId: number, roleId: number) {
-    return GetAjaxObservable(`/users/role`, "PATCH", true, true, {userId: userId, roleId: roleId}).pipe(
+    return GetAjaxObservable(`/users/role`, "PATCH", true, {'Content-Type': 'application/json'}, true, {userId: userId, roleId: roleId}).pipe(
         map(() => {
             return "User updated successfully";
         })
@@ -89,7 +89,7 @@ export function updateUserRoleRequest(userId: number, roleId: number) {
 }
 
 export function changeUserPasswordRequest(password: string, newPassword: string) {
-    return GetAjaxObservable(`/account/password`, "PATCH", true, true, {password: password, newPassword: newPassword}).pipe(
+    return GetAjaxObservable(`/account/password`, "PATCH", true, {'Content-Type': 'application/json'}, true, {password: password, newPassword: newPassword}).pipe(
         map(() => {
             return "Password updated successfully";
         })
@@ -97,7 +97,7 @@ export function changeUserPasswordRequest(password: string, newPassword: string)
 }
 
 export function DeleteAccountRequest(userId: number, password: string) {
-    return GetAjaxObservable(`/account?userId=${userId}&password=${password}`, "DELETE", true, true).pipe(
+    return GetAjaxObservable(`/account?userId=${userId}&password=${password}`, "DELETE", true, {'Content-Type': 'application/json'}, true).pipe(
         map(() => {
             return "Account deleted successfully";
         })
@@ -105,9 +105,21 @@ export function DeleteAccountRequest(userId: number, password: string) {
 }
 
 export function DeleteUserRequest(userId: number, password: string) {
-    return GetAjaxObservable(`/users?userId=${userId}&password=${password}`, "DELETE", true, true).pipe(
+    return GetAjaxObservable(`/users?userId=${userId}&password=${password}`, "DELETE", true, {'Content-Type': 'application/json'}, true).pipe(
         map(() => {
             return "User deleted successfully";
+        })
+    );
+}
+
+export function requestUploadUserAvatar(formData: FormData) {
+    console.log(formData);
+    return GetAjaxObservable(`/account/avatar`, "POST", true, {}, true, formData).pipe(
+        map(() => {
+            return "Avatar changed successfully";
+        }),
+        catchError(() => {
+            throw new Error("Failed to upload avatar");
         })
     );
 }

@@ -10,6 +10,7 @@ class Request
     private array $routeParams;
     private array $queryParams;
     private array $headers;
+    private array $files;
 
     /**
      * @param string $uri
@@ -18,13 +19,14 @@ class Request
      * @param array $headers
      * @param array $queryParams
      */
-    public function __construct(string $uri, string $method, mixed $body, array $headers, array $queryParams)
+    public function __construct(string $uri, string $method, mixed $body, array $headers, array $queryParams, array $files)
     {
         $this->uri = $uri;
         $this->method = $method;
         $this->body = $body;
         $this->headers = $headers;
         $this->queryParams = $queryParams;
+        $this->files = $files;
     }
 
     public function getUri() : string
@@ -70,5 +72,10 @@ class Request
     public function setRouteParams($params) : void
     {
         $this->routeParams = $params;
+    }
+
+    public function getFiles()
+    {
+        return $this->files;
     }
 }

@@ -1,5 +1,5 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { Alert, Collapse, Container, CssBaseline, Dialog, DialogActions, DialogTitle, IconButton, LinearProgress, MenuItem, Select, SelectChangeEvent, Skeleton, TextField } from '@mui/material';
+import { Alert, Avatar, Collapse, Container, CssBaseline, Dialog, DialogActions, DialogTitle, IconButton, LinearProgress, MenuItem, Select, SelectChangeEvent, Skeleton, TextField } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
@@ -20,6 +20,7 @@ import { User, UserInput } from '../../Types/User';
 import PostElement from '../Posts/PostElement';
 import { BootstrapInput } from '../UtilComponents/BootstrapInput';
 import NotFoundPage from '../UtilComponents/NotFoundPage';
+import UploadAvatar from './UploadAvatar';
 
 const validUsernamePattern = /^[a-zA-Z0-9_]+$/;
 const validEmailPattern = /^(?=.{0,64}$)[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -57,8 +58,6 @@ export default function UserPage() {
       },
     })
   }, [Username])
-
-
 
   //Edit
   const [usernameError, SetUsernameError] = useState('');
@@ -267,6 +266,16 @@ export default function UserPage() {
                             display: 'flex',
                             flexDirection: 'column',
                           }}>
+                            <Box sx={{ width: '100%', mb: 3, display: 'flex', justifyContent: 'center' }}>
+                              <Avatar
+                                src={'http://localhost:8000/avatars/' + user.Id + ".png"} 
+                                sx={{ width: 250, height: 250, border: '2px solid #424242',
+                                bgcolor: '#212121',
+                                color: '#757575',
+                                fontSize: 100
+                                }}
+                                >{user.Username[0].toUpperCase()}</Avatar>
+                            </Box>
                             <Typography variant="h4" color="text.secondary" component="p">
                               {user.Username}
                             </Typography>
@@ -286,7 +295,7 @@ export default function UserPage() {
                                 <Divider sx={{ mt: 2 }} />
                                 <Button onClick={() => setOpenEdit(!openEdit)}>Edit</Button>
                                 <Collapse in={openEdit}>
-                                  <Box component="form" onSubmit={handleSubmitEdit} noValidate sx={{ mt: 1 }}>
+                                  <Box component="form" onSubmit={handleSubmitEdit} noValidate sx={{ mt: 1, mb: 3 }}>
                                     <TextField
                                       margin="normal"
                                       required
@@ -356,6 +365,7 @@ export default function UserPage() {
                                       Submit
                                     </Button>
                                   </Box>
+                                  <UploadAvatar></UploadAvatar>
                                 </Collapse>
                               </>}
                             {(Account.Role === 'Administrator' && user.Role !== 'Administrator') &&

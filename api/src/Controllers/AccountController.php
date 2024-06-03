@@ -57,7 +57,7 @@ class AccountController extends Controller
 
         $userPassword = $this->userRepository->GetUserPassword($user->Id);
 
-        if(!password_verify($password, $userPassword)){
+        if (!password_verify($password, $userPassword)) {
             return $this->json(
                 $this->badRequest("Wrong email or password")
             );
@@ -134,6 +134,38 @@ class AccountController extends Controller
         );
     }
 
+    //#[Authorize]
+    #[Post("avatar")]
+    public function UploadAccountAvatar(Request $request): Response
+    {
+        $files = $request->getFiles();
+        $userId = $this->UserClaim("id");
+
+        if (!isset($files['file'])) {
+            return $this->json(
+                $this->badRequest("No file provided")
+            );
+        }
+
+        $file = $files['file'];
+
+        $uploadDir = 'avatars/';
+
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+
+        $fileName = $userId . '.' . "png";
+
+        $uploadFile = $uploadDir . $fileName;
+
+        move_uploaded_file($file['tmp_name'], $uploadFile);
+
+        return $this->json(
+            $this->ok()
+        );
+    }
+
     #[Authorize]
     #[Patch("password")]
     public function UpdateAccountPassword(Request $request): Response
@@ -143,7 +175,7 @@ class AccountController extends Controller
         $password = $request->getBody()["password"];
         $newPassword = $request->getBody()["newPassword"];
 
-        if(!password_verify($password, $this->userRepository->GetUserPassword($userId))){
+        if (!password_verify($password, $this->userRepository->GetUserPassword($userId))) {
             return $this->json(
                 $this->badRequest("Wrong password")
             );
@@ -166,7 +198,7 @@ class AccountController extends Controller
 
         $password = $request->getQueryParams()["password"];
 
-        if(crypt($password, PASSWORD_DEFAULT) != $this->userRepository->GetUserPassword($userId)){
+        if (crypt($password, PASSWORD_DEFAULT) != $this->userRepository->GetUserPassword($userId)) {
             return $this->json(
                 $this->badRequest("Wrong password")
             );
