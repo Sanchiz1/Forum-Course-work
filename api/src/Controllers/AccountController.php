@@ -134,7 +134,7 @@ class AccountController extends Controller
         );
     }
 
-    //#[Authorize]
+    #[Authorize]
     #[Post("avatar")]
     public function UploadAccountAvatar(Request $request): Response
     {
@@ -149,17 +149,68 @@ class AccountController extends Controller
 
         $file = $files['file'];
 
+        $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+
+        if($fileExtension == 'jpg'){
+            $image = imagecreatefromjpeg($file['tmp_name']);
+        }
+        else if($fileExtension == 'png') {
+            $image = imagecreatefrompng($file['tmp_name']);
+        }
+        else if($fileExtension == 'webp') {
+            $image = imagecreatefromwebp($file['tmp_name']);
+        }
+        else{
+            return $this->json(
+                $this->badRequest("Unsupported file extension")
+            );
+        }
+
+        $imgResized = imagescale($image, 512, 512);
+
         $uploadDir = 'avatars/';
 
         if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
+            if (!mkdir($uploadDir, 0777, true)) {
+                return $this->json(
+                    $this->badRequest("Failed to upload image")
+                );
+            }
         }
 
-        $fileName = $userId . '.' . "png";
-
+        $fileName = $userId . '.png';
         $uploadFile = $uploadDir . $fileName;
 
-        move_uploaded_file($file['tmp_name'], $uploadFile);
+        if (!imagepng($imgResized, $uploadFile)) {
+            return $this->json(
+                $this->badRequest("Failed to upload image")
+            );
+        }
+
+        imagedestroy($image);
+        imagedestroy($imgResized);
+
+        return $this->json(
+            $this->ok()
+        );
+    }
+
+    #[Authorize]
+    #[Delete("avatar")]
+    public function DeleteAccountAvatar(Request $request): Response
+    {
+        $userId = $this->UserClaim("id");
+
+        $uploadDir = 'avatars/';
+
+        $fileName = $userId . '.png';
+        $deleteFile = $uploadDir . $fileName;
+
+        if (!unlink($deleteFile)) {
+            return $this->json(
+                $this->badRequest("Failed to delete avatar")
+            );
+        }
 
         return $this->json(
             $this->ok()

@@ -1,20 +1,16 @@
 import { Box, Button } from '@mui/material';
 import React, { useState } from 'react';
-import { requestUploadUserAvatar } from '../../API/userRequests';
+import { requestDeleteUserAvatar, requestUploadUserAvatar } from '../../API/userRequests';
 import { enqueueSnackbar } from 'notistack';
 import { useDispatch } from 'react-redux';
 import { setGlobalError } from '../../Redux/Reducers/AccountReducer';
 
 export default function UploadAvatar() {
     const dispatch = useDispatch();
-    const [file, setFile] = useState<File | null>(null);
 
     const onFileChange = (e: any) => {
-        setFile(e.target.files[0]);
-    };
+        let file = e.target.files[0];
 
-    const onSubmit = async (e: any) => {
-        e.preventDefault();
         if (file == null) return;
         const formData = new FormData();
         formData.append("file", file);
@@ -35,13 +31,32 @@ export default function UploadAvatar() {
         });
     };
 
+    
+    const DeleteAvatar = () => {
+        requestDeleteUserAvatar().subscribe({
+            next(value) {
+                enqueueSnackbar(value, {
+                    variant: 'success', anchorOrigin: {
+                      vertical: 'top',
+                      horizontal: 'center'
+                    },
+                    autoHideDuration: 1500
+                  });
+            },
+            error(err) {
+                dispatch(setGlobalError(err.message));
+            },
+        });
+    };
+
     return (
         <div>
-            <Box component='form' onSubmit={onSubmit}>
+            <Box>
                     <Button
-                        variant="contained"
+                        variant="outlined"
                         component="label"
                         fullWidth
+                        sx={{mb: 1}}
                     >
                         Upload avatar
                         <input
@@ -50,7 +65,15 @@ export default function UploadAvatar() {
                             hidden
                         />
                     </Button>
-                    <Button type="submit" fullWidth>Change</Button>
+                    <Button
+                        variant="outlined"
+                        component="label"
+                        color='error'
+                        fullWidth
+                        onClick={DeleteAvatar}
+                    >
+                        Delete avatar
+                    </Button>
             </Box>
         </div>
     );

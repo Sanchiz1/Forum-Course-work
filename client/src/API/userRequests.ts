@@ -117,9 +117,14 @@ export function requestUploadUserAvatar(formData: FormData) {
     return GetAjaxObservable(`/account/avatar`, "POST", true, {}, true, formData).pipe(
         map(() => {
             return "Avatar changed successfully";
-        }),
-        catchError(() => {
-            throw new Error("Failed to upload avatar");
+        })
+    );
+}
+
+export function requestDeleteUserAvatar() {
+    return GetAjaxObservable(`/account/avatar`, "DELETE", true, {}, true).pipe(
+        map(() => {
+            return "Avatar deleted successfully";
         })
     );
 }

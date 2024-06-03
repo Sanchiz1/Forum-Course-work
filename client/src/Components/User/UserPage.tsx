@@ -268,13 +268,14 @@ export default function UserPage() {
                           }}>
                             <Box sx={{ width: '100%', mb: 3, display: 'flex', justifyContent: 'center' }}>
                               <Avatar
-                                src={'http://localhost:8000/avatars/' + user.Id + ".png"} 
-                                sx={{ width: 250, height: 250, border: '2px solid #424242',
-                                bgcolor: '#212121',
-                                color: '#757575',
-                                fontSize: 100
+                                src={'http://localhost:8000/avatars/' + user.Id + ".png"}
+                                sx={{
+                                  width: 250, height: 250, border: '2px solid #424242',
+                                  bgcolor: '#212121',
+                                  color: '#757575',
+                                  fontSize: 100
                                 }}
-                                >{user.Username[0].toUpperCase()}</Avatar>
+                              >{user.Username[0].toUpperCase()}</Avatar>
                             </Box>
                             <Typography variant="h4" color="text.secondary" component="p">
                               {user.Username}
@@ -365,6 +366,7 @@ export default function UserPage() {
                                       Submit
                                     </Button>
                                   </Box>
+                                  <Divider sx={{ my: 2 }} />
                                   <UploadAvatar></UploadAvatar>
                                 </Collapse>
                               </>}
