@@ -3,7 +3,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Box, Button, Dialog, DialogActions, DialogTitle, IconButton, Link, MenuItem, Tooltip } from '@mui/material';
+import { Avatar, Box, Button, Dialog, DialogActions, DialogTitle, IconButton, Link, MenuItem, Tooltip } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { enqueueSnackbar } from 'notistack';
@@ -133,7 +133,7 @@ export default function CommentElement(props: Props) {
   }
 
   const fetchReplies = () => {
-    requestReplies(comment.Id,   offset, next, order, userTimestamp).subscribe({
+    requestReplies(comment.Id, offset, next, order, userTimestamp).subscribe({
       next(result) {
         SetReplies([...replies, ...result]);
         setFetching(false);
@@ -173,6 +173,19 @@ export default function CommentElement(props: Props) {
               alignItems: 'center',
               pl: 0.5
             }}>
+              <Avatar
+                  onClick={(e) => e.stopPropagation()} component={RouterLink} to={'/user/' + props.comment.UserUsername}
+                  src={'http://localhost:8000/avatars/' + props.comment.UserId + ".png"}
+                  sx={{
+                    width: 35, height: 35,
+                    bgcolor: '#212121',
+                    color: '#757575',
+                    textDecoration: 'none',
+                    border: '2px solid #424242',
+                    fontSize: '1rem',
+                    mr: 1
+                  }}
+                >{props.comment.UserUsername[0].toUpperCase()}</Avatar>
               <Link variant="caption" onClick={(e) => e.stopPropagation()} component={RouterLink} to={'/user/' + comment.UserUsername} color="primary" sx={{
                 mr: 0.5, textDecoration: 'none', cursor: 'pointer', color: 'white',
                 ":hover": {

@@ -3,7 +3,7 @@ import { Reply, ReplyInput } from "../Types/Reply";
 import { GetAjaxObservable } from "./APIUtils";
 
 export function requestReplies(commentId: Number, offset: Number, next: Number, order: String, userTimestamp: Date) {
-    return GetAjaxObservable<Reply[]>(`/replies?userTimestamp=${userTimestamp.toISOString()}&commentId=${commentId}&take=${next}&skip=${offset}`, "GET", false, true).pipe(
+    return GetAjaxObservable<Reply[]>(`/replies?userTimestamp=${userTimestamp.toISOString()}&commentId=${commentId}&take=${next}&skip=${offset}`, "GET", false, { 'Content-Type': 'application/json' }, true).pipe(
         map((value) => {
             return value.response.data;
         })
@@ -11,7 +11,7 @@ export function requestReplies(commentId: Number, offset: Number, next: Number, 
 }
 
 export function createReplyRequest(ReplyInput: ReplyInput) {
-    return GetAjaxObservable(`/replies`, "POST", true, true, ReplyInput).pipe(
+    return GetAjaxObservable(`/replies`, "POST", true, { 'Content-Type': 'application/json' }, true, ReplyInput).pipe(
         map(() => {
             return "Relpy created successfully";
         })
@@ -19,7 +19,7 @@ export function createReplyRequest(ReplyInput: ReplyInput) {
 }
 
 export function updateReplyRequest(text: String, id: Number) {
-    return GetAjaxObservable(`/replies/${id}`, "PATCH", true, true, {text: text}).pipe(
+    return GetAjaxObservable(`/replies/${id}`, "PATCH", true, { 'Content-Type': 'application/json' }, true, { text: text }).pipe(
         map(() => {
             return "Reply updated successfully";
         })
@@ -27,7 +27,7 @@ export function updateReplyRequest(text: String, id: Number) {
 }
 
 export function deleteReplyRequest(id: Number) {
-    return GetAjaxObservable(`/replies/${id}`, "DELETE", true, true).pipe(
+    return GetAjaxObservable(`/replies/${id}`, "DELETE", true, { 'Content-Type': 'application/json' }, true).pipe(
         map(() => {
             return "Reply deleted successfully";
         })
@@ -35,5 +35,5 @@ export function deleteReplyRequest(id: Number) {
 }
 
 export function likeReplyRequest(id: Number) {
-    return GetAjaxObservable(`/replies/like/${id}`, "POST", true, true);
+    return GetAjaxObservable(`/replies/like/${id}`, "POST", true, { 'Content-Type': 'application/json' }, true);
 }

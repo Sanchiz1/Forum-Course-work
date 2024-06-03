@@ -31,7 +31,7 @@ export default function ReplyInputElement(Props: ReplyInputProps) {
                 name="reply"
                 required
                 fullWidth
-                inputProps={{ maxLength: 1000 }}
+                inputProps={{ maxLength: 5000 }}
                 multiline
                 minRows={1}
                 value={comment}

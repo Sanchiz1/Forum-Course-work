@@ -10,7 +10,8 @@ import { RootState } from '../../Redux/store';
 import {
     Stack, Container, CssBaseline, IconButton, LinearProgress,
     TextField, Link, MenuItem, Button, Dialog, DialogTitle, DialogActions, Tooltip, Chip,
-    DialogContent
+    DialogContent,
+    Avatar
 } from '@mui/material';
 import CategoryIcon from '@mui/icons-material/Category';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -240,6 +241,17 @@ export default function PostPage() {
                                                     flexDirection: 'row',
                                                     alignItems: 'center'
                                                 }}>
+                                                    <Avatar
+                                                        onClick={(e) => e.stopPropagation()} component={RouterLink} to={'/user/' + post.UserUsername}
+                                                        src={'http://localhost:8000/avatars/' + post.UserId + ".png"}
+                                                        sx={{
+                                                            bgcolor: '#212121',
+                                                            color: '#757575',
+                                                            textDecoration: 'none',
+                                                            border: '2px solid #424242',
+                                                            mr: 1
+                                                        }}
+                                                    >{post.UserUsername[0].toUpperCase()}</Avatar>
                                                     <Link variant="caption" onClick={(e) => e.stopPropagation()} component={RouterLink} to={'/user/' + post.UserUsername} color="primary" sx={{
                                                         mr: 0.5, textDecoration: 'none', cursor: 'pointer', color: 'white',
                                                         ":hover": {

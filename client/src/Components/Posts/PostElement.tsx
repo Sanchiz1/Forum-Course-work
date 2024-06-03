@@ -1,7 +1,7 @@
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import { IconButton, Link, Paper, Stack } from '@mui/material';
+import { Avatar, IconButton, Link, Paper, Stack } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -40,6 +40,17 @@ export default function PostElement(props: Props) {
           flexDirection: 'row',
           alignItems: 'center'
         }}>
+        <Avatar
+        onClick={(e) => e.stopPropagation()} component={RouterLink} to={'/user/' + props.post.UserUsername}
+            src={'http://localhost:8000/avatars/' + props.post.UserId + ".png"}
+            sx={{
+                bgcolor: '#212121',
+                color: '#757575',
+                textDecoration: 'none',                
+                border: '2px solid #424242',
+                mr: 1
+            }}
+        >{props.post.UserUsername[0].toUpperCase()}</Avatar>
           <Link variant="caption" onClick={(e) => e.stopPropagation()} component={RouterLink} to={'/user/' + props.post.UserUsername} color="primary" sx={{
             mr: 0.5, textDecoration: 'none', cursor: 'pointer', color: 'white',
             ":hover": {

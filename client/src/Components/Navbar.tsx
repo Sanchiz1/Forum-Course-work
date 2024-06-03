@@ -62,7 +62,7 @@ export default function Header() {
 
 
   //Account menu
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = (event: React.MouseEvent<HTMLImageElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -173,9 +173,16 @@ export default function Header() {
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
             {isSigned() ?
-              <Link variant="subtitle1" align="center" color="text.primary" component="span" onClick={handleClick} sx={{ textDecoration: 'none', ":hover": { cursor: 'pointer' } }}>
-                {User.Username}
-              </Link>
+              <Avatar
+                onClick={handleClick} src={'http://localhost:8000/avatars/' + User.Id + ".png"}
+                sx={{
+                  bgcolor: '#212121',
+                  color: '#757575',
+                  textDecoration: 'none',
+                  mr: 1
+                }}
+              >{User.Username ? User.Username[0].toUpperCase() : ""}
+              </Avatar>
               :
               <Button variant="text" onClick={() => navigator("/Sign-in", { state: location })}>Sign in</Button>
             }
@@ -218,7 +225,7 @@ export default function Header() {
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
           >
             <MenuItem onClick={() => { navigator('/user/' + User.Username); handleClose(); }}>
-              <Avatar /> My account
+              <Avatar /> Profile
             </MenuItem>
             <Divider />
             {(User?.Role === "Administrator" || User?.Role === "Moderator") &&
@@ -241,8 +248,10 @@ export default function Header() {
               </ListItemIcon>
               Settings
             </MenuItem>
-            <MenuItem onClick={() => { Logout();
-                dispatch(getAccount({} as User)); navigator(location); handleClose() }}>
+            <MenuItem onClick={() => {
+              Logout();
+              dispatch(getAccount({} as User)); navigator(location); handleClose()
+            }}>
               <ListItemIcon>
                 <LogoutIcon fontSize="small" />
               </ListItemIcon>

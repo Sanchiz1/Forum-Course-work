@@ -14,7 +14,7 @@ export type LoginType = {
 
 
 export function LoginRequest(credentials: Credentials) {
-  return GetAjaxObservable<LoginType>(`/account/login`, "POST", false, true, {
+  return GetAjaxObservable<LoginType>(`/account/login`, "POST", false, {'Content-Type': 'application/json'}, true, {
     'usernameOrEmail': credentials.loginOrEmail,
     'password': credentials.password
   }).pipe(
