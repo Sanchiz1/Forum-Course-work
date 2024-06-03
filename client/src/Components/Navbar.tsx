@@ -179,6 +179,7 @@ export default function Header() {
                   bgcolor: '#212121',
                   color: '#757575',
                   textDecoration: 'none',
+                  border: '2px solid #424242',
                   mr: 1
                 }}
               >{User.Username ? User.Username[0].toUpperCase() : ""}
