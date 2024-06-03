@@ -99,7 +99,7 @@ export default function CreatePost() {
                                         name="title"
                                         required
                                         fullWidth
-                                        inputProps={{ maxLength: 100 }}
+                                        inputProps={{ maxLength: 500 }}
                                         error={titleError !== ''}
                                         onFocus={() => SetTitleError('')}
                                         helperText={titleError}
