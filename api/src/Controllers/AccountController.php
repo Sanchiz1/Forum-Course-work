@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Data\Repositories\UserRepository;
 use App\Identity\JwtManager;
+use App\Services\HashingService;
 use Core\Auth\Attributes\Anonymous;
 use Core\Auth\Attributes\Authorize;
 use Core\Controller\Attributes\Delete;
@@ -20,11 +21,13 @@ class AccountController extends Controller
 {
     private UserRepository $userRepository;
     private JwtManager $jwtManager;
+    private HashingService $hashingService;
 
     public function __construct()
     {
         $this->userRepository = new UserRepository();
         $this->jwtManager = new JwtManager();
+        $this->hashingService = new HashingService();
     }
 
     #[Authorize]
@@ -57,7 +60,7 @@ class AccountController extends Controller
 
         $userPassword = $this->userRepository->GetUserPassword($user->Id);
 
-        if (!password_verify($password, $userPassword)) {
+        if (!$this->hashingService->ComparePassword($password, $userPassword)) {
             return $this->json(
                 $this->badRequest("Wrong email or password")
             );
@@ -93,7 +96,7 @@ class AccountController extends Controller
             );
         }
 
-        $password = password_hash($password, PASSWORD_DEFAULT);
+        $password = $this->hashingService->HashPassword($password);
         $this->userRepository->AddUser($username, $email, null, $password);
 
         return $this->json(
@@ -226,13 +229,13 @@ class AccountController extends Controller
         $password = $request->getBody()["password"];
         $newPassword = $request->getBody()["newPassword"];
 
-        if (!password_verify($password, $this->userRepository->GetUserPassword($userId))) {
+        if (!$this->hashingService->ComparePassword($password, $this->userRepository->GetUserPassword($userId))) {
             return $this->json(
                 $this->badRequest("Wrong password")
             );
         }
 
-        $this->userRepository->UpdateUserPassword($userId, password_hash($newPassword, PASSWORD_DEFAULT));
+        $this->userRepository->UpdateUserPassword($userId, $this->hashingService->HashPassword($newPassword));
 
 
         return $this->json(
@@ -249,7 +252,7 @@ class AccountController extends Controller
 
         $password = $request->getQueryParams()["password"];
 
-        if (crypt($password, PASSWORD_DEFAULT) != $this->userRepository->GetUserPassword($userId)) {
+        if (!$this->hashingService->ComparePassword($password, $this->userRepository->GetUserPassword($userId))) {
             return $this->json(
                 $this->badRequest("Wrong password")
             );

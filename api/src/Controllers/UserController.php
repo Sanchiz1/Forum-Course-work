@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Data\Repositories\UserRepository;
 use App\Identity\JwtManager;
+use App\Services\HashingService;
 use Core\Auth\Attributes\Anonymous;
 use Core\Auth\Attributes\Authorize;
 use Core\Auth\Attributes\Requires;
@@ -20,10 +21,12 @@ use DateTime;
 class UserController extends Controller
 {
     private UserRepository $userRepository;
+    private HashingService $hashingService;
 
     public function __construct()
     {
         $this->userRepository = new UserRepository();
+        $this->hashingService = new HashingService();
     }
 
     #[Anonymous]
@@ -129,7 +132,7 @@ class UserController extends Controller
         $password = $request->getQueryParams()["password"];
         error_log($deleteUserId);
 
-        if(!password_verify($password, $this->userRepository->GetUserPassword($userId))){
+        if(!$this->hashingService->ComparePassword($password, $this->userRepository->GetUserPassword($userId))){
             return $this->json(
                 $this->badRequest("Wrong password")
             );
