@@ -1,7 +1,8 @@
-import { NotFoundError, catchError, of, throwError } from "rxjs";
+import { catchError, of, throwError } from "rxjs";
 import { ajax } from "rxjs/internal/ajax/ajax";
 import { getCookie } from "../Helpers/CookieHelper";
 import { isSigned } from "./loginRequests";
+import NotFoundError from "../Types/NotFoundError";
 
 const url = "http://localhost:8000";
 

@@ -169,11 +169,10 @@ export default function CommentElement(props: Props) {
           <Grid item xs={11} md={11} lg={11}>
             <Grid sx={{
               display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              pl: 0.5
+              flexDirection: 'row'
             }}>
-              <Avatar
+              <Grid>
+                <Avatar
                   onClick={(e) => e.stopPropagation()} component={RouterLink} to={'/user/' + props.comment.UserUsername}
                   src={'http://localhost:8000/avatars/' + props.comment.UserId + ".png"}
                   sx={{
@@ -186,105 +185,115 @@ export default function CommentElement(props: Props) {
                     mr: 1
                   }}
                 >{props.comment.UserUsername[0].toUpperCase()}</Avatar>
-              <Link variant="caption" onClick={(e) => e.stopPropagation()} component={RouterLink} to={'/user/' + comment.UserUsername} color="primary" sx={{
-                mr: 0.5, textDecoration: 'none', cursor: 'pointer', color: 'white',
-                ":hover": {
-                  textDecoration: 'underline'
-                }
-              }
-              } >
-                {comment.UserUsername}
-              </Link>
-              <Typography variant="caption" color="text.disabled" component="p" sx={{ mr: 0.5, fontFamily: 'cursive' }}>
-                ·
-              </Typography>
-              <Typography variant="caption" color="text.disabled" component="p" sx={{ mr: 0.5 }}>
-                {timeSince(GetLocalDate(new Date(comment.DateCreated)))}
-              </Typography>
-              {comment.DateEdited ?
-                <>
-                  <Tooltip title={timeSince(GetLocalDate(new Date(comment.DateEdited)))} placement="right" arrow>
-                    <Typography variant="caption" color="text.disabled" component="p">
-                      (edited)
-                    </Typography>
-                  </Tooltip>
-                </>
-                :
-                <>
-                </>}
-            </Grid>
-            {openEdit ?
-              <CommentInputElement Action={(e) => {
-                handleSubmitEdit(e)
-              }} Comment={props.comment.Text} CancelAction={() => setOpenEdit(false)}></CommentInputElement>
-              :
-              <Typography variant="subtitle1" component="p" sx={{ pl: 0.5, whiteSpace: 'pre-line', overflowWrap: 'break-word' }}>
-                {comment.Text}
-              </Typography>
-            }
-            <Grid lg={12} md={12} xs={12} item sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center'
-            }}>
-              <Typography variant="caption" color="text.disabled" component="p" sx={{ fontSize: '14px', display: 'flex', alignItems: 'center', mr: 3 }}>
-                <IconButtonWithCheck sx={{ p: 0.5, color: 'inherit' }} ActionWithCheck={() => {
-                  setLikes(liked ? likes - 1 : likes + 1); setLiked(!liked)
-                  likeCommentRequest(comment.Id).subscribe({
-                    next(value) {
-
-                    },
-                    error(err) {
-                      dispatch(setGlobalError(err.message));
-                    },
-                  })
+              </Grid>
+              <Grid>
+                <Grid sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  pl: 0.5
                 }}>
-                  {liked ? <FavoriteIcon sx={{ fontSize: '18px' }}></FavoriteIcon> :
-                    <FavoriteBorderIcon sx={{ fontSize: '18px' }}></FavoriteBorderIcon>}
-                </IconButtonWithCheck>
-                {likes.toString()}
-              </Typography>
-              <ButtonWithCheck variant='text' sx={{ color: "text.secondary", fontSize: "14px important!" }} ActionWithCheck={() => {
-                setOpenReplyInput(!openReplyInput);
-              }}>Reply</ButtonWithCheck>
-            </Grid>
-            {openReplyInput ?
-              <Box sx={{ pl: 5 }}>
-                <ReplyInputElement
-                  setState={setOpenReplyInput}
-                  Action={(e: string) => {
-                    if (e.trim() === '') return;
-                    const replyInput: ReplyInput = {
-                      commentId: props.comment.Id,
-                      text: e,
+                  <Link variant="caption" onClick={(e) => e.stopPropagation()} component={RouterLink} to={'/user/' + comment.UserUsername} color="primary" sx={{
+                    mr: 0.5, textDecoration: 'none', cursor: 'pointer', color: 'white',
+                    ":hover": {
+                      textDecoration: 'underline'
                     }
-                    createReplyRequest(replyInput).subscribe(
-                      {
+                  }
+                  } >
+                    {comment.UserUsername}
+                  </Link>
+                  <Typography variant="caption" color="text.disabled" component="p" sx={{ mr: 0.5, fontFamily: 'cursive' }}>
+                    ·
+                  </Typography>
+                  <Typography variant="caption" color="text.disabled" component="p" sx={{ mr: 0.5 }}>
+                    {timeSince(GetLocalDate(new Date(comment.DateCreated)))}
+                  </Typography>
+                  {comment.DateEdited ?
+                    <>
+                      <Tooltip title={timeSince(GetLocalDate(new Date(comment.DateEdited)))} placement="right" arrow>
+                        <Typography variant="caption" color="text.disabled" component="p">
+                          (edited)
+                        </Typography>
+                      </Tooltip>
+                    </>
+                    :
+                    <>
+                    </>}
+                </Grid>
+                {openEdit ?
+                  <CommentInputElement Action={(e) => {
+                    handleSubmitEdit(e)
+                  }} Comment={props.comment.Text} CancelAction={() => setOpenEdit(false)}></CommentInputElement>
+                  :
+                  <Typography variant="subtitle1" component="p" sx={{ pl: 0.5, whiteSpace: 'pre-line', overflowWrap: 'break-word' }}>
+                    {comment.Text}
+                  </Typography>
+                }
+                <Grid lg={12} md={12} xs={12} item sx={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center'
+                }}>
+                  <Typography variant="caption" color="text.disabled" component="p" sx={{ fontSize: '14px', display: 'flex', alignItems: 'center', mr: 3 }}>
+                    <IconButtonWithCheck sx={{ p: 0.5, color: 'inherit' }} ActionWithCheck={() => {
+                      setLikes(liked ? likes - 1 : likes + 1); setLiked(!liked)
+                      likeCommentRequest(comment.Id).subscribe({
                         next(value) {
-                          enqueueSnackbar(value, {
-                            variant: 'success', anchorOrigin: {
-                              vertical: 'top',
-                              horizontal: 'center'
-                            },
-                            autoHideDuration: 1500
-                          });
-                          refetchComment()
+
                         },
                         error(err) {
                           dispatch(setGlobalError(err.message));
                         },
+                      })
+                    }}>
+                      {liked ? <FavoriteIcon sx={{ fontSize: '18px' }}></FavoriteIcon> :
+                        <FavoriteBorderIcon sx={{ fontSize: '18px' }}></FavoriteBorderIcon>}
+                    </IconButtonWithCheck>
+                    {likes.toString()}
+                  </Typography>
+                  <ButtonWithCheck variant='text' sx={{ color: "text.secondary", fontSize: "14px important!" }} ActionWithCheck={() => {
+                    setOpenReplyInput(!openReplyInput);
+                  }}>Reply</ButtonWithCheck>
+                </Grid>
+                {openReplyInput ?
+                  <Box sx={{ pl: 5 }}>
+                    <ReplyInputElement
+                      setState={setOpenReplyInput}
+                      Action={(e: string) => {
+                        if (e.trim() === '') return;
+                        const replyInput: ReplyInput = {
+                          commentId: props.comment.Id,
+                          text: e,
+                        }
+                        createReplyRequest(replyInput).subscribe(
+                          {
+                            next(value) {
+                              enqueueSnackbar(value, {
+                                variant: 'success', anchorOrigin: {
+                                  vertical: 'top',
+                                  horizontal: 'center'
+                                },
+                                autoHideDuration: 1500
+                              });
+                              refetchComment()
+                            },
+                            error(err) {
+                              dispatch(setGlobalError(err.message));
+                            },
+                          }
+                        )
                       }
-                    )
-                  }
-                  }></ReplyInputElement>
-              </Box>
-              : <></>}
-            {
-              comment.Replies > 0 ?
-                <Button onClick={() => setOpenReplies(!openReplies)}>{comment.Replies} Replies</Button>
-                :
-                <></>
-            }
+                      }></ReplyInputElement>
+                  </Box>
+                  : <></>}
+                {
+                  comment.Replies > 0 ?
+                    <Button onClick={() => setOpenReplies(!openReplies)}>{comment.Replies} Replies</Button>
+                    :
+                    <></>
+                }
+              </Grid>
+            </Grid>
           </Grid>
           <Grid item xs={1} md={1} lg={1} sx={{ display: 'flex', mb: 'auto' }}>
             {(comment.UserId == Account.Id || Account.Role === 'Administrator' || Account.Role === 'Moderator') && showButton ? <>

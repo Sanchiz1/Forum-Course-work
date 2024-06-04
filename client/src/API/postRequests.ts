@@ -1,6 +1,7 @@
-import { NotFoundError, catchError, empty, map, of } from "rxjs";
+import { catchError, empty, map, of } from "rxjs";
 import { Post, PostInput } from "../Types/Post";
 import { GetAjaxObservable } from "./APIUtils";
+import NotFoundError from "../Types/NotFoundError";
 
 export function requestPosts(offset: Number, next: Number, order: String, userTimestamp: Date, categories?: number[]) {
     return GetAjaxObservable<Post[]>(`/posts?userTimestamp=${userTimestamp.toISOString()}&take=${next}&skip=${offset}&orderBy=${order}&categories=${categories}`, "GET", false, {'Content-Type': 'application/json'}, true).pipe(

@@ -1,6 +1,7 @@
-import { NotFoundError, catchError, map, of } from "rxjs";
+import { catchError, map, of } from "rxjs";
 import { User, UserInput } from "../Types/User";
 import { GetAjaxObservable } from "./APIUtils";
+import NotFoundError from "../Types/NotFoundError";
 
 const url = "https://localhost:8000";
 

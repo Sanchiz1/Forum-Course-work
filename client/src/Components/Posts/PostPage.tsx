@@ -128,7 +128,13 @@ export default function PostPage() {
                 fetchPost();
             },
             error(err) {
-                setError(err.message)
+                enqueueSnackbar(err.message, {
+                    variant: 'error', anchorOrigin: {
+                        vertical: 'top',
+                        horizontal: 'center'
+                    },
+                    autoHideDuration: 2000
+                });
             },
         })
     }
@@ -138,7 +144,7 @@ export default function PostPage() {
     const [openDelete, setOpenDelete] = useState(false);
     const handleSubmitDelete = () => {
         deletePostRequest(post?.Id!).subscribe({
-            next(value: any) {
+            next(value) {
                 enqueueSnackbar(value, {
                     variant: 'success', anchorOrigin: {
                         vertical: 'top',
@@ -154,8 +160,14 @@ export default function PostPage() {
                 }
                 navigator(state);
             },
-            error(err: any) {
-                setError(err.message)
+            error(err) {
+                enqueueSnackbar(err.message, {
+                    variant: 'error', anchorOrigin: {
+                        vertical: 'top',
+                        horizontal: 'center'
+                    },
+                    autoHideDuration: 2000
+                });
             },
         })
     }
@@ -177,7 +189,13 @@ export default function PostPage() {
                 setOpenReport(false);
             },
             error(err) {
-                setGlobalError(err.message)
+                enqueueSnackbar(err.message, {
+                    variant: 'error', anchorOrigin: {
+                        vertical: 'top',
+                        horizontal: 'center'
+                    },
+                    autoHideDuration: 2000
+                });
             },
         })
     }
@@ -191,7 +209,13 @@ export default function PostPage() {
                 fetchPost();
             },
             error(err) {
-                setError(err.message)
+                enqueueSnackbar(err.message, {
+                    variant: 'error', anchorOrigin: {
+                        vertical: 'top',
+                        horizontal: 'center'
+                    },
+                    autoHideDuration: 2000
+                });
             },
         })
     }
@@ -202,7 +226,13 @@ export default function PostPage() {
                 fetchPost();
             },
             error(err) {
-                setError(err.message)
+                enqueueSnackbar(err.message, {
+                    variant: 'error', anchorOrigin: {
+                        vertical: 'top',
+                        horizontal: 'center'
+                    },
+                    autoHideDuration: 2000
+                });
             },
         })
     }
@@ -340,6 +370,7 @@ export default function PostPage() {
                                                                 label="Text"
                                                                 name="text"
                                                                 multiline
+                                                                inputProps={{ maxLength: 5000 }}
                                                                 defaultValue={post.Text}
                                                             />
                                                             <Box sx={{ my: 1, display: 'flex' }}>

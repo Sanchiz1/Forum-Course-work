@@ -14,7 +14,7 @@ export function requestReports(offset: number, next: number, userTimestamp: Date
 export function deleteReportRequest(replyId: number) {
     return GetAjaxObservable<Report[]>(`/reports/${replyId}`, "DELETE", true, {'Content-Type': 'application/json'},true).pipe(
         map(() => {
-            return "Reply deleted successfully";
+            return "Report deleted successfully";
         })
     );
 }
@@ -22,7 +22,7 @@ export function deleteReportRequest(replyId: number) {
 export function createReportRequest(postId: number, text: string) {
     return GetAjaxObservable<Report[]>(`/reports`, "POST", true, {'Content-Type': 'application/json'},true, {postId: postId, text: text}).pipe(
         map(() => {
-            return "Reply deleted successfully";
+            return "Report created successfully";
         })
     );
 }

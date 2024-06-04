@@ -103,6 +103,7 @@ export default function AppContent() {
     }
 
     useEffect(() => {
+        console.log("error");
         if(globalError !== '') {
             enqueueSnackbar(globalError, {
                 variant: 'error', anchorOrigin: {
