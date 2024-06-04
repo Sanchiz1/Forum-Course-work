@@ -73,6 +73,18 @@ class CategoryController extends Controller
     {
         $title = $request->getBody()["title"];
 
+        if ($title == null) {
+            return $this->json(
+                $this->badRequest("Title was not set")
+            );
+        }
+
+        if (strlen($title) > 100) {
+            return $this->json(
+                $this->badRequest("Title cannot be longer than 100 symbols")
+            );
+        }
+
         $this->categoryRepository->AddCategory($title);
 
         return $this->json(
@@ -87,6 +99,18 @@ class CategoryController extends Controller
     {
         $categoryId = (int)$request->getRouteParam(0);
         $title = $request->getBody()["title"];
+
+        if ($title == null) {
+            return $this->json(
+                $this->badRequest("Title was not set")
+            );
+        }
+
+        if (strlen($title) > 100) {
+            return $this->json(
+                $this->badRequest("Title cannot be longer than 100 symbols")
+            );
+        }
 
         $this->categoryRepository->UpdateCategory($categoryId, $title);
 

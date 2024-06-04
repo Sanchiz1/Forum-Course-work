@@ -121,6 +121,24 @@ class PostController extends Controller
         $title = $request->getBody()["title"];
         $text = $request->getBody()["text"];
 
+        if ($title == null) {
+            return $this->json(
+                $this->badRequest("Title was not set")
+            );
+        }
+
+        if (strlen($title) > 500) {
+            return $this->json(
+                $this->badRequest("Title cannot be longer than 5000 symbols")
+            );
+        }
+
+        if (strlen($text) > 5000) {
+            return $this->json(
+                $this->badRequest("Title cannot be longer than 5000 symbols")
+            );
+        }
+
         $res = $this->postRepository->AddPost($userId, $title, $text);
 
         return $this->json(
@@ -135,6 +153,12 @@ class PostController extends Controller
         $userId = $this->UserClaim("id");
         $postId = (int)$request->getRouteParam(0);
         $text = $request->getBody()["text"];
+
+        if (strlen($text) > 5000) {
+            return $this->json(
+                $this->badRequest("Title cannot be longer than 5000 symbols")
+            );
+        }
 
         $res = $this->postRepository->GetPost($userId, $postId);
 
