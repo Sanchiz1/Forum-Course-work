@@ -155,6 +155,11 @@ class EntityMapper implements IWhere, IInclude, IThenInclude
         return $entities;
     }
 
+    public function getQuery(): string
+    {
+        return $this->queryBuilder->getQuery();
+    }
+
     private function MapEntities($row): DbModel
     {
         $entity = null;
