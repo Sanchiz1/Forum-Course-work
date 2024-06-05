@@ -37,7 +37,7 @@ class Application
         $this->authManager = new JwtAuthManager($jwtManager);
     }
 
-    public function addCors()
+    public function addCors(): void
     {
         $cors = new Cors();
 
