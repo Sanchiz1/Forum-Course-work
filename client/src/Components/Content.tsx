@@ -21,6 +21,7 @@ import UsersAdminPage from './Admin/Users/UsersAdminPage';
 import PostsAdminPage from './Admin/Posts/PostsAdminPage';
 import NotFoundPage from './UtilComponents/NotFoundPage';
 import ReportsPage from './Reports/ReportsPage';
+import { ShowFailure } from '../Helpers/SnackBarHelper';
 
 const router = (SignInErrorAction: () => void, PermissionErrorAction: () => void) => createBrowserRouter([
     {
@@ -103,15 +104,8 @@ export default function AppContent() {
     }
 
     useEffect(() => {
-        console.log("error");
         if(globalError !== '') {
-            enqueueSnackbar(globalError, {
-                variant: 'error', anchorOrigin: {
-                  vertical: 'top',
-                  horizontal: 'center'
-                },
-                autoHideDuration: 2000
-              });
+            ShowFailure(globalError);
             dispatch(setGlobalError(''));
         }
     }, [globalError])

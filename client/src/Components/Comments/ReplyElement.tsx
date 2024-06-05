@@ -132,7 +132,7 @@ export default function ReplyElement(props: Props) {
                   }}
                 >{props.reply.UserUsername[0].toUpperCase()}</Avatar>
               </Grid>
-              <Grid>
+              <Grid  sx={{ width: '100%' }}>
                 <Grid sx={{
                   display: 'flex',
                   flexDirection: 'row',

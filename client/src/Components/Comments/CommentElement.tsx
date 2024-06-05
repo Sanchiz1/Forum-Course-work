@@ -23,6 +23,7 @@ import IconButtonWithCheck from '../UtilComponents/IconButtonWithCheck';
 import ReplyInputElement from '../UtilComponents/ReplyInputElement';
 import { StyledMenu } from '../UtilComponents/StyledMenu';
 import ReplyElement from './ReplyElement';
+import { ShowFailure, ShowSuccess } from '../../Helpers/SnackBarHelper';
 
 interface Props {
   comment: Comment;
@@ -48,7 +49,7 @@ export default function CommentElement(props: Props) {
         refetchReplies();
       },
       error(err) {
-        dispatch(setGlobalError(err.message));
+        ShowFailure(err.message);
       }
     })
   }
@@ -77,19 +78,13 @@ export default function CommentElement(props: Props) {
 
     updateCommentRequest(text, props.comment.Id).subscribe({
       next(value) {
-        enqueueSnackbar(value, {
-          variant: 'success', anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center'
-          },
-          autoHideDuration: 1500
-        });
+        ShowSuccess (value);
         setError('');
         setOpenEdit(false);
         refetchComment();
       },
       error(err) {
-        setGlobalError(err.message);
+        ShowFailure(err.message);
       },
     })
 
@@ -101,18 +96,12 @@ export default function CommentElement(props: Props) {
   const handleSubmitDelete = () => {
     deleteCommentRequest(comment.Id).subscribe({
       next(value) {
-        enqueueSnackbar(value, {
-          variant: 'success', anchorOrigin: {
-            vertical: 'top',
-            horizontal: 'center'
-          },
-          autoHideDuration: 1500
-        });
+        ShowSuccess(value);
         setOpenDelete(false);
         props.refreshComments();
       },
       error(err) {
-        setError(err.message)
+        ShowFailure(err.message);
       },
     })
   }
@@ -139,7 +128,7 @@ export default function CommentElement(props: Props) {
         setFetching(false);
       },
       error(err) {
-        dispatch(setGlobalError(err.message));
+        ShowFailure(err.message);
       }
     })
   };
@@ -169,7 +158,8 @@ export default function CommentElement(props: Props) {
           <Grid item xs={11} md={11} lg={11}>
             <Grid sx={{
               display: 'flex',
-              flexDirection: 'row'
+              flexDirection: 'row',
+              width: '100%'
             }}>
               <Grid>
                 <Avatar
@@ -186,7 +176,7 @@ export default function CommentElement(props: Props) {
                   }}
                 >{props.comment.UserUsername[0].toUpperCase()}</Avatar>
               </Grid>
-              <Grid>
+              <Grid sx={{ width: '100%' }}>
                 <Grid sx={{
                   display: 'flex',
                   flexDirection: 'row',
@@ -242,7 +232,7 @@ export default function CommentElement(props: Props) {
 
                         },
                         error(err) {
-                          dispatch(setGlobalError(err.message));
+                          ShowFailure(err.message);
                         },
                       })
                     }}>

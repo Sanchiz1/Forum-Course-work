@@ -37,6 +37,7 @@ import NotFoundPage from '../UtilComponents/NotFoundPage';
 import EmojiFlagsIcon from '@mui/icons-material/EmojiFlags';
 import { isSigned } from '../../API/loginRequests';
 import { createReportRequest } from '../../API/reportRequests';
+import { ShowFailure, ShowSuccess } from '../../Helpers/SnackBarHelper';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -116,25 +117,13 @@ export default function PostPage() {
 
         updatePostRequest(text, post?.Id!).subscribe({
             next(value) {
-                enqueueSnackbar(value, {
-                    variant: 'success', anchorOrigin: {
-                        vertical: 'top',
-                        horizontal: 'center'
-                    },
-                    autoHideDuration: 1500
-                });
+                ShowSuccess(value);
                 setError('');
                 setOpenEdit(false);
                 fetchPost();
             },
             error(err) {
-                enqueueSnackbar(err.message, {
-                    variant: 'error', anchorOrigin: {
-                        vertical: 'top',
-                        horizontal: 'center'
-                    },
-                    autoHideDuration: 2000
-                });
+                ShowFailure(err.message);
             },
         })
     }
@@ -145,13 +134,7 @@ export default function PostPage() {
     const handleSubmitDelete = () => {
         deletePostRequest(post?.Id!).subscribe({
             next(value) {
-                enqueueSnackbar(value, {
-                    variant: 'success', anchorOrigin: {
-                        vertical: 'top',
-                        horizontal: 'center'
-                    },
-                    autoHideDuration: 1500
-                });
+                ShowSuccess(value);
                 setError('');
                 setOpenDelete(false);
                 if (state == null) {
@@ -161,13 +144,7 @@ export default function PostPage() {
                 navigator(state);
             },
             error(err) {
-                enqueueSnackbar(err.message, {
-                    variant: 'error', anchorOrigin: {
-                        vertical: 'top',
-                        horizontal: 'center'
-                    },
-                    autoHideDuration: 2000
-                });
+                ShowFailure(err.message);
             },
         })
     }
@@ -177,25 +154,13 @@ export default function PostPage() {
     const [reportText, setReportText] = useState('');
     const handleSubmitReport = (text: string) => {
         createReportRequest(post?.Id!, text).subscribe({
-            next(value: any) {
-                enqueueSnackbar(value, {
-                    variant: 'success', anchorOrigin: {
-                        vertical: 'top',
-                        horizontal: 'center'
-                    },
-                    autoHideDuration: 1500
-                });
+            next(value) {
+                ShowSuccess(value);
                 setReportText('');
                 setOpenReport(false);
             },
             error(err) {
-                enqueueSnackbar(err.message, {
-                    variant: 'error', anchorOrigin: {
-                        vertical: 'top',
-                        horizontal: 'center'
-                    },
-                    autoHideDuration: 2000
-                });
+                ShowFailure(err.message);
             },
         })
     }

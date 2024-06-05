@@ -9,12 +9,10 @@ import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { createTheme } from '@mui/material/styles';
-import { enqueueSnackbar } from 'notistack';
 import * as React from 'react';
-import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { createUserRequest } from '../../API/userRequests';
-import { setGlobalError } from '../../Redux/Reducers/AccountReducer';
+import { ShowFailure, ShowSuccess } from '../../Helpers/SnackBarHelper';
 import { UserInput } from '../../Types/User';
 
 const validUsernamePattern = /^[a-zA-Z0-9_]+$/;
@@ -34,12 +32,10 @@ function Copyright(props: any) {
     );
 }
 
-// TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export default function SignUp() {
     const navigator = useNavigate();
-    const dispatch = useDispatch();
     const { state } = useLocation();
     const [usernameError, SetUsernameError] = React.useState('');
     const [emailError, SetEmailError] = React.useState('');
@@ -74,15 +70,11 @@ export default function SignUp() {
 
         createUserRequest(userInput).subscribe({
             next(value) {
-                enqueueSnackbar(value, {variant: 'success', anchorOrigin: {
-                    vertical: 'top',
-                    horizontal: 'center'
-                  },
-                  autoHideDuration: 1500});
+                ShowSuccess(value);
                 navigator("/Sign-in", { state: state })
             },
             error(err) {
-                dispatch(setGlobalError(err.message));
+                ShowFailure(err.message);
             },
         })
     };

@@ -1,11 +1,10 @@
 import { Box, Button, Container, CssBaseline, Dialog, DialogActions, DialogTitle, Paper, TextField } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import { enqueueSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createCategoryRequest, requestCategories } from '../../API/categoryRequests';
-import { setGlobalError } from '../../Redux/Reducers/AccountReducer';
+import { ShowFailure, ShowSuccess } from '../../Helpers/SnackBarHelper';
 import { RootState } from '../../Redux/store';
 import { Category } from '../../Types/Category';
 import CategoryElement from './CategoryElement';
@@ -37,7 +36,7 @@ export default function CategoriesPage() {
                 }
             },
             error(err) {
-                dispatch(setGlobalError(err.message));
+                ShowFailure(err.message);
             },
         })
     };
@@ -68,19 +67,13 @@ export default function CategoriesPage() {
 
         createCategoryRequest(title).subscribe({
             next(value) {
-                enqueueSnackbar(value, {
-                    variant: 'success', anchorOrigin: {
-                        vertical: 'top',
-                        horizontal: 'center'
-                    },
-                    autoHideDuration: 1500
-                });
+                ShowSuccess(value);
                 setError('');
                 setOpenCreate(false);
                 refetchCategories();
             },
             error(err) {
-                setGlobalError(err.message);
+                ShowFailure(err.message);
             },
         })
     }

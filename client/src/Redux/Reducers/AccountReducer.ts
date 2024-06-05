@@ -3,9 +3,9 @@ import { User } from "../../Types/User"
 
 export interface AccountState {
     Account: User,
-    GlobalError: String,
-    PermissionError: String,
-    LogInError: String
+    GlobalError: string,
+    PermissionError: string,
+    LogInError: string
 }
 const initialState: AccountState = {
     Account: {} as User,
@@ -23,15 +23,15 @@ export const AccountSlice = createSlice({
             state.Account = action.payload;
         },
         setLogInError: (state,
-            action: PayloadAction<String>) => {
+            action: PayloadAction<string>) => {
             state.LogInError = action.payload;
         },
         setPermissionError: (state,
-            action: PayloadAction<String>) => {
+            action: PayloadAction<string>) => {
             state.PermissionError = action.payload;
         },
         setGlobalError: (state,
-            action: PayloadAction<String>) => {
+            action: PayloadAction<string>) => {
             state.GlobalError = action.payload;
         }
     }

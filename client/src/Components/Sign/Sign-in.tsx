@@ -15,6 +15,7 @@ import { LoginRequest } from '../../API/loginRequests';
 import { getUserAccount } from '../../Redux/Epics/AccountEpics';
 import { setGlobalError } from '../../Redux/Reducers/AccountReducer';
 import { Credentials } from "../../Types/Credentials";
+import { ShowFailure } from '../../Helpers/SnackBarHelper';
 
 function Copyright(props: any) {
   return (
@@ -57,7 +58,7 @@ export default function SignIn() {
         navigator(state);
       },
       error(err) {
-        dispatch(setGlobalError(err.message));
+        ShowFailure(err.message);
       },
     });
   };
@@ -110,11 +111,6 @@ export default function SignIn() {
               Sign In
             </Button>
             <Grid container justifyContent="flex-end">
-              {/* <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid> */}
               <Grid item>
                 <Link variant="body2" onClick={() => navigator("/Sign-up", { state: state })} sx={{cursor:'pointer'}}>
                   {"Don't have an account? Sign Up"}

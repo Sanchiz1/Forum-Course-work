@@ -9,7 +9,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { deleteCategoryRequest, updateCategoryRequest } from '../../API/categoryRequests';
-import { setGlobalError } from '../../Redux/Reducers/AccountReducer';
+import { ShowFailure, ShowSuccess } from '../../Helpers/SnackBarHelper';
 import { RootState } from '../../Redux/store';
 import { Category } from '../../Types/Category';
 import { StyledMenu } from '../UtilComponents/StyledMenu';
@@ -20,8 +20,6 @@ interface Props {
 }
 
 export default function CategoryElement(props: Props) {
-    const navigate = useNavigate();
-    const dispatch = useDispatch()
     const Account = useSelector((state: RootState) => state.account.Account);
 
 
@@ -52,19 +50,13 @@ export default function CategoryElement(props: Props) {
 
         updateCategoryRequest(title, props.category.Id).subscribe({
             next(value) {
-                enqueueSnackbar(value, {
-                    variant: 'success', anchorOrigin: {
-                        vertical: 'top',
-                        horizontal: 'center'
-                    },
-                    autoHideDuration: 1500
-                });
+                ShowSuccess(value);
                 setError('');
                 setOpenEdit(false);
                 props.refetchCategories();
             },
             error(err) {
-                setGlobalError(err.message);
+                ShowFailure(err.message);
             },
         })
     }
@@ -86,7 +78,7 @@ export default function CategoryElement(props: Props) {
               props.refetchCategories();
             },
             error(err) {
-              setError(err.message)
+                ShowFailure(err.message);
             },
           })
     }
